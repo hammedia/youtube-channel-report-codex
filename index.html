@@ -863,7 +863,7 @@
           <div id="top-note" class="chart-note"></div>
         </article>
         <article class="chart-card card">
-          <div class="chart-title">카테고리별 평균 성과</div>
+          <div class="chart-title">영상 길이 구간별 성과</div>
           <div class="chart-sub">어떤 주제가 평균적으로 더 잘 먹히는지 비교합니다.</div>
           <div class="chart-wrap"><canvas id="cat-chart"></canvas></div>
           <div id="cat-note" class="chart-note"></div>
@@ -1017,16 +1017,12 @@
       return null;
     }
 
-    function getCategory(title) {
-      var t = String(title || "");
-      if (/코성형|코\s*수술|코재수술|비순각|코끝|보형물|연골/.test(t)) return "코 성형";
-      if (/눈성형|눈\s*성형|쌍꺼풀|눈매|눈밑|짝눈|애교살/.test(t)) return "눈 성형";
-      if (/안면거상/.test(t)) return "안면거상";
-      if (/리프팅|울쎄라|실리프팅|레이저/.test(t)) return "리프팅";
-      if (/보톡스/.test(t)) return "보톡스";
-      if (/흉터|켈로이드/.test(t)) return "흉터";
-      if (/피부|화장품|홈케어|주름|지방/.test(t)) return "피부·관리";
-      return "기타";
+    function getCategory(title, lenSec) {
+      var sec = Number(lenSec || 0);
+      if (sec <= 60)   return "쇼츠 (60초 이하)";
+      if (sec <= 600)  return "단편 (1–10분)";
+      if (sec <= 1800) return "중편 (10–30분)";
+      return "장편 (30분+)";
     }
 
     function scoreLevel(value, good, mid) {
@@ -1135,7 +1131,7 @@
           retention: retention,
           avgWatchSec: avgWatchSec,
           subConvRate: views > 0 ? subs / views * 100 : 0,
-          category: getCategory(r[idx.title]),
+          category: getCategory(r[idx.title], r[idx.lenSec]),
           isShorts: lenSec > 0 && lenSec <= 60
         });
       }
@@ -1608,7 +1604,7 @@
 
       if (labels.length) {
         document.getElementById("cat-note").textContent =
-          "현재 가장 큰 주제는 " + labels[0] + "입니다. 조회수만 보지 말고 CTR과 지속률이 동시에 높은 카테고리가 있는지 같이 확인하면 다음 기획 우선순위를 잡기 쉽습니다.";
+          "길이 구간별로 CTR과 지속률 차이를 확인하세요. 어떤 포맷이 이 채널에서 더 잘 작동하는지 판단하는 기준이 됩니다.";
       } else {
         document.getElementById("cat-note").textContent = "카테고리 데이터가 부족합니다.";
       }
