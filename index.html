@@ -1494,6 +1494,43 @@
       if (videos.length && lowCtrHighRetCount / videos.length >= 0.4) {
         bullets.push("내용 품질은 좋지만 제목과 썸네일이 채널 성장을 막고 있습니다. 클릭을 만드는 제목 설계가 지금 가장 중요한 과제입니다.");
       }
+      var recentFive = videos.slice().sort(function(a, b) {
+        return new Date(b.uploadDate) - new Date(a.uploadDate);
+      }).slice(0, 5);
+      if (recentFive.length >= 5) {
+        var recentWeakCount = recentFive.filter(function(video) {
+          return video.ctr < S.summary.aggCTR && video.retention < S._avgRet;
+        }).length;
+        var recentStrongCount = recentFive.filter(function(video) {
+          return video.ctr >= S.summary.aggCTR && video.retention >= S._avgRet;
+        }).length;
+        if (recentWeakCount >= 4) {
+          bullets.push("최근 업로드한 영상 대부분이 채널 평균을 밑돌고 있습니다. 제목 방향, 주제 선택, 도입부 구성 중 무엇이 바뀌었는지 점검이 필요합니다.");
+        }
+        if (recentStrongCount >= 4) {
+          bullets.push("최근 영상들의 성과가 채널 평균을 꾸준히 웃돌고 있습니다. 현재 방향을 유지하면서 업로드 주기를 안정화해보세요.");
+        }
+      }
+      if (S.summary.totalViews > 0) {
+        var fanConvRate = S.summary.totalSubs / S.summary.totalViews * 100;
+        if (fanConvRate < 0.05) {
+          bullets.push("조회수 대비 구독자 전환이 매우 낮습니다. 시청자가 채널을 기억하게 만드는 요소가 부족한 상태입니다. 채널 정체성을 명확히 하고 구독 유도 멘트를 강화해보세요.");
+        }
+        if (fanConvRate >= 0.3) {
+          bullets.push("조회수 대비 구독 전환이 우수합니다. 시청자가 채널을 신뢰하고 있다는 신호입니다.");
+        }
+      }
+      var impressionVideos = videos.filter(function(video) {
+        return video.impr > 0;
+      });
+      if (impressionVideos.length >= 5) {
+        var lowEfficiencyCount = impressionVideos.filter(function(video) {
+          return video.ctr < S.summary.aggCTR * 0.5;
+        }).length;
+        if (lowEfficiencyCount / impressionVideos.length >= 0.3) {
+          bullets.push("노출은 충분히 받고 있지만 클릭으로 이어지지 않는 영상이 많습니다. 알고리즘이 밀어주는 구간을 제대로 활용하지 못하고 있습니다. 이 시기의 썸네일과 제목을 집중적으로 점검해보세요.");
+        }
+      }
       if (longVideos.length >= 2 && longInterval != null && longInterval > 14) {
         bullets.push("일반 영상 평균 업로드 주기가 " + Math.floor(longInterval) + "일입니다. 2주에 하나 이상 올리지 못하면 알고리즘 노출이 줄어들 수 있습니다. 주 1회를 목표로 업로드 주기를 줄여보세요.");
       }
