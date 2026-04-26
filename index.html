@@ -3,7 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>유튜브 채널 분석 보고서</title>
+  <title>유튜브 채널 분석 보고서 · 결론부터 읽히는 보고서형 분석 툴</title>
+  <meta name="description" content="유튜브 스튜디오 CSV/ZIP을 올리면 결론·원인·실행 포인트까지 자동 생성하는 보고서형 분석 도구. 클라이언트용 HTML 리포트 한 번에 저장." />
+  <meta name="author" content="햄 (함동민)" />
+  <meta name="keywords" content="유튜브 분석,YouTube Analytics,채널 분석,CTR,시청 지속률,Gemini,보고서,1인 미디어,대행사" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="유튜브 채널 분석 보고서" />
+  <meta property="og:description" content="결론부터 읽히는 보고서형 분석 툴. CSV/ZIP 한 번 올리면 클라이언트용 HTML 리포트까지 자동 생성." />
+  <meta property="og:url" content="https://hammedia.github.io/youtube-channel-report-codex/" />
+  <meta property="og:site_name" content="유튜브 채널 분석 보고서" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:image" content="https://hammedia.github.io/youtube-channel-report-codex/og-image.png" />
+  <meta property="og:image:alt" content="유튜브 채널 분석 보고서 — 결론부터 읽히는 보고서형 분석 툴" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="유튜브 채널 분석 보고서" />
+  <meta name="twitter:description" content="결론부터 읽히는 보고서형 분석 툴. CSV/ZIP 한 번 올리면 클라이언트용 HTML 리포트까지 자동 생성." />
+  <meta name="twitter:image" content="https://hammedia.github.io/youtube-channel-report-codex/og-image.png" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
@@ -2997,7 +3012,7 @@
       Object.keys(S.charts).forEach(function(key) {
         var chart = S.charts[key];
         if (!chart || !chart.canvas || !chart.canvas.id || typeof chart.toBase64Image !== "function") return;
-        chartImages[chart.canvas.id] = chart.toBase64Image();
+        chartImages[chart.canvas.id] = chart.toBase64Image("image/jpeg", 0.85);
       });
 
       var styleTag = document.querySelector("style");
