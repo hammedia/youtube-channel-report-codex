@@ -143,6 +143,24 @@
     .upload-icon{ font-size:34px; margin-bottom:8px; }
     .upload-title{ font-size:16px; font-weight:800; margin-bottom:6px; }
     .upload-sub{ font-size:13px; color:var(--muted); }
+    .csv-guide{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:18px;
+      background:#f8f3ec;
+      border:1px solid #efe3d4;
+      text-align:left;
+    }
+    .csv-guide strong{
+      display:block;
+      font-size:14px;
+      margin-bottom:8px;
+    }
+    .csv-guide p{
+      color:var(--muted);
+      font-size:13px;
+      margin:4px 0;
+    }
     .tag-row{
       display:flex;
       gap:8px;
@@ -573,6 +591,9 @@
     .list-actions{
       display:flex;
       justify-content:center;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
       margin-top:16px;
     }
     .more-btn{
@@ -588,6 +609,13 @@
     .more-btn[disabled]{
       opacity:.45;
       cursor:default;
+    }
+    .page-label{
+      min-width:86px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
     }
 
     .footnote{
@@ -640,6 +668,12 @@
           <span class="tag no" id="tag-table"><span class="tag-dot"></span>표 데이터.csv 필수</span>
           <span class="tag no" id="tag-total"><span class="tag-dot"></span>총계.csv 선택</span>
           <span class="tag no" id="tag-chart"><span class="tag-dot"></span>차트 데이터.csv 선택</span>
+        </div>
+        <div class="csv-guide">
+          <strong>YouTube Studio CSV 받는 방법</strong>
+          <p>1. YouTube Studio에서 분석하려는 채널의 분석 메뉴로 들어갑니다.</p>
+          <p>2. 기간을 선택한 뒤 오른쪽 위 내보내기 또는 다운로드에서 CSV를 선택합니다.</p>
+          <p>3. 표 데이터.csv를 먼저 올리고, 총계.csv와 차트 데이터.csv를 함께 올리면 추가 차트가 열립니다.</p>
         </div>
       </div>
       <input type="file" id="file-input" accept=".csv" multiple style="display:none" />
@@ -749,11 +783,18 @@
             <button class="sort-btn" id="btn-subConvRate" onclick="setSort('subConvRate')">구독 전환</button>
             <button class="sort-btn" id="btn-avgWatchSec" onclick="setSort('avgWatchSec')">평균 시청시간</button>
           </div>
+          <div class="sort-row">
+            <button class="sort-btn on" id="size-10" onclick="setPageSize(10)">10개씩</button>
+            <button class="sort-btn" id="size-20" onclick="setPageSize(20)">20개씩</button>
+            <button class="sort-btn" id="size-30" onclick="setPageSize(30)">30개씩</button>
+          </div>
           <div id="list-help" class="list-help"></div>
         </div>
         <div id="video-list" class="video-list"></div>
         <div class="list-actions">
-          <button id="more-btn" class="more-btn" onclick="loadMore()">10개 더 보기</button>
+          <button id="prev-btn" class="more-btn" onclick="changePage(-1)">이전</button>
+          <span id="page-label" class="page-label">1 / 1</span>
+          <button id="next-btn" class="more-btn" onclick="changePage(1)">다음</button>
         </div>
       </section>
       <div class="footnote">이 리포트는 이해를 돕기 위한 요약형 해석입니다. 세부 진단이 필요하면 상위/하위 영상의 공통점부터 다시 비교해 보시면 좋습니다.</div>
@@ -767,7 +808,8 @@
       summary: null,
       videos: [],
       sortBy: "views",
-      visibleCount: 10,
+      pageSize: 10,
+      currentPage: 1,
       charts: {}
     };
 
@@ -891,7 +933,8 @@
       S.chart = null;
       S.summary = null;
       S.videos = [];
-      S.visibleCount = 10;
+      S.pageSize = 10;
+      S.currentPage = 1;
       ["table", "total", "chart"].forEach(function(type) {
         var el = document.getElementById("tag-" + type);
         if (el) el.className = "tag no";
@@ -1502,7 +1545,7 @@
 
     function setSort(key) {
       S.sortBy = key;
-      S.visibleCount = 10;
+      S.currentPage = 1;
       ["views", "ctr", "retention", "subConvRate", "avgWatchSec"].forEach(function(name) {
         var btn = document.getElementById("btn-" + name);
         if (btn) btn.className = "sort-btn" + (name === key ? " on" : "");
@@ -1516,23 +1559,42 @@
       return sec + "초";
     }
 
-    function loadMore() {
-      S.visibleCount += 10;
+    function setPageSize(size) {
+      S.pageSize = size;
+      S.currentPage = 1;
+      [10, 20, 30].forEach(function(value) {
+        var btn = document.getElementById("size-" + value);
+        if (btn) btn.className = "sort-btn" + (value === size ? " on" : "");
+      });
+      renderVideoList();
+    }
+
+    function changePage(delta) {
+      var totalPages = Math.max(1, Math.ceil(S.videos.length / S.pageSize));
+      S.currentPage = Math.min(totalPages, Math.max(1, S.currentPage + delta));
       renderVideoList();
     }
 
     function renderVideoList() {
       var sorted = S.videos.slice().sort(function(a, b) { return b[S.sortBy] - a[S.sortBy]; });
-      var visible = sorted.slice(0, S.visibleCount);
+      [10, 20, 30].forEach(function(value) {
+        var btn = document.getElementById("size-" + value);
+        if (btn) btn.className = "sort-btn" + (value === S.pageSize ? " on" : "");
+      });
+      var totalPages = Math.max(1, Math.ceil(sorted.length / S.pageSize));
+      if (S.currentPage > totalPages) S.currentPage = totalPages;
+      var startIndex = (S.currentPage - 1) * S.pageSize;
+      var visible = sorted.slice(startIndex, startIndex + S.pageSize);
       var html = visible.map(function(video, index) {
         var label = performanceLabel(video);
+        var rank = startIndex + index + 1;
         return '' +
           '<article class="video-item">' +
             '<div class="video-top">' +
               '<div>' +
                 '<div class="video-title">' + esc(video.title) + '</div>' +
                 '<div class="video-badges">' +
-                  '<span class="badge rank">#' + (index + 1) + '</span>' +
+                  '<span class="badge rank">#' + rank + '</span>' +
                   '<span class="badge ' + label.className + '">' + label.label + '</span>' +
                   '<span class="badge rank">' + esc(video.category) + '</span>' +
                   '<span class="badge rank">' + (video.isShorts ? "쇼츠" : "일반 영상") + '</span>' +
@@ -1553,16 +1615,11 @@
 
       document.getElementById("video-list").innerHTML = html;
       document.getElementById("list-help").textContent =
-        "현재 " + visible.length + "개 / 전체 " + sorted.length + "개를 보여주고 있습니다. 길어지지 않도록 10개씩 추가로 확인할 수 있게 했습니다.";
+        "현재 " + (startIndex + 1) + "-" + (startIndex + visible.length) + "번 / 전체 " + sorted.length + "개를 보여주고 있습니다.";
 
-      var moreBtn = document.getElementById("more-btn");
-      if (visible.length >= sorted.length) {
-        moreBtn.disabled = true;
-        moreBtn.textContent = "모두 확인했습니다";
-      } else {
-        moreBtn.disabled = false;
-        moreBtn.textContent = "10개 더 보기";
-      }
+      document.getElementById("page-label").textContent = S.currentPage + " / " + totalPages;
+      document.getElementById("prev-btn").disabled = S.currentPage <= 1;
+      document.getElementById("next-btn").disabled = S.currentPage >= totalPages;
     }
 
     function init() {
