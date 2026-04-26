@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>유튜브 채널 분석 보고서</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    :root{
+      --bg:#f4efe7;
+      --paper:#fffdf8;
+      --panel:#fffaf2;
+      --ink:#201a16;
+      --muted:#726456;
+      --line:#e4d8c7;
+      --brand:#9a3412;
+      --brand-2:#0f766e;
+      --gold:#b45309;
+      --bad:#b91c1c;
+      --good:#166534;
+      --chip:#f3e7d7;
+      --shadow:0 18px 45px rgba(32, 26, 22, 0.08);
+    }
+
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body{
+      font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(154,52,18,.08), transparent 30%),
+        radial-gradient(circle at top right, rgba(15,118,110,.08), transparent 22%),
+        var(--bg);
+      color:var(--ink);
+      min-height:100vh;
+      line-height:1.55;
+    }
+    .app{ max-width:1320px; margin:0 auto; padding:32px 18px 72px; }
+    .card{
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+    }
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:13px;
+      letter-spacing:.14em;
+      color:var(--muted);
+      text-transform:uppercase;
+      font-weight:800;
+      margin-bottom:16px;
+    }
+    .section-title::after{
+      content:"";
+      flex:1;
+      height:1px;
+      background:var(--line);
+    }
+
+    .hero{
+      padding:28px;
+      margin-bottom:22px;
+      background:
+        linear-gradient(140deg, rgba(154,52,18,.07), rgba(255,253,248,.9) 42%),
+        linear-gradient(220deg, rgba(15,118,110,.06), rgba(255,253,248,.9) 68%);
+    }
+    .hero-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 12px;
+      border-radius:999px;
+      background:var(--chip);
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:14px;
+    }
+    .hero h1{
+      font-size:36px;
+      line-height:1.15;
+      letter-spacing:-0.03em;
+      margin-bottom:10px;
+    }
+    .hero-sub{
+      color:var(--muted);
+      font-size:15px;
+      max-width:780px;
+    }
+    .hero-status{
+      min-width:250px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:#fff6eb;
+      border:1px solid #f3d5b1;
+    }
+    .hero-status-label{
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#9a3412;
+      margin-bottom:8px;
+    }
+    .hero-status strong{
+      display:block;
+      font-size:18px;
+      margin-bottom:6px;
+    }
+    .hero-status p{
+      font-size:13px;
+      color:#7c5d44;
+    }
+
+    .upload-card{
+      padding:22px;
+      margin-bottom:22px;
+    }
+    .upload-zone{
+      border:2px dashed #d9c5ae;
+      border-radius:22px;
+      padding:28px 18px;
+      text-align:center;
+      cursor:pointer;
+      transition:.18s ease;
+      background:linear-gradient(180deg,#fffaf4,#fffdf9);
+    }
+    .upload-zone:hover, .upload-zone.drag{
+      border-color:var(--brand);
+      transform:translateY(-1px);
+      background:#fff7ee;
+    }
+    .upload-icon{ font-size:34px; margin-bottom:8px; }
+    .upload-title{ font-size:16px; font-weight:800; margin-bottom:6px; }
+    .upload-sub{ font-size:13px; color:var(--muted); }
+    .tag-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top:14px;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border-radius:999px;
+      padding:6px 12px;
+      border:1px solid var(--line);
+      background:#f7f1e7;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+    .tag.ok{
+      background:#e9f7ef;
+      border-color:#9ed3b0;
+      color:var(--good);
+    }
+    .tag-dot{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:currentColor;
+    }
+
+    .empty{
+      text-align:center;
+      padding:56px 18px;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .dashboard{ display:none; }
+    .headline-grid{
+      display:grid;
+      grid-template-columns:1.6fr 1fr;
+      gap:16px;
+      margin-bottom:22px;
+    }
+    .headline-card, .summary-card{
+      padding:24px;
+    }
+    .headline-kicker{
+      color:var(--brand);
+      font-weight:800;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      margin-bottom:10px;
+    }
+    .headline-main{
+      font-size:29px;
+      font-weight:900;
+      line-height:1.22;
+      letter-spacing:-0.03em;
+      margin-bottom:12px;
+    }
+    .headline-desc{
+      color:var(--muted);
+      font-size:15px;
+    }
+    .bullet-list{
+      display:grid;
+      gap:10px;
+      margin-top:16px;
+    }
+    .bullet{
+      display:flex;
+      gap:10px;
+      font-size:14px;
+      color:#3b3028;
+    }
+    .bullet::before{
+      content:"•";
+      color:var(--brand);
+      font-weight:900;
+    }
+
+    .score-box{
+      display:grid;
+      gap:14px;
+    }
+    .score-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#edf7f6;
+      color:var(--brand-2);
+      font-size:12px;
+      font-weight:800;
+      width:max-content;
+    }
+    .score-value{
+      font-size:38px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:-0.04em;
+    }
+    .score-copy{
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .kpi-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin-bottom:22px;
+    }
+    .kpi-card{
+      padding:20px;
+      position:relative;
+      overflow:hidden;
+    }
+    .kpi-card::before{
+      content:"";
+      position:absolute;
+      inset:0 auto 0 0;
+      width:5px;
+      background:var(--accent);
+    }
+    .kpi-label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+    .kpi-value{
+      font-size:30px;
+      font-weight:900;
+      line-height:1;
+      margin-bottom:10px;
+    }
+    .kpi-status{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+    .kpi-status.good{ background:#e9f7ef; color:var(--good); }
+    .kpi-status.mid{ background:#fff4df; color:var(--gold); }
+    .kpi-status.bad{ background:#fdeaea; color:var(--bad); }
+    .kpi-copy{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .explain-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-bottom:22px;
+    }
+    .explain-card{
+      padding:20px;
+      background:var(--panel);
+    }
+    .explain-card strong{
+      display:block;
+      margin-bottom:8px;
+      font-size:16px;
+    }
+    .explain-card p{
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .fmt-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:22px;
+    }
+    .fmt-card{
+      padding:20px;
+    }
+    .fmt-badge{
+      display:inline-block;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:11px;
+      font-weight:800;
+      margin-bottom:12px;
+    }
+    .fmt-badge.shorts{ background:#fdeaf0; color:#a61b4d; }
+    .fmt-badge.long{ background:#eaf4fd; color:#1857a6; }
+    .fmt-title{
+      font-size:20px;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+    .fmt-copy{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:14px;
+    }
+    .fmt-stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+    }
+    .fmt-stat{
+      padding:12px;
+      border-radius:16px;
+      background:#f8f3ec;
+      border:1px solid #efe3d4;
+    }
+    .fmt-stat-label{
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+    .fmt-stat-value{
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .chart-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-bottom:22px;
+    }
+    .chart-card{
+      padding:20px;
+    }
+    .chart-title{
+      font-size:18px;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+    .chart-sub{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:12px;
+    }
+    .chart-wrap{
+      position:relative;
+      height:300px;
+    }
+    .chart-note{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:#f8f3ec;
+      border:1px solid #efe3d4;
+      color:#5c4d41;
+      font-size:13px;
+    }
+
+    .highlights{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-bottom:22px;
+    }
+    .highlight-card{
+      padding:20px;
+    }
+    .highlight-card.top{ background:linear-gradient(180deg,#f3fbf1,#fffdf8); }
+    .highlight-card.bottom{ background:linear-gradient(180deg,#fff4f4,#fffdf8); }
+    .highlight-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .highlight-head strong{
+      font-size:18px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border-radius:999px;
+      padding:5px 9px;
+      font-size:11px;
+      font-weight:800;
+      background:#f7f1e7;
+      color:var(--muted);
+    }
+    .rank-list{
+      display:grid;
+      gap:10px;
+    }
+    .rank-item{
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.72);
+      border:1px solid var(--line);
+    }
+    .rank-title{
+      font-size:14px;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .rank-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+    .rank-copy{
+      font-size:13px;
+      color:#4f4339;
+    }
+
+    .list-card{
+      padding:22px;
+      margin-bottom:22px;
+    }
+    .toolbar{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      margin-bottom:14px;
+      flex-wrap:wrap;
+    }
+    .sort-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .sort-btn{
+      border:none;
+      background:#f2e8db;
+      color:#6d5b4d;
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .sort-btn.on{
+      background:#2d2118;
+      color:#fff9f1;
+    }
+    .list-help{
+      color:var(--muted);
+      font-size:13px;
+    }
+    .video-list{
+      display:grid;
+      gap:12px;
+    }
+    .video-item{
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px;
+      background:#fffdf9;
+    }
+    .video-top{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      margin-bottom:10px;
+    }
+    .video-title{
+      font-size:16px;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+    .video-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+    }
+    .badge.rank{ background:#efe7db; color:#5c4d41; }
+    .badge.good{ background:#e9f7ef; color:var(--good); }
+    .badge.mid{ background:#fff4df; color:var(--gold); }
+    .badge.bad{ background:#fdeaea; color:var(--bad); }
+    .metric-row{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .metric{
+      border-radius:14px;
+      background:#f8f3ec;
+      padding:10px 12px;
+      border:1px solid #efe3d4;
+    }
+    .metric-label{
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+    .metric-value{
+      font-size:16px;
+      font-weight:900;
+    }
+    .video-copy{
+      font-size:13px;
+      color:#4f4339;
+      background:#fcf7f0;
+      border:1px solid #efe3d4;
+      border-radius:14px;
+      padding:11px 12px;
+    }
+    .list-actions{
+      display:flex;
+      justify-content:center;
+      margin-top:16px;
+    }
+    .more-btn{
+      border:none;
+      border-radius:999px;
+      padding:12px 20px;
+      font-size:14px;
+      font-weight:900;
+      cursor:pointer;
+      background:#2d2118;
+      color:#fff8ee;
+    }
+    .more-btn[disabled]{
+      opacity:.45;
+      cursor:default;
+    }
+
+    .footnote{
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+      margin-top:10px;
+    }
+
+    @media (max-width: 1100px){
+      .headline-grid, .chart-grid, .highlights { grid-template-columns:1fr; }
+      .kpi-grid, .explain-grid { grid-template-columns:repeat(2,1fr); }
+      .metric-row { grid-template-columns:repeat(3,1fr); }
+    }
+
+    @media (max-width: 720px){
+      .hero h1 { font-size:28px; }
+      .kpi-grid, .explain-grid, .fmt-grid, .chart-grid, .highlights { grid-template-columns:1fr; }
+      .fmt-stats, .metric-row { grid-template-columns:repeat(2,1fr); }
+      .video-top { flex-direction:column; }
+      .score-value { font-size:30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero card">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">채널 분석 리포트</div>
+          <h1>숫자만 보는 대시보드가 아니라<br />바로 읽히는 보고서형 분석 툴</h1>
+          <p class="hero-sub">
+            CSV를 올리면 맨 위에서 결론부터 보고, 아래에서 왜 그런 결과가 나왔는지 차트와 설명으로 확인할 수 있게 구성했습니다.
+          </p>
+        </div>
+        <div class="hero-status">
+          <div class="hero-status-label">읽는 순서</div>
+          <strong>결론 → 원인 → 실행 포인트</strong>
+          <p>처음 보는 사람도 다시 공부하지 않도록, 각 섹션마다 “이게 무슨 뜻인지” 설명 문장을 함께 보여줍니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="upload-card card">
+      <div id="upload-zone" class="upload-zone">
+        <div id="upload-icon" class="upload-icon">📂</div>
+        <div id="upload-title" class="upload-title">CSV 파일을 드롭하거나 클릭해서 선택하세요</div>
+        <div class="upload-sub">표 데이터.csv는 필수, 총계.csv와 차트 데이터.csv는 선택입니다. 새로 올리면 이전 상태는 자동 초기화됩니다.</div>
+        <div class="tag-row">
+          <span class="tag no" id="tag-table"><span class="tag-dot"></span>표 데이터.csv 필수</span>
+          <span class="tag no" id="tag-total"><span class="tag-dot"></span>총계.csv 선택</span>
+          <span class="tag no" id="tag-chart"><span class="tag-dot"></span>차트 데이터.csv 선택</span>
+        </div>
+      </div>
+      <input type="file" id="file-input" accept=".csv" multiple style="display:none" />
+    </section>
+
+    <div id="lib-warning" class="card empty" style="display:none;">
+      외부 라이브러리를 불러오지 못했습니다. 인터넷 연결이 막힌 환경이라면 Chart.js와 PapaParse를 로컬 파일로 함께 두는 방식으로 바꾸는 것이 안전합니다.
+    </div>
+
+    <div id="empty-state" class="card empty">
+      표 데이터 CSV를 올리면, 위에서 바로 요약 보고서를 만들고 아래에 차트와 영상별 해설을 보여줍니다.
+    </div>
+
+    <main id="dashboard" class="dashboard">
+      <section class="headline-grid">
+        <article class="headline-card card">
+          <div class="headline-kicker">Executive Summary</div>
+          <div id="headline-main" class="headline-main">분석 결과를 불러오면 여기에서 결론부터 요약합니다.</div>
+          <div id="headline-desc" class="headline-desc">핵심 수치와 개선 방향을 짧고 분명하게 보고합니다.</div>
+          <div id="headline-bullets" class="bullet-list"></div>
+        </article>
+        <article class="summary-card card">
+          <div class="score-box">
+            <span class="score-chip">현재 채널 컨디션</span>
+            <div id="health-score" class="score-value">--점</div>
+            <div id="health-copy" class="score-copy">CTR, 지속률, 구독 전환을 종합한 이해용 점수입니다.</div>
+            <div id="period-copy" class="bullet-list"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="section-title">핵심 지표</section>
+      <section id="kpi-grid" class="kpi-grid"></section>
+
+      <section class="section-title">무슨 뜻인가</section>
+      <section id="explain-grid" class="explain-grid"></section>
+
+      <section class="section-title">포맷 비교</section>
+      <section class="fmt-grid">
+        <article class="fmt-card card">
+          <div class="fmt-badge shorts">쇼츠</div>
+          <div class="fmt-title">짧은 영상 성과</div>
+          <div id="fmt-shorts-copy" class="fmt-copy"></div>
+          <div id="fmt-shorts" class="fmt-stats"></div>
+        </article>
+        <article class="fmt-card card">
+          <div class="fmt-badge long">일반 영상</div>
+          <div class="fmt-title">긴 영상 성과</div>
+          <div id="fmt-long-copy" class="fmt-copy"></div>
+          <div id="fmt-long" class="fmt-stats"></div>
+        </article>
+      </section>
+
+      <section class="section-title">차트로 보는 원인</section>
+      <section class="chart-grid">
+        <article class="chart-card card">
+          <div class="chart-title">일별 조회수 흐름</div>
+          <div class="chart-sub">기간 전체에서 조회수가 언제 치고 올라왔는지 먼저 확인합니다.</div>
+          <div class="chart-wrap"><canvas id="trend-chart"></canvas></div>
+          <div id="trend-note" class="chart-note"></div>
+        </article>
+        <article class="chart-card card">
+          <div class="chart-title">조회수 상위 10개 영상</div>
+          <div class="chart-sub">어떤 영상이 실제 성과를 끌고 갔는지, 제목과 함께 직관적으로 봅니다.</div>
+          <div class="chart-wrap"><canvas id="top-chart"></canvas></div>
+          <div id="top-note" class="chart-note"></div>
+        </article>
+        <article class="chart-card card">
+          <div class="chart-title">카테고리별 평균 성과</div>
+          <div class="chart-sub">어떤 주제가 평균적으로 더 잘 먹히는지 비교합니다.</div>
+          <div class="chart-wrap"><canvas id="cat-chart"></canvas></div>
+          <div id="cat-note" class="chart-note"></div>
+        </article>
+        <article class="chart-card card" id="video-trend-card" style="display:none;">
+          <div class="chart-title">상위 영상 날짜별 흐름</div>
+          <div class="chart-sub">잘된 영상이 하루 반짝인지, 며칠 이상 이어졌는지 확인합니다.</div>
+          <div class="chart-wrap"><canvas id="video-trend-chart"></canvas></div>
+          <div id="video-note" class="chart-note"></div>
+        </article>
+      </section>
+
+      <section class="section-title">눈에 띄는 영상</section>
+      <section class="highlights">
+        <article class="highlight-card top card">
+          <div class="highlight-head">
+            <strong>잘된 영상 Top 3</strong>
+            <span class="pill">복제해야 할 패턴</span>
+          </div>
+          <div id="top3" class="rank-list"></div>
+        </article>
+        <article class="highlight-card bottom card">
+          <div class="highlight-head">
+            <strong>아쉬운 영상 Bottom 3</strong>
+            <span class="pill">우선 개선 대상</span>
+          </div>
+          <div id="bottom3" class="rank-list"></div>
+        </article>
+      </section>
+
+      <section class="section-title">영상별 해설</section>
+      <section class="list-card card">
+        <div class="toolbar">
+          <div class="sort-row">
+            <button class="sort-btn on" id="btn-views" onclick="setSort('views')">조회수</button>
+            <button class="sort-btn" id="btn-ctr" onclick="setSort('ctr')">클릭률</button>
+            <button class="sort-btn" id="btn-retention" onclick="setSort('retention')">지속률</button>
+            <button class="sort-btn" id="btn-subConvRate" onclick="setSort('subConvRate')">구독 전환</button>
+            <button class="sort-btn" id="btn-avgWatchSec" onclick="setSort('avgWatchSec')">평균 시청시간</button>
+          </div>
+          <div id="list-help" class="list-help"></div>
+        </div>
+        <div id="video-list" class="video-list"></div>
+        <div class="list-actions">
+          <button id="more-btn" class="more-btn" onclick="loadMore()">10개 더 보기</button>
+        </div>
+      </section>
+      <div class="footnote">이 리포트는 이해를 돕기 위한 요약형 해석입니다. 세부 진단이 필요하면 상위/하위 영상의 공통점부터 다시 비교해 보시면 좋습니다.</div>
+    </main>
+  </div>
+
+  <script>
+    var S = {
+      total: null,
+      chart: null,
+      summary: null,
+      videos: [],
+      sortBy: "views",
+      visibleCount: 10,
+      charts: {}
+    };
+
+    function hasLibs() {
+      return typeof window.Chart !== "undefined" && typeof window.Papa !== "undefined";
+    }
+
+    function fmt(n) {
+      n = Number(n || 0);
+      if (Math.abs(n) >= 10000) return (n / 10000).toFixed(1) + "만";
+      return n.toLocaleString("ko-KR");
+    }
+
+    function fmtPct(n, digits) {
+      return Number(n || 0).toFixed(digits == null ? 1 : digits) + "%";
+    }
+
+    function avg(arr, key) {
+      var values = arr.filter(function(item) { return Number(item[key]) > 0; });
+      if (!values.length) return 0;
+      return values.reduce(function(sum, item) { return sum + Number(item[key] || 0); }, 0) / values.length;
+    }
+
+    function esc(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function parseNum(value) {
+      if (value == null || value === "") return 0;
+      var normalized = String(value).replace(/,/g, "").replace(/%/g, "").trim();
+      var num = parseFloat(normalized);
+      return isNaN(num) ? 0 : num;
+    }
+
+    function parseIntNum(value) {
+      return Math.round(parseNum(value));
+    }
+
+    function normalizeDateString(value) {
+      var raw = String(value || "").trim();
+      if (!raw) return "";
+
+      var iso = raw.match(/^(\d{4})[-/. ](\d{1,2})[-/. ](\d{1,2})$/);
+      if (iso) {
+        return iso[1] + "-" + String(iso[2]).padStart(2, "0") + "-" + String(iso[3]).padStart(2, "0");
+      }
+
+      var locale = raw.match(/^([A-Za-z]{3})\s+(\d{1,2}),\s+(\d{4})$/);
+      if (locale) {
+        var months = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+        var monthNum = months[locale[1]];
+        if (monthNum) return locale[3] + "-" + String(monthNum).padStart(2, "0") + "-" + String(locale[2]).padStart(2, "0");
+      }
+
+      var dateObj = new Date(raw);
+      if (!isNaN(dateObj.getTime())) {
+        return dateObj.getFullYear() + "-" + String(dateObj.getMonth() + 1).padStart(2, "0") + "-" + String(dateObj.getDate()).padStart(2, "0");
+      }
+
+      return raw;
+    }
+
+    function prettyDate(value) {
+      var iso = normalizeDateString(value);
+      var match = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!match) return value || "-";
+      return match[1] + "." + match[2] + "." + match[3];
+    }
+
+    function identifyCSV(rows) {
+      var head = rows && rows[0];
+      if (!head) return null;
+      if (head.length === 2 && String(head[0]).indexOf("날짜") >= 0) return "total";
+      if (head.length === 6 && String(head[0]).indexOf("날짜") >= 0) return "chart";
+      if (head.length >= 9) return "table";
+      return null;
+    }
+
+    function getCategory(title) {
+      var t = String(title || "");
+      if (/코성형|코\s*수술|코재수술|비순각|코끝|보형물|연골/.test(t)) return "코 성형";
+      if (/눈성형|눈\s*성형|쌍꺼풀|눈매|눈밑|짝눈|애교살/.test(t)) return "눈 성형";
+      if (/안면거상/.test(t)) return "안면거상";
+      if (/리프팅|울쎄라|실리프팅|레이저/.test(t)) return "리프팅";
+      if (/보톡스/.test(t)) return "보톡스";
+      if (/흉터|켈로이드/.test(t)) return "흉터";
+      if (/피부|화장품|홈케어|주름|지방/.test(t)) return "피부·관리";
+      return "기타";
+    }
+
+    function scoreLevel(value, good, mid) {
+      if (value >= good) return { label: "좋음", className: "good" };
+      if (value >= mid) return { label: "보통", className: "mid" };
+      return { label: "개선 필요", className: "bad" };
+    }
+
+    function metricSummary(metric, value) {
+      if (metric === "ctr") {
+        if (value >= 7) return "썸네일과 제목이 잘 작동하고 있습니다.";
+        if (value >= 4) return "클릭은 되지만 더 강한 제목 설계 여지가 있습니다.";
+        return "좋은 내용이어도 첫 클릭에서 많이 놓치고 있습니다.";
+      }
+      if (metric === "retention") {
+        if (value >= 50) return "들어온 시청자를 비교적 잘 붙잡고 있습니다.";
+        if (value >= 30) return "초반 훅과 전개만 다듬으면 더 올라갈 수 있습니다.";
+        return "초반 이탈이 큰 편이라 메시지 구조를 손볼 필요가 있습니다.";
+      }
+      if (metric === "subConvRate") {
+        if (value >= 0.5) return "팬 전환이 잘 일어나는 편입니다.";
+        if (value >= 0.1) return "유입은 되지만 구독 전환은 평범한 수준입니다.";
+        return "조회수 대비 팬 전환이 약해 구독 유도 설계가 필요합니다.";
+      }
+      return "";
+    }
+
+    function resetState() {
+      S.total = null;
+      S.chart = null;
+      S.summary = null;
+      S.videos = [];
+      S.visibleCount = 10;
+      ["table", "total", "chart"].forEach(function(type) {
+        var el = document.getElementById("tag-" + type);
+        if (el) el.className = "tag no";
+      });
+      document.getElementById("upload-icon").textContent = "📂";
+      document.getElementById("upload-title").textContent = "CSV 파일을 드롭하거나 클릭해서 선택하세요";
+      destroyCharts();
+    }
+
+    function destroyCharts() {
+      Object.keys(S.charts).forEach(function(key) {
+        if (S.charts[key] && typeof S.charts[key].destroy === "function") S.charts[key].destroy();
+      });
+      S.charts = {};
+    }
+
+    function processTable(rows) {
+      if (!rows || rows.length < 2 || !rows[1] || rows[1].length < 9) {
+        throw new Error("표 데이터 형식이 예상과 다릅니다.");
+      }
+
+      var s = rows[1];
+      var summary = {
+        totalViews: parseIntNum(s[4]),
+        watchHours: parseNum(s[5]),
+        totalSubs: parseIntNum(s[6]),
+        totalImpr: parseIntNum(s[7]),
+        aggCTR: parseNum(s[8])
+      };
+
+      var videos = [];
+      for (var i = 2; i < rows.length; i++) {
+        var r = rows[i] || [];
+        if (!r[0] || !String(r[0]).trim()) continue;
+        var views = parseIntNum(r[4]);
+        if (!views) continue;
+
+        var lenSec = parseIntNum(r[3]);
+        var watchH = parseNum(r[5]);
+        var ctr = parseNum(r[8]);
+        var subs = parseIntNum(r[6]);
+        var impr = parseIntNum(r[7]);
+        var retention = (views > 0 && lenSec > 0) ? Math.min((watchH * 3600) / (views * lenSec) * 100, 100) : 0;
+        var avgWatchSec = (views > 0) ? (watchH * 3600 / views) : 0;
+
+        videos.push({
+          id: String(r[0]).trim(),
+          title: String(r[1] || "").trim() || "(제목 없음)",
+          uploadDate: normalizeDateString(r[2]),
+          lenSec: lenSec,
+          views: views,
+          watchH: watchH,
+          subs: subs,
+          impr: impr,
+          ctr: ctr,
+          retention: retention,
+          avgWatchSec: avgWatchSec,
+          subConvRate: views > 0 ? subs / views * 100 : 0,
+          category: getCategory(r[1]),
+          isShorts: lenSec > 0 && lenSec <= 60
+        });
+      }
+
+      return { summary: summary, videos: videos };
+    }
+
+    function processTotalData(rows) {
+      var out = [];
+      for (var i = 1; i < rows.length; i++) {
+        var r = rows[i] || [];
+        if (!r[0]) continue;
+        out.push({
+          date: normalizeDateString(r[0]),
+          views: parseIntNum(r[1])
+        });
+      }
+      out.sort(function(a, b) { return a.date.localeCompare(b.date); });
+      return out;
+    }
+
+    function processChartData(rows) {
+      var byVideo = {};
+      var dateMap = {};
+
+      for (var i = 1; i < rows.length; i++) {
+        var r = rows[i] || [];
+        var date = normalizeDateString(r[0]);
+        var vid = String(r[1] || "").trim();
+        if (!date || !vid) continue;
+
+        if (!byVideo[vid]) {
+          byVideo[vid] = {
+            title: String(r[2] || "").trim(),
+            daily: {},
+            total: 0
+          };
+        }
+
+        var views = parseIntNum(r[5]);
+        byVideo[vid].daily[date] = (byVideo[vid].daily[date] || 0) + views;
+        byVideo[vid].total += views;
+        dateMap[date] = true;
+      }
+
+      var dates = Object.keys(dateMap).sort();
+      var top5 = Object.keys(byVideo)
+        .sort(function(a, b) { return byVideo[b].total - byVideo[a].total; })
+        .slice(0, 5);
+
+      return { dates: dates, byVideo: byVideo, top5: top5 };
+    }
+
+    function readFiles(files) {
+      return Promise.all(Array.from(files).map(function(file) {
+        return new Promise(function(resolve) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            resolve({ file: file, text: String(e.target.result || "") });
+          };
+          reader.readAsText(file, "UTF-8");
+        });
+      }));
+    }
+
+    function markTag(type) {
+      var el = document.getElementById("tag-" + type);
+      if (el) el.className = "tag ok";
+    }
+
+    async function handleFiles(files) {
+      if (!hasLibs()) return;
+      resetState();
+
+      try {
+        var loaded = await readFiles(files);
+        loaded.forEach(function(item) {
+          var rows = Papa.parse(item.text.trim(), { skipEmptyLines: true }).data;
+          var type = identifyCSV(rows);
+          if (!type) return;
+          if (type === "table") {
+            var processed = processTable(rows);
+            S.summary = processed.summary;
+            S.videos = processed.videos;
+          } else if (type === "total") {
+            S.total = rows;
+          } else if (type === "chart") {
+            S.chart = rows;
+          }
+          markTag(type);
+        });
+
+        if (S.summary) {
+          document.getElementById("upload-icon").textContent = "✅";
+          document.getElementById("upload-title").textContent = "데이터 로드 완료 - 아래에서 결론부터 확인하세요";
+        } else {
+          document.getElementById("upload-title").textContent = "표 데이터.csv를 찾지 못했습니다";
+        }
+
+        render();
+      } catch (err) {
+        document.getElementById("upload-icon").textContent = "⚠️";
+        document.getElementById("upload-title").textContent = "CSV를 읽는 중 오류가 발생했습니다";
+        document.getElementById("empty-state").style.display = "block";
+        document.getElementById("empty-state").textContent = err && err.message ? err.message : "파일 형식을 다시 확인해 주세요.";
+      }
+    }
+
+    function overallScore(avgRet, subConv) {
+      if (!S.summary) return 0;
+      var ctrScore = Math.min(100, (S.summary.aggCTR / 7) * 100);
+      var retScore = Math.min(100, ((avgRet || 0) / 50) * 100);
+      var subScore = Math.min(100, ((subConv || 0) / 0.5) * 100);
+      return Math.round(ctrScore * 0.35 + retScore * 0.4 + subScore * 0.25);
+    }
+
+    function summaryTone(score) {
+      if (score >= 80) return "전체적으로 건강한 채널 흐름입니다.";
+      if (score >= 60) return "기본 체력은 있지만 병목이 분명합니다.";
+      return "몇몇 영상이 버티고 있지만 구조적인 보완이 필요합니다.";
+    }
+
+    function render() {
+      if (!S.summary || !S.videos.length) {
+        document.getElementById("dashboard").style.display = "none";
+        document.getElementById("empty-state").style.display = "block";
+        return;
+      }
+
+      document.getElementById("empty-state").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      renderExecutive();
+      renderKPI();
+      renderExplain();
+      renderFormats();
+      renderTrendChart();
+      renderTopChart();
+      renderCategoryChart();
+      renderVideoTrendChart();
+      renderHighlights();
+      renderVideoList();
+    }
+
+    function renderExecutive() {
+      var videos = S.videos.slice();
+      var topVideo = videos.slice().sort(function(a, b) { return b.views - a.views; })[0];
+      var topCTR = videos.slice().sort(function(a, b) { return b.ctr - a.ctr; })[0];
+      var topRet = videos.filter(function(v) { return v.lenSec > 60; }).sort(function(a, b) { return b.retention - a.retention; })[0] || videos[0];
+      var avgRet = avg(videos.filter(function(v) { return v.lenSec > 0; }), "retention");
+      var subConv = S.summary.totalViews > 0 ? S.summary.totalSubs / S.summary.totalViews * 100 : 0;
+      var score = overallScore(avgRet, subConv);
+      S._avgRet = avgRet;
+      S._subConv = subConv;
+      var headline = summaryTone(score) + " ";
+      if (S.summary.aggCTR < 4) headline += "첫 클릭을 만드는 힘이 약한 편입니다.";
+      else if (avgRet < 30) headline += "클릭 이후 시청 유지가 가장 큰 과제입니다.";
+      else headline += "상위 영상의 패턴을 확장하면 더 커질 여지가 있습니다.";
+
+      document.getElementById("headline-main").textContent = headline;
+      document.getElementById("headline-desc").textContent =
+        "총 조회수 " + fmt(S.summary.totalViews) + ", CTR " + fmtPct(S.summary.aggCTR, 2) +
+        ", 평균 지속률 " + fmtPct(avgRet, 1) + ", 구독자 순증 +" + fmt(S.summary.totalSubs) +
+        "를 기준으로 채널 상태를 요약했습니다.";
+
+      var bullets = [
+        "가장 많이 본 영상은 \"" + esc(topVideo.title) + "\"이며, 단일 영상 의존도가 높은지 먼저 체크할 필요가 있습니다.",
+        "가장 클릭이 잘 된 영상은 \"" + esc(topCTR.title) + "\"입니다. 제목과 썸네일의 방향성을 복제 후보로 삼을 수 있습니다.",
+        "지속률이 가장 좋은 일반 영상은 \"" + esc(topRet.title) + "\"입니다. 초반 훅과 전개 구조를 참고하기 좋습니다."
+      ];
+      document.getElementById("headline-bullets").innerHTML = bullets.map(function(text) {
+        return '<div class="bullet">' + text + '</div>';
+      }).join("");
+
+      document.getElementById("health-score").textContent = score + "점";
+      document.getElementById("health-copy").textContent = summaryTone(score) + " CTR, 지속률, 구독 전환을 이해용으로 합산한 점수입니다.";
+      document.getElementById("period-copy").innerHTML = [
+        "영상 수: " + fmt(videos.length) + "개",
+        "총 노출수: " + fmt(S.summary.totalImpr) + "회",
+        "총 시청 시간: " + S.summary.watchHours.toFixed(1) + "시간"
+      ].map(function(text) { return '<div class="bullet">' + text + '</div>'; }).join("");
+    }
+
+    function renderKPI() {
+      var data = [
+        {
+          label: "총 조회수",
+          value: fmt(S.summary.totalViews),
+          status: scoreLevel(S.summary.totalViews, 100000, 10000),
+          copy: "채널 전체 도달 규모입니다. " + (S.summary.totalViews >= 100000 ? "안정적인 규모입니다." : "상위 영상 의존도를 함께 봐야 합니다."),
+          accent: "#9a3412"
+        },
+        {
+          label: "평균 CTR",
+          value: fmtPct(S.summary.aggCTR, 2),
+          status: scoreLevel(S.summary.aggCTR, 5, 2),
+          copy: metricSummary("ctr", S.summary.aggCTR),
+          accent: "#1857a6"
+        },
+        {
+          label: "평균 지속률",
+          value: fmtPct(S._avgRet, 1),
+          status: scoreLevel(S._avgRet, 35, 20),
+          copy: metricSummary("retention", S._avgRet),
+          accent: "#b45309"
+        },
+        {
+          label: "구독 전환율",
+          value: fmtPct(S._subConv, 3),
+          status: scoreLevel(S._subConv, 0.5, 0.1),
+          copy: metricSummary("subConvRate", S._subConv),
+          accent: "#0f766e"
+        }
+      ];
+
+      document.getElementById("kpi-grid").innerHTML = data.map(function(item) {
+        return '' +
+          '<article class="kpi-card card" style="--accent:' + item.accent + '">' +
+            '<div class="kpi-label">' + item.label + '</div>' +
+            '<div class="kpi-value">' + item.value + '</div>' +
+            '<span class="kpi-status ' + item.status.className + '">' + item.status.label + '</span>' +
+            '<div class="kpi-copy">' + item.copy + '</div>' +
+          '</article>';
+      }).join("");
+    }
+
+    function renderExplain() {
+      var videos = S.videos;
+      var avgViews = videos.reduce(function(sum, v) { return sum + v.views; }, 0) / videos.length;
+      var shorts = videos.filter(function(v) { return v.isShorts; });
+      var longs = videos.filter(function(v) { return !v.isShorts; });
+      var explain = [
+        {
+          title: "지금 제일 먼저 볼 것",
+          body: S.summary.aggCTR < 4
+            ? "현재는 내용보다 클릭 문제가 먼저 보입니다. 좋은 정보가 있어도 썸네일과 제목에서 많이 놓치고 있을 가능성이 큽니다."
+            : S._avgRet < 30
+              ? "클릭은 어느 정도 되지만 시청 유지가 약합니다. 초반 30초 구성과 핵심 메시지 배치를 먼저 손보는 편이 좋습니다."
+              : "기본 지표는 나쁘지 않습니다. 상위 영상의 주제와 표현 방식을 반복 가능한 포맷으로 만드는 단계에 가깝습니다."
+        },
+        {
+          title: "평균 조회수의 의미",
+          body: "영상 1개당 평균 조회수는 약 " + fmt(Math.round(avgViews)) + "회입니다. 다만 평균은 상위 몇 개 영상이 끌어올릴 수 있어서, 아래 Top 3와 하위 3를 같이 보셔야 합니다."
+        },
+        {
+          title: "포맷 해석 가이드",
+          body: shorts.length && longs.length
+            ? "쇼츠와 일반 영상의 역할이 다를 수 있습니다. 쇼츠는 유입, 일반 영상은 신뢰 형성과 구독 전환 쪽에서 강한지 아래 비교 카드로 읽어보시면 됩니다."
+            : "현재 데이터는 한쪽 포맷 비중이 높습니다. 포맷 자체의 우열보다 주제와 초반 훅 설계가 더 큰 영향을 줄 수 있습니다."
+        }
+      ];
+
+      document.getElementById("explain-grid").innerHTML = explain.map(function(item) {
+        return '<article class="explain-card card"><strong>' + item.title + '</strong><p>' + item.body + '</p></article>';
+      }).join("");
+    }
+
+    function renderFormats() {
+      var shorts = S.videos.filter(function(v) { return v.isShorts; });
+      var longs = S.videos.filter(function(v) { return !v.isShorts; });
+
+      function statMarkup(arr) {
+        if (!arr.length) {
+          return '<div class="fmt-stat"><div class="fmt-stat-label">상태</div><div class="fmt-stat-value">해당 없음</div></div>';
+        }
+
+        var totalViews = arr.reduce(function(sum, v) { return sum + v.views; }, 0);
+        var totalSubs = arr.reduce(function(sum, v) { return sum + v.subs; }, 0);
+        return [
+          ["영상 수", arr.length + "개"],
+          ["평균 CTR", fmtPct(avg(arr, "ctr"), 2)],
+          ["평균 지속률", fmtPct(avg(arr, "retention"), 1)],
+          ["총 조회수", fmt(totalViews)],
+          ["평균 조회수", fmt(Math.round(totalViews / arr.length))],
+          ["구독자", "+" + fmt(totalSubs)]
+        ].map(function(item) {
+          return '<div class="fmt-stat"><div class="fmt-stat-label">' + item[0] + '</div><div class="fmt-stat-value">' + item[1] + '</div></div>';
+        }).join("");
+      }
+
+      document.getElementById("fmt-shorts").innerHTML = statMarkup(shorts);
+      document.getElementById("fmt-long").innerHTML = statMarkup(longs);
+
+      document.getElementById("fmt-shorts-copy").textContent = !shorts.length
+        ? "이번 데이터에는 쇼츠가 없습니다."
+        : "짧은 영상은 빠른 소비가 가능해 유입 확보에 유리한지 확인하는 영역입니다.";
+
+      document.getElementById("fmt-long-copy").textContent = !longs.length
+        ? "이번 데이터에는 일반 영상이 없습니다."
+        : "긴 영상은 시청 유지와 전문성 전달, 팬 전환 쪽에서 강한지 확인하는 영역입니다.";
+    }
+
+    function getTrendInsight(data) {
+      if (!data.length) return "총계 CSV가 없어서 일별 흐름은 계산하지 못했습니다.";
+      var peak = data.slice().sort(function(a, b) { return b.views - a.views; })[0];
+      var recent = data.slice(-7);
+      var recentAvg = recent.length ? recent.reduce(function(sum, item) { return sum + item.views; }, 0) / recent.length : 0;
+      return prettyDate(peak.date) + "에 조회수 " + fmt(peak.views) + "로 가장 크게 튀었습니다. 최근 7일 평균은 " + fmt(Math.round(recentAvg)) + "회 수준입니다.";
+    }
+
+    function renderTrendChart() {
+      var noteEl = document.getElementById("trend-note");
+      if (!S.total) {
+        noteEl.textContent = "총계.csv가 없어서 이 차트는 비워 두었습니다. 있으면 날짜별 상승/하락 흐름을 바로 읽을 수 있습니다.";
+        if (S.charts.trend) S.charts.trend.destroy();
+        return;
+      }
+
+      var data = processTotalData(S.total);
+      var labels = data.map(function(d) { return d.date; });
+      var values = data.map(function(d) { return d.views; });
+
+      if (S.charts.trend) S.charts.trend.destroy();
+      S.charts.trend = new Chart(document.getElementById("trend-chart").getContext("2d"), {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "조회수",
+            data: values,
+            borderColor: "#9a3412",
+            backgroundColor: "rgba(154,52,18,.12)",
+            fill: true,
+            pointRadius: 0,
+            tension: 0.28,
+            borderWidth: 2.5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              ticks: {
+                color: "#726456",
+                callback: function(value, index) {
+                  var label = labels[index] || "";
+                  return label ? label.slice(5) : "";
+                },
+                maxRotation: 0
+              },
+              grid: { color: "#efe3d4" }
+            },
+            y: {
+              ticks: { color: "#726456" },
+              grid: { color: "#efe3d4" }
+            }
+          }
+        }
+      });
+
+      noteEl.textContent = getTrendInsight(data);
+    }
+
+    function renderTopChart() {
+      var top10 = S.videos.slice().sort(function(a, b) { return b.views - a.views; }).slice(0, 10);
+      var labels = top10.map(function(v) {
+        return v.title.length > 22 ? v.title.slice(0, 22) + "…" : v.title;
+      });
+      var colors = top10.map(function(v) {
+        var strong = v.ctr >= S.summary.aggCTR && v.retention >= S._avgRet;
+        var weak = v.ctr < S.summary.aggCTR && v.retention < S._avgRet;
+        return strong ? "rgba(22,101,52,.75)" : weak ? "rgba(185,28,28,.65)" : "rgba(154,52,18,.68)";
+      });
+
+      if (S.charts.top) S.charts.top.destroy();
+      S.charts.top = new Chart(document.getElementById("top-chart").getContext("2d"), {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "조회수",
+            data: top10.map(function(v) { return v.views; }),
+            backgroundColor: colors,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: "#726456" }, grid: { color: "#efe3d4" } },
+            y: { ticks: { color: "#726456" }, grid: { display: false } }
+          }
+        }
+      });
+
+      var top = top10[0];
+      var share = S.summary.totalViews > 0 ? (top.views / S.summary.totalViews * 100) : 0;
+      document.getElementById("top-note").textContent =
+        "\"" + top.title + "\"가 전체 조회수의 " + share.toFixed(1) + "%를 차지합니다. 상위 몇 개 영상 집중도가 높다면 비슷한 톤의 후속 주제를 빨리 이어가는 것이 좋습니다.";
+    }
+
+    function renderCategoryChart() {
+      var catMap = {};
+      S.videos.forEach(function(v) {
+        if (!catMap[v.category]) {
+          catMap[v.category] = { ctr: [], ret: [], views: 0, count: 0 };
+        }
+        catMap[v.category].ctr.push(v.ctr);
+        catMap[v.category].ret.push(v.retention);
+        catMap[v.category].views += v.views;
+        catMap[v.category].count += 1;
+      });
+
+      var labels = Object.keys(catMap).sort(function(a, b) { return catMap[b].views - catMap[a].views; });
+      var ctrData = labels.map(function(key) { return +(catMap[key].ctr.reduce(function(s, x) { return s + x; }, 0) / catMap[key].ctr.length).toFixed(2); });
+      var retData = labels.map(function(key) { return +(catMap[key].ret.reduce(function(s, x) { return s + x; }, 0) / catMap[key].ret.length).toFixed(1); });
+
+      if (S.charts.cat) S.charts.cat.destroy();
+      S.charts.cat = new Chart(document.getElementById("cat-chart").getContext("2d"), {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [
+            { label: "평균 CTR", data: ctrData, backgroundColor: "rgba(154,52,18,.72)", borderRadius: 6 },
+            { label: "평균 지속률", data: retData, backgroundColor: "rgba(15,118,110,.70)", borderRadius: 6 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: "#726456" } }
+          },
+          scales: {
+            x: { ticks: { color: "#726456" }, grid: { display: false } },
+            y: { ticks: { color: "#726456" }, grid: { color: "#efe3d4" } }
+          }
+        }
+      });
+
+      if (labels.length) {
+        document.getElementById("cat-note").textContent =
+          "현재 가장 큰 주제는 " + labels[0] + "입니다. 조회수만 보지 말고 CTR과 지속률이 동시에 높은 카테고리가 있는지 같이 확인하면 다음 기획 우선순위를 잡기 쉽습니다.";
+      } else {
+        document.getElementById("cat-note").textContent = "카테고리 데이터가 부족합니다.";
+      }
+    }
+
+    function renderVideoTrendChart() {
+      var card = document.getElementById("video-trend-card");
+      var noteEl = document.getElementById("video-note");
+      if (!S.chart) {
+        card.style.display = "none";
+        return;
+      }
+
+      var parsed = processChartData(S.chart);
+      if (!parsed.top5.length) {
+        card.style.display = "none";
+        return;
+      }
+
+      card.style.display = "block";
+      var colors = ["#9a3412", "#0f766e", "#b45309", "#7c3aed", "#2563eb"];
+      var datasets = parsed.top5.map(function(id, index) {
+        var info = parsed.byVideo[id];
+        return {
+          label: info.title.length > 16 ? info.title.slice(0, 16) + "…" : info.title,
+          data: parsed.dates.map(function(date) { return info.daily[date] || 0; }),
+          borderColor: colors[index],
+          pointRadius: 0,
+          borderWidth: 2,
+          tension: 0.25
+        };
+      });
+
+      if (S.charts.videoTrend) S.charts.videoTrend.destroy();
+      S.charts.videoTrend = new Chart(document.getElementById("video-trend-chart").getContext("2d"), {
+        type: "line",
+        data: { labels: parsed.dates, datasets: datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: "#726456", boxWidth: 10 } }
+          },
+          scales: {
+            x: {
+              ticks: {
+                color: "#726456",
+                callback: function(value, index) {
+                  var label = parsed.dates[index] || "";
+                  return label ? label.slice(5) : "";
+                },
+                maxRotation: 0
+              },
+              grid: { color: "#efe3d4" }
+            },
+            y: { ticks: { color: "#726456" }, grid: { color: "#efe3d4" } }
+          }
+        }
+      });
+
+      noteEl.textContent = "상위 영상들이 하루 반짝인지, 여러 날 누적형인지 비교할 수 있습니다. 지속적으로 쌓이는 영상은 검색형/정보형 자산일 가능성이 큽니다.";
+    }
+
+    function performanceLabel(video) {
+      var highCtr = video.ctr >= S.summary.aggCTR;
+      var highRet = video.retention >= S._avgRet;
+      if (highCtr && highRet) return { label: "복제 후보", className: "good" };
+      if (!highCtr && !highRet) return { label: "재정비 필요", className: "bad" };
+      return { label: "부분 개선", className: "mid" };
+    }
+
+    function explainVideo(video) {
+      var parts = [];
+      if (video.ctr >= S.summary.aggCTR) parts.push("클릭 유도는 채널 평균보다 좋습니다");
+      else parts.push("클릭 유도는 채널 평균보다 약합니다");
+
+      if (video.retention >= S._avgRet) parts.push("들어온 시청자를 붙잡는 힘도 괜찮습니다");
+      else parts.push("클릭 이후 이탈이 비교적 빠른 편입니다");
+
+      if (video.subConvRate >= S._subConv && video.subs > 0) parts.push("팬 전환 효율도 평균 이상입니다");
+      else if (video.subs > 0) parts.push("조회수 대비 구독 전환은 평범합니다");
+      else parts.push("구독 전환은 거의 발생하지 않았습니다");
+
+      return parts.join(". ") + ".";
+    }
+
+    function renderHighlights() {
+      var sorted = S.videos.slice().sort(function(a, b) { return b.views - a.views; });
+      var top3 = sorted.slice(0, 3);
+      var bottom3 = sorted.slice(-3).reverse();
+
+      function markup(list, prefix) {
+        return list.map(function(video, index) {
+          return '' +
+            '<div class="rank-item">' +
+              '<div class="rank-title">' + prefix + " " + (index + 1) + ". " + esc(video.title) + '</div>' +
+              '<div class="rank-meta">' +
+                '<span>조회수 ' + fmt(video.views) + '</span>' +
+                '<span>CTR ' + fmtPct(video.ctr, 2) + '</span>' +
+                '<span>지속률 ' + fmtPct(video.retention, 1) + '</span>' +
+              '</div>' +
+              '<div class="rank-copy">' + explainVideo(video) + '</div>' +
+            '</div>';
+        }).join("");
+      }
+
+      document.getElementById("top3").innerHTML = markup(top3, "TOP");
+      document.getElementById("bottom3").innerHTML = markup(bottom3, "하위");
+    }
+
+    function setSort(key) {
+      S.sortBy = key;
+      S.visibleCount = 10;
+      ["views", "ctr", "retention", "subConvRate", "avgWatchSec"].forEach(function(name) {
+        var btn = document.getElementById("btn-" + name);
+        if (btn) btn.className = "sort-btn" + (name === key ? " on" : "");
+      });
+      renderVideoList();
+    }
+
+    function watchString(sec) {
+      sec = Math.round(sec || 0);
+      if (sec >= 60) return Math.floor(sec / 60) + "분 " + (sec % 60) + "초";
+      return sec + "초";
+    }
+
+    function loadMore() {
+      S.visibleCount += 10;
+      renderVideoList();
+    }
+
+    function renderVideoList() {
+      var sorted = S.videos.slice().sort(function(a, b) { return b[S.sortBy] - a[S.sortBy]; });
+      var visible = sorted.slice(0, S.visibleCount);
+      var html = visible.map(function(video, index) {
+        var label = performanceLabel(video);
+        return '' +
+          '<article class="video-item">' +
+            '<div class="video-top">' +
+              '<div>' +
+                '<div class="video-title">' + esc(video.title) + '</div>' +
+                '<div class="video-badges">' +
+                  '<span class="badge rank">#' + (index + 1) + '</span>' +
+                  '<span class="badge ' + label.className + '">' + label.label + '</span>' +
+                  '<span class="badge rank">' + esc(video.category) + '</span>' +
+                  '<span class="badge rank">' + (video.isShorts ? "쇼츠" : "일반 영상") + '</span>' +
+                  '<span class="badge rank">게시일 ' + esc(prettyDate(video.uploadDate)) + '</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="metric-row">' +
+              '<div class="metric"><div class="metric-label">조회수</div><div class="metric-value">' + fmt(video.views) + '</div></div>' +
+              '<div class="metric"><div class="metric-label">CTR</div><div class="metric-value">' + fmtPct(video.ctr, 2) + '</div></div>' +
+              '<div class="metric"><div class="metric-label">지속률</div><div class="metric-value">' + fmtPct(video.retention, 1) + '</div></div>' +
+              '<div class="metric"><div class="metric-label">평균 시청</div><div class="metric-value">' + watchString(video.avgWatchSec) + '</div></div>' +
+              '<div class="metric"><div class="metric-label">구독 전환</div><div class="metric-value">' + (video.subConvRate > 0 ? fmtPct(video.subConvRate, 3) : "—") + '</div></div>' +
+            '</div>' +
+            '<div class="video-copy">' + explainVideo(video) + '</div>' +
+          '</article>';
+      }).join("");
+
+      document.getElementById("video-list").innerHTML = html;
+      document.getElementById("list-help").textContent =
+        "현재 " + visible.length + "개 / 전체 " + sorted.length + "개를 보여주고 있습니다. 길어지지 않도록 10개씩 추가로 확인할 수 있게 했습니다.";
+
+      var moreBtn = document.getElementById("more-btn");
+      if (visible.length >= sorted.length) {
+        moreBtn.disabled = true;
+        moreBtn.textContent = "모두 확인했습니다";
+      } else {
+        moreBtn.disabled = false;
+        moreBtn.textContent = "10개 더 보기";
+      }
+    }
+
+    function init() {
+      if (!hasLibs()) {
+        document.getElementById("lib-warning").style.display = "block";
+        return;
+      }
+
+      var zone = document.getElementById("upload-zone");
+      var input = document.getElementById("file-input");
+
+      zone.addEventListener("click", function() { input.click(); });
+      zone.addEventListener("dragover", function(e) {
+        e.preventDefault();
+        zone.classList.add("drag");
+      });
+      zone.addEventListener("dragleave", function() { zone.classList.remove("drag"); });
+      zone.addEventListener("drop", function(e) {
+        e.preventDefault();
+        zone.classList.remove("drag");
+        handleFiles(e.dataTransfer.files);
+      });
+      input.addEventListener("change", function(e) {
+        handleFiles(e.target.files);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
