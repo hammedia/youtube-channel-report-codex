@@ -2017,6 +2017,11 @@
       exportRoot.querySelectorAll("#save-report-btn, .upload-card, #prompt-grid, .toast, .list-actions").forEach(function(node) {
         node.remove();
       });
+      exportRoot.querySelectorAll(".section-title").forEach(function(node) {
+        if (node.textContent.indexOf("AI 실행 프롬프트") >= 0) {
+          node.remove();
+        }
+      });
       exportRoot.querySelectorAll(".toolbar").forEach(function(node) {
         node.remove();
       });
