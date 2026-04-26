@@ -1317,7 +1317,7 @@
         throw new Error("ZIP 처리를 위한 라이브러리를 불러오지 못했습니다");
       }
 
-      var match = String(file && file.name || "").match(/콘텐츠\s+(\d{4}-\d{2}-\d{2})_(\d{4}-\d{2}-\d{2})\s+(.+)\.zip/);
+      var match = String(file && file.name || "").match(/콘텐츠[\s_]+(\d{4}-\d{2}-\d{2})_(\d{4}-\d{2}-\d{2})[\s_]+(.+)\.zip/i);
       S.detectedChannelName = match ? String(match[3] || "").trim() : "";
       S.detectedPeriod = match ? (match[1] + " ~ " + match[2]) : "";
 
