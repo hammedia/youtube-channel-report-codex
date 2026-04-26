@@ -801,8 +801,6 @@
       <input type="file" id="file-input" accept=".csv" multiple style="display:none" />
     </section>
 
-    <div id="lib-warning" class="card empty" style="display:none;"></div>
-
     <div id="empty-state" class="card empty">
       표 데이터 CSV를 올리면, 위에서 바로 요약 보고서를 만들고 아래에 차트와 영상별 해설을 보여줍니다.
     </div>
@@ -1904,9 +1902,10 @@
 
     function init() {
       if (!hasLibs()) {
-        var warning = document.getElementById("lib-warning");
+        var warning = document.createElement("div");
+        warning.className = "card empty";
         warning.textContent = "차트 라이브러리를 불러오지 못했습니다. 잠시 후 새로고침해 주세요.";
-        warning.style.display = "block";
+        document.getElementById("empty-state").before(warning);
         return;
       }
 
