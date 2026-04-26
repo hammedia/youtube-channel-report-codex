@@ -850,7 +850,7 @@
       <div id="upload-zone" class="upload-zone">
         <div id="upload-icon" class="upload-icon">📂</div>
         <div id="upload-title" class="upload-title">YouTube Studio ZIP 또는 CSV 파일을 올려주세요</div>
-        <div class="upload-sub">ZIP 파일을 올리면 채널명·분석 기간이 자동으로 채워집니다. CSV 파일을 개별로 올릴 경우 채널명은 리포트 저장 시 직접 입력합니다.</div>
+        <div id="upload-sub" class="upload-sub">ZIP 파일을 올리면 채널명·분석 기간이 자동으로 채워집니다. CSV 파일을 개별로 올릴 경우 채널명은 리포트 저장 시 직접 입력합니다.<br />⚠️ 폴더 드래그는 지원되지 않습니다. ZIP 파일을 그대로 올려주세요.</div>
         <div class="tag-row">
           <span class="tag no" id="tag-table"><span class="tag-dot"></span>표 데이터.csv 필수</span>
           <span class="tag no" id="tag-total"><span class="tag-dot"></span>총계.csv 선택</span>
@@ -2272,6 +2272,25 @@
       zone.addEventListener("drop", function(e) {
         e.preventDefault();
         zone.classList.remove("drag");
+        var hasDirectory = Array.from(e.dataTransfer.items || []).some(function(item) {
+          if (!item || typeof item.webkitGetAsEntry !== "function") return false;
+          var entry = item.webkitGetAsEntry();
+          return !!(entry && entry.isDirectory);
+        });
+        if (hasDirectory) {
+          var uploadSub = document.getElementById("upload-sub");
+          var originalSubHTML = uploadSub ? uploadSub.innerHTML : "";
+          var originalBorderColor = zone.style.borderColor;
+          if (uploadSub) {
+            uploadSub.innerHTML = "폴더는 업로드할 수 없습니다.<br />YouTube Studio에서 다운로드한 ZIP 파일을 그대로 올려주세요.";
+          }
+          zone.style.borderColor = "var(--bad)";
+          setTimeout(function() {
+            if (uploadSub) uploadSub.innerHTML = originalSubHTML;
+            zone.style.borderColor = originalBorderColor;
+          }, 3000);
+          return;
+        }
         handleFiles(e.dataTransfer.files);
       });
       input.addEventListener("change", function(e) {
