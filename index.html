@@ -116,6 +116,19 @@
       font-weight: 700;
       color: var(--ink);
     }
+    .hero-credit {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .hero-credit a {
+      color: var(--brand);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .hero-credit a:hover {
+      text-decoration: underline;
+    }
     .hero-status{
       min-width:250px;
       padding:16px 18px;
@@ -837,6 +850,10 @@
             <div class="hero-feature-item">🔒 데이터는 브라우저 안에서만 처리 · 서버 저장 없음</div>
             <div class="hero-feature-item">⚡ 설치 없이 링크 하나로 바로 사용</div>
           </div>
+          <div class="hero-credit">
+            Made by <a href="https://www.threads.net/@dellacasa_2" target="_blank">햄 @dellacasa_2</a>
+            · 오류나 피드백은 Threads 댓글로 알려주세요
+          </div>
         </div>
         <div class="hero-status">
           <div class="hero-status-label">읽는 순서</div>
@@ -1453,12 +1470,23 @@
       var lowCtrHighRetCount = videos.filter(function(video) {
         return video.ctr < S.summary.aggCTR && video.retention >= S._avgRet;
       }).length;
-      var recentVideoCount = videos.filter(function(video) {
-        if (!video.uploadDate) return false;
-        var parsed = new Date(video.uploadDate);
-        if (isNaN(parsed.getTime())) return false;
-        return (Date.now() - parsed.getTime()) <= 30 * 24 * 60 * 60 * 1000;
-      }).length;
+      function avgUploadInterval(videos) {
+        var sorted = videos.slice().sort(function(a, b) {
+          return new Date(a.uploadDate) - new Date(b.uploadDate);
+        });
+        if (sorted.length < 2) return null;
+        var totalDays = 0;
+        for (var i = 1; i < sorted.length; i++) {
+          totalDays += (new Date(sorted[i].uploadDate) - new Date(sorted[i - 1].uploadDate))
+            / (1000 * 60 * 60 * 24);
+        }
+        return totalDays / (sorted.length - 1);
+      }
+      var longVideos = videos.filter(function(video) { return !video.isShorts; });
+      var shortsVideos = videos.filter(function(video) { return video.isShorts; });
+      var longInterval = avgUploadInterval(longVideos);
+      var shortsInterval = avgUploadInterval(shortsVideos);
+      var allInterval = avgUploadInterval(videos);
       var shortsRatio = videos.length ? videos.filter(function(video) { return video.isShorts; }).length / videos.length : 0;
       if (videos.length && highCtrLowRetCount / videos.length >= 0.4) {
         bullets.push("클릭은 만들지만 내용에서 이탈이 잦습니다. 도입부 구성과 내용 전개 방식을 전반적으로 점검할 시점입니다.");
@@ -1466,8 +1494,17 @@
       if (videos.length && lowCtrHighRetCount / videos.length >= 0.4) {
         bullets.push("내용 품질은 좋지만 제목과 썸네일이 채널 성장을 막고 있습니다. 클릭을 만드는 제목 설계가 지금 가장 중요한 과제입니다.");
       }
-      if (recentVideoCount === 0) {
-        bullets.push("최근 30일간 업로드된 영상이 없습니다. 업로드 공백이 길어지면 알고리즘 노출이 줄어들 수 있습니다.");
+      if (longVideos.length >= 2 && longInterval != null && longInterval > 14) {
+        bullets.push("일반 영상 평균 업로드 주기가 " + Math.floor(longInterval) + "일입니다. 2주에 하나 이상 올리지 못하면 알고리즘 노출이 줄어들 수 있습니다. 주 1회를 목표로 업로드 주기를 줄여보세요.");
+      }
+      if (shortsVideos.length >= 2 && shortsInterval != null && shortsInterval > 3) {
+        bullets.push("쇼츠 평균 업로드 주기가 " + Math.floor(shortsInterval) + "일입니다. 쇼츠는 3일에 하나 이상이 알고리즘 노출에 유리합니다.");
+      }
+      if ((longVideos.length < 2 || longInterval == null) && (shortsVideos.length < 2 || shortsInterval == null) && allInterval != null && allInterval > 10) {
+        bullets.push("전체 영상 평균 업로드 주기가 " + Math.floor(allInterval) + "일입니다. 꾸준한 업로드가 알고리즘 노출 유지에 중요합니다.");
+      }
+      if (longInterval != null && longInterval < 3) {
+        bullets.push("일반 영상 업로드 주기가 매우 짧습니다. 양보다 각 영상의 완성도와 CTR을 먼저 안정시키는 게 효율적입니다.");
       }
       if (shortsRatio >= 0.7) {
         bullets.push("영상 대부분이 쇼츠로 구성되어 있습니다. 쇼츠는 노출엔 유리하지만 구독 전환과 팬 형성에는 일반 영상이 더 효과적입니다.");
