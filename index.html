@@ -158,6 +158,326 @@
       padding:22px;
       margin-bottom:22px;
     }
+    .api-card{
+      padding:22px;
+      margin-bottom:22px;
+      background:
+        linear-gradient(135deg, rgba(15,118,110,.07), rgba(255,253,248,.96) 42%),
+        linear-gradient(220deg, rgba(154,52,18,.06), rgba(255,253,248,.96) 70%);
+    }
+    .api-disclosure summary{
+      list-style:none;
+      cursor:pointer;
+    }
+    .api-disclosure summary::-webkit-details-marker{
+      display:none;
+    }
+    .api-summary{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .api-step{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 12px;
+      border-radius:999px;
+      background:var(--chip);
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+    .api-title{
+      font-size:22px;
+      font-weight:900;
+      line-height:1.2;
+      margin-bottom:8px;
+    }
+    .api-copy{
+      color:var(--muted);
+      font-size:14px;
+      max-width:760px;
+    }
+    .api-status-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff8ee;
+      color:#7c5d44;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .api-status-badge.ready{
+      background:#e9f7ef;
+      border-color:#9ed3b0;
+      color:var(--good);
+    }
+    .api-body{
+      display:grid;
+      gap:14px;
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
+    }
+    .api-input-row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:10px;
+      align-items:center;
+    }
+    .text-input, .strategy-note{
+      width:100%;
+      border:1px solid #d8cab7;
+      border-radius:16px;
+      background:#fffdf9;
+      color:var(--ink);
+      font:inherit;
+    }
+    .text-input{
+      padding:13px 15px;
+      min-height:48px;
+    }
+    .strategy-note{
+      min-height:132px;
+      padding:14px 15px;
+      resize:vertical;
+      line-height:1.6;
+    }
+    .text-input:focus, .strategy-note:focus{
+      outline:none;
+      border-color:var(--brand);
+      box-shadow:0 0 0 4px rgba(154,52,18,.08);
+    }
+    .inline-btn{
+      border:none;
+      border-radius:999px;
+      padding:12px 18px;
+      background:#2d2118;
+      color:#fff8ee;
+      font-size:14px;
+      font-weight:900;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .inline-btn[disabled], .ai-run-btn[disabled]{
+      opacity:.45;
+      cursor:default;
+      transform:none;
+    }
+    .api-help{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .api-help a{
+      color:var(--brand);
+      font-weight:800;
+      text-decoration:none;
+    }
+    .api-help a:hover{
+      text-decoration:underline;
+    }
+    .api-guide {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #f8f3ec;
+      border: 1px solid #efe3d4;
+      font-size: 13px;
+    }
+    .api-guide-title {
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: var(--ink);
+    }
+    .api-guide-steps {
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .api-guide-steps a {
+      color: var(--brand);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .api-guide-steps a:hover {
+      text-decoration: underline;
+    }
+    .api-guide-steps strong {
+      color: var(--ink);
+    }
+    .api-guide-note {
+      margin-top: 10px;
+      font-weight: 700;
+      color: var(--good);
+    }
+    .api-guide-note2 {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .strategy-card{
+      padding:22px;
+      margin-bottom:22px;
+      background:linear-gradient(180deg,#fff8ee,#fffdf8);
+    }
+    .strategy-top{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    .strategy-title{
+      font-size:24px;
+      font-weight:900;
+      margin-bottom:6px;
+      line-height:1.2;
+    }
+    .strategy-copy{
+      color:var(--muted);
+      font-size:14px;
+      max-width:760px;
+    }
+    .strategy-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .strategy-option{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:14px 15px;
+      border-radius:18px;
+      border:1px solid #efe3d4;
+      background:#fffdf9;
+    }
+    .strategy-option input{
+      margin-top:3px;
+      accent-color:var(--brand);
+      flex:0 0 auto;
+    }
+    .strategy-option span{
+      font-size:14px;
+      color:#3b3028;
+      font-weight:700;
+      line-height:1.45;
+    }
+    .strategy-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .strategy-count{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+    }
+    .ai-run-btn{
+      border:none;
+      border-radius:999px;
+      padding:13px 18px;
+      background:linear-gradient(135deg, #9a3412, #0f766e);
+      color:#fffaf2;
+      font-size:14px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+    }
+    .ai-run-btn:not([disabled]):hover, .inline-btn:not([disabled]):hover{
+      transform:translateY(-1px);
+    }
+    .ai-status{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid #efe3d4;
+      background:#f8f3ec;
+      color:#5c4d41;
+      font-size:13px;
+    }
+    .ai-status.error{
+      border-color:#f2c4c4;
+      background:#fff3f3;
+      color:#8d2020;
+    }
+    .ai-analysis-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:14px;
+      margin-bottom:22px;
+    }
+    .ai-analysis-card{
+      padding:20px;
+    }
+    .ai-analysis-card.full{
+      grid-column:1 / -1;
+    }
+    .ai-analysis-kicker{
+      color:var(--brand-2);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+    .ai-analysis-title{
+      font-size:22px;
+      font-weight:900;
+      line-height:1.25;
+      margin-bottom:10px;
+    }
+    .ai-analysis-text{
+      color:#4f4339;
+      font-size:14px;
+      line-height:1.65;
+      white-space:pre-line;
+    }
+    .ai-analysis-list{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+    .ai-analysis-item{
+      padding:12px 14px;
+      border-radius:16px;
+      background:#f8f3ec;
+      border:1px solid #efe3d4;
+      color:#4f4339;
+      font-size:14px;
+      line-height:1.55;
+    }
+    .ai-analysis-stamp{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 11px;
+      border-radius:999px;
+      background:#edf7f6;
+      color:var(--brand-2);
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
     .upload-zone{
       border:2px dashed #d9c5ae;
       border-radius:22px;
@@ -819,13 +1139,15 @@
 
     @media (max-width: 1100px){
       .headline-grid, .chart-grid, .highlights { grid-template-columns:1fr; }
-      .kpi-grid, .action-grid, .explain-grid, .prompt-grid { grid-template-columns:repeat(2,1fr); }
+      .kpi-grid, .action-grid, .explain-grid, .prompt-grid, .ai-analysis-grid { grid-template-columns:repeat(2,1fr); }
       .metric-row { grid-template-columns:repeat(3,1fr); }
     }
 
     @media (max-width: 720px){
       .hero h1 { font-size:28px; }
-      .kpi-grid, .action-grid, .explain-grid, .fmt-grid, .chart-grid, .prompt-grid, .highlights { grid-template-columns:1fr; }
+      .api-input-row{ grid-template-columns:1fr; }
+      .strategy-grid{ grid-template-columns:1fr; }
+      .kpi-grid, .action-grid, .explain-grid, .fmt-grid, .chart-grid, .prompt-grid, .highlights, .ai-analysis-grid { grid-template-columns:1fr; }
       .fmt-stats, .metric-row { grid-template-columns:repeat(2,1fr); }
       .video-top { flex-direction:column; }
       .score-value { font-size:30px; }
@@ -863,6 +1185,44 @@
       </div>
     </section>
 
+    <section class="api-card card">
+      <details id="api-panel" class="api-disclosure" open>
+        <summary>
+          <div class="api-summary">
+            <div>
+              <div class="api-step">1단계 · Gemini API 키 입력</div>
+              <div class="api-title">브라우저 안에서만 AI 심층 분석을 실행할 준비</div>
+              <div class="api-copy">Gemini API 키를 입력하면 업로드한 채널 데이터와 이번 달 전략을 바탕으로 실행형 분석을 추가로 받을 수 있습니다.</div>
+            </div>
+            <div id="api-status-badge" class="api-status-badge">미입력</div>
+          </div>
+        </summary>
+        <div class="api-body">
+          <div class="api-input-row">
+            <input id="gemini-api-key" class="text-input" type="password" autocomplete="off" spellcheck="false" placeholder="Gemini API 키를 입력하세요" />
+            <button id="save-api-key-btn" class="inline-btn" type="button" onclick="saveGeminiKey()">키 저장</button>
+          </div>
+          <div class="api-guide">
+            <div class="api-guide-title">🔑 Gemini API 키가 없으신가요?</div>
+            <ol class="api-guide-steps">
+              <li><a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a> 접속
+                  (유튜브에 사용하는 구글 계정으로 로그인)</li>
+              <li>왼쪽 메뉴에서 <strong>API 키</strong> 클릭</li>
+              <li>오른쪽 상단 <strong>API 키 만들기</strong> 클릭</li>
+              <li>생성된 키 목록에서 <strong>Generative Language API Key</strong> 항목 복사</li>
+              <li>위 입력창에 붙여넣기 후 저장</li>
+            </ol>
+            <div class="api-guide-note">✅ 무료 계정으로도 사용 가능합니다.</div>
+            <div class="api-guide-note2">💳 구글 계정에 카드를 등록하면 요청 한도가 대폭 늘어납니다. (선택사항)</div>
+          </div>
+          <div class="api-help">
+            <span>입력한 키는 브라우저 메모리에만 유지되며 새로고침하면 사라집니다.</span>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Gemini API 키 발급</a>
+          </div>
+        </div>
+      </details>
+    </section>
+
     <section class="upload-card card">
       <div id="upload-zone" class="upload-zone">
         <div id="upload-icon" class="upload-icon">📂</div>
@@ -893,6 +1253,23 @@
       <div class="dashboard-topbar">
         <button id="save-report-btn" class="save-report-btn" onclick="saveReport()">리포트 저장</button>
       </div>
+      <section id="strategy-card" class="strategy-card card">
+        <div class="strategy-top">
+          <div>
+            <div class="api-step">3단계 · 이번 달 전략 입력</div>
+            <div class="strategy-title">이번 달에 어디에 힘을 줄지 먼저 알려주세요</div>
+            <div class="strategy-copy">Gemini는 아래 전략 우선순위를 반영해 숫자 해석보다 실행 과제 중심으로 답변합니다.</div>
+          </div>
+          <button id="run-ai-btn" class="ai-run-btn" type="button" onclick="runAIAnalysis()" disabled>AI 심층 분석 실행</button>
+        </div>
+        <div id="strategy-grid" class="strategy-grid"></div>
+        <textarea id="strategy-note" class="strategy-note" placeholder="예: 이번 달은 신규 시청자 유입보다 기존 팬 반응 회복이 우선입니다. 썸네일 톤을 더 강하게 바꾸고, 주 2회 업로드를 테스트하고 싶습니다."></textarea>
+        <div class="strategy-meta">
+          <div id="strategy-count" class="strategy-count">선택한 전략 0개</div>
+          <div id="ai-run-hint" class="strategy-count">API 키와 업로드 데이터가 준비되면 실행할 수 있습니다.</div>
+        </div>
+        <div id="ai-status" class="ai-status" style="display:none;"></div>
+      </section>
       <section class="headline-grid">
         <article class="headline-card card">
           <div class="headline-kicker">Executive Summary</div>
@@ -966,6 +1343,9 @@
       <section class="section-title">AI 실행 프롬프트</section>
       <section id="prompt-grid" class="prompt-grid"></section>
 
+      <section class="section-title" id="ai-analysis-title">AI 심층 분석</section>
+      <section id="ai-analysis-grid" class="ai-analysis-grid"></section>
+
       <section class="section-title">눈에 띄는 영상</section>
       <section class="highlights">
         <article class="highlight-card top card">
@@ -1021,11 +1401,32 @@
       videos: [],
       detectedChannelName: "",
       detectedPeriod: "",
+      geminiApiKey: "",
+      monthlyStrategy: {
+        selectedItems: [],
+        note: ""
+      },
+      aiAnalysis: null,
+      aiAnalysisHtml: "",
+      aiLoading: false,
+      aiError: "",
+      aiRequestedAt: "",
       sortBy: "views",
       pageSize: 10,
       currentPage: 1,
       charts: {}
     };
+    var GEMINI_MODEL = "gemini-2.5-flash";
+    var STRATEGY_OPTIONS = [
+      "브랜딩 중심 접근",
+      "경쟁·레퍼런스 채널 분석 반영",
+      "알고리즘·키워드 최적화",
+      "썸네일·제목 A/B 테스트",
+      "업로드 주기 조정",
+      "신규 포맷 도입",
+      "출연자 캐릭터 강화",
+      "시리즈물 기획"
+    ];
 
     function hasLibs() {
       return typeof window.Chart !== "undefined" && typeof window.Papa !== "undefined";
@@ -1158,6 +1559,126 @@
       return "";
     }
 
+    function safeAttr(value) {
+      return esc(value).replace(/"/g, "&quot;");
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "";
+      var d = new Date(value);
+      if (isNaN(d.getTime())) return String(value);
+      var yyyy = d.getFullYear();
+      var mm = String(d.getMonth() + 1).padStart(2, "0");
+      var dd = String(d.getDate()).padStart(2, "0");
+      var hh = String(d.getHours()).padStart(2, "0");
+      var mi = String(d.getMinutes()).padStart(2, "0");
+      return yyyy + "." + mm + "." + dd + " " + hh + ":" + mi;
+    }
+
+    function setToastMessage(text) {
+      var toast = document.getElementById("toast");
+      if (toast) toast.textContent = text || "복사 완료";
+    }
+
+    function resetAIAnalysis() {
+      S.aiAnalysis = null;
+      S.aiAnalysisHtml = "";
+      S.aiLoading = false;
+      S.aiError = "";
+      S.aiRequestedAt = "";
+    }
+
+    function canRunAIAnalysis() {
+      return !!(S.geminiApiKey && S.summary && S.videos && S.videos.length);
+    }
+
+    function getSelectedStrategyItems() {
+      return STRATEGY_OPTIONS.filter(function(label, index) {
+        var checkbox = document.getElementById("strategy-option-" + index);
+        return !!(checkbox && checkbox.checked);
+      });
+    }
+
+    function syncStrategyStateFromInputs() {
+      S.monthlyStrategy.selectedItems = getSelectedStrategyItems();
+      var note = document.getElementById("strategy-note");
+      S.monthlyStrategy.note = note ? String(note.value || "").trim() : "";
+    }
+
+    function renderStrategyOptions() {
+      var grid = document.getElementById("strategy-grid");
+      if (!grid) return;
+      grid.innerHTML = STRATEGY_OPTIONS.map(function(label, index) {
+        var checked = S.monthlyStrategy.selectedItems.indexOf(label) >= 0 ? " checked" : "";
+        return '' +
+          '<label class="strategy-option" for="strategy-option-' + index + '">' +
+            '<input type="checkbox" id="strategy-option-' + index + '" value="' + safeAttr(label) + '"' + checked + ' />' +
+            '<span>' + esc(label) + '</span>' +
+          '</label>';
+      }).join("");
+    }
+
+    function updateGeminiKeyUI() {
+      var badge = document.getElementById("api-status-badge");
+      var panel = document.getElementById("api-panel");
+      var input = document.getElementById("gemini-api-key");
+      if (input) input.value = S.geminiApiKey;
+      if (badge) {
+        badge.className = "api-status-badge" + (S.geminiApiKey ? " ready" : "");
+        badge.textContent = S.geminiApiKey ? "입력 완료" : "미입력";
+      }
+      if (panel && S.geminiApiKey) panel.open = false;
+    }
+
+    function updateAIControls() {
+      var count = document.getElementById("strategy-count");
+      var hint = document.getElementById("ai-run-hint");
+      var button = document.getElementById("run-ai-btn");
+      var status = document.getElementById("ai-status");
+      var selectedCount = S.monthlyStrategy.selectedItems.length;
+      if (count) count.textContent = "선택한 전략 " + selectedCount + "개";
+      if (button) {
+        button.disabled = !canRunAIAnalysis() || S.aiLoading;
+        button.textContent = S.aiLoading ? "AI 분석 중..." : (S.aiAnalysis ? "AI 심층 분석 다시 실행" : "AI 심층 분석 실행");
+      }
+      if (hint) {
+        hint.textContent = !S.summary
+          ? "먼저 ZIP 또는 CSV 데이터를 올려주세요."
+          : !S.geminiApiKey
+            ? "Gemini API 키를 입력하면 실행할 수 있습니다."
+            : "체크한 전략과 메모를 반영해 실행형 분석을 생성합니다.";
+      }
+      if (status) {
+        if (S.aiLoading) {
+          status.style.display = "block";
+          status.className = "ai-status";
+          status.textContent = "Gemini가 채널 데이터와 이번 달 전략을 바탕으로 심층 분석을 만드는 중입니다.";
+        } else if (S.aiError) {
+          status.style.display = "block";
+          status.className = "ai-status error";
+          status.textContent = S.aiError;
+        } else if (S.aiRequestedAt) {
+          status.style.display = "block";
+          status.className = "ai-status";
+          status.textContent = "최근 생성: " + formatDateTime(S.aiRequestedAt);
+        } else {
+          status.style.display = "none";
+          status.textContent = "";
+        }
+      }
+    }
+
+    function saveGeminiKey() {
+      var input = document.getElementById("gemini-api-key");
+      if (!input) return;
+      var value = String(input.value || "").trim();
+      S.geminiApiKey = value;
+      updateGeminiKeyUI();
+      updateAIControls();
+      setToastMessage(value ? "API 키를 저장했습니다" : "API 키를 비웠습니다");
+      showToast();
+    }
+
     function resetState() {
       S.total = null;
       S.chart = null;
@@ -1167,6 +1688,7 @@
       S.detectedPeriod = "";
       S.pageSize = 10;
       S.currentPage = 1;
+      resetAIAnalysis();
       ["table", "total", "chart"].forEach(function(type) {
         var el = document.getElementById("tag-" + type);
         if (el) el.className = "tag no";
@@ -1174,6 +1696,8 @@
       document.getElementById("upload-icon").textContent = "📂";
       document.getElementById("upload-title").textContent = "YouTube Studio ZIP 또는 CSV 파일을 올려주세요";
       destroyCharts();
+      updateAIControls();
+      renderAIAnalysis();
     }
 
     function destroyCharts() {
@@ -1420,11 +1944,15 @@
       if (!S.summary || !S.videos.length) {
         document.getElementById("dashboard").style.display = "none";
         document.getElementById("empty-state").style.display = "block";
+        renderAIAnalysis();
+        updateAIControls();
         return;
       }
 
       document.getElementById("empty-state").style.display = "none";
       document.getElementById("dashboard").style.display = "block";
+      syncStrategyStateFromInputs();
+      updateAIControls();
       renderExecutive();
       renderActions();
       renderKPI();
@@ -1435,6 +1963,7 @@
       renderCategoryChart();
       renderVideoTrendChart();
       renderPrompts();
+      renderAIAnalysis();
       renderHighlights();
       renderVideoList();
     }
@@ -2017,6 +2546,328 @@
       }).join("");
     }
 
+    function getTopVideos(count) {
+      return S.videos.slice().sort(function(a, b) { return b.views - a.views; }).slice(0, count || 5);
+    }
+
+    function getBottomVideos(count) {
+      return S.videos.slice().sort(function(a, b) { return a.views - b.views; }).slice(0, count || 5);
+    }
+
+    function buildAIPatternBullets() {
+      var bullets = [];
+      if (!S.summary || !S.videos.length) return bullets;
+      if (S.summary.aggCTR < 4) bullets.push("채널 평균 CTR이 낮아 첫 클릭 병목이 뚜렷합니다.");
+      if (S._avgRet < 30) bullets.push("클릭 이후 초반 이탈이 커서 지속률 개선이 필요합니다.");
+      if (S._subConv < 0.1) bullets.push("조회수 대비 구독 전환이 약해 팬 전환 설계 보강이 필요합니다.");
+      var shorts = S.videos.filter(function(video) { return video.isShorts; }).length;
+      if (S.videos.length && shorts / S.videos.length >= 0.7) bullets.push("쇼츠 비중이 높아 유입 대비 팬 형성 구조가 약할 수 있습니다.");
+      var recent = S.videos.slice().sort(function(a, b) {
+        return new Date(b.uploadDate) - new Date(a.uploadDate);
+      }).slice(0, 5);
+      if (recent.length >= 5) {
+        var weak = recent.filter(function(video) {
+          return video.ctr < S.summary.aggCTR && video.retention < S._avgRet;
+        }).length;
+        if (weak >= 4) bullets.push("최근 5개 영상이 전반적으로 평균 이하라 최근 주제/패키징 변화 점검이 필요합니다.");
+      }
+      return bullets;
+    }
+
+    function getFormatSummary() {
+      function build(arr) {
+        if (!arr.length) return null;
+        var views = arr.reduce(function(sum, item) { return sum + item.views; }, 0);
+        var subs = arr.reduce(function(sum, item) { return sum + item.subs; }, 0);
+        return {
+          count: arr.length,
+          totalViews: views,
+          avgViews: Math.round(views / arr.length),
+          avgCtr: +avg(arr, "ctr").toFixed(2),
+          avgRetention: +avg(arr, "retention").toFixed(1),
+          subGain: subs
+        };
+      }
+      return {
+        shorts: build(S.videos.filter(function(video) { return video.isShorts; })),
+        longform: build(S.videos.filter(function(video) { return !video.isShorts; }))
+      };
+    }
+
+    function getUploadCadenceSummary() {
+      function calc(arr) {
+        var sorted = arr
+          .filter(function(video) { return !!video.uploadDate; })
+          .slice()
+          .sort(function(a, b) { return new Date(a.uploadDate) - new Date(b.uploadDate); });
+        if (sorted.length < 2) return null;
+        var totalDays = 0;
+        for (var i = 1; i < sorted.length; i++) {
+          totalDays += (new Date(sorted[i].uploadDate) - new Date(sorted[i - 1].uploadDate)) / (1000 * 60 * 60 * 24);
+        }
+        return +(totalDays / (sorted.length - 1)).toFixed(1);
+      }
+      var longs = S.videos.filter(function(video) { return !video.isShorts; });
+      var shorts = S.videos.filter(function(video) { return video.isShorts; });
+      return {
+        all: calc(S.videos),
+        longform: calc(longs),
+        shorts: calc(shorts)
+      };
+    }
+
+    function getExecutiveBulletsText(limit) {
+      var node = document.getElementById("headline-bullets");
+      if (!node) return [];
+      return Array.from(node.querySelectorAll(".bullet"))
+        .map(function(item) { return String(item.textContent || "").trim(); })
+        .filter(Boolean)
+        .slice(0, limit || 6);
+    }
+
+    function compactVideo(video) {
+      return {
+        title: video.title,
+        uploadDate: video.uploadDate,
+        category: video.category,
+        format: video.isShorts ? "쇼츠" : "일반 영상",
+        views: video.views,
+        ctr: +Number(video.ctr || 0).toFixed(2),
+        retention: +Number(video.retention || 0).toFixed(1),
+        avgWatchSec: Math.round(video.avgWatchSec || 0),
+        subConvRate: +Number(video.subConvRate || 0).toFixed(3)
+      };
+    }
+
+    function buildAIRequestPayload() {
+      var topVideos = getTopVideos(5);
+      var bottomVideos = getBottomVideos(5);
+      var dates = S.videos
+        .map(function(video) { return normalizeDateString(video.uploadDate); })
+        .filter(Boolean)
+        .sort();
+      var headlineMain = document.getElementById("headline-main");
+      var headlineDesc = document.getElementById("headline-desc");
+      return {
+        channelName: S.detectedChannelName || "",
+        analysisPeriod: S.detectedPeriod || (dates.length ? prettyDate(dates[0]) + " ~ " + prettyDate(dates[dates.length - 1]) : ""),
+        monthlyStrategy: {
+          selectedItems: S.monthlyStrategy.selectedItems.slice(),
+          note: S.monthlyStrategy.note
+        },
+        summary: {
+          totalViews: S.summary.totalViews,
+          totalImpressions: S.summary.totalImpr,
+          totalSubscribersGained: S.summary.totalSubs,
+          watchHours: +Number(S.summary.watchHours || 0).toFixed(1),
+          avgCtr: +Number(S.summary.aggCTR || 0).toFixed(2),
+          avgRetention: +Number(S._avgRet || 0).toFixed(1),
+          avgWatchSec: Math.round(avg(S.videos, "avgWatchSec")),
+          subConversionRate: +Number(S._subConv || 0).toFixed(3)
+        },
+        formatSummary: getFormatSummary(),
+        uploadCadence: getUploadCadenceSummary(),
+        executiveSummary: {
+          headline: headlineMain ? headlineMain.textContent : "",
+          description: headlineDesc ? headlineDesc.textContent : "",
+          bullets: getExecutiveBulletsText(6)
+        },
+        notablePatterns: buildAIPatternBullets(),
+        topVideos: topVideos.map(compactVideo),
+        bottomVideos: bottomVideos.map(compactVideo)
+      };
+    }
+
+    function buildGeminiPrompt(payload) {
+      return [
+        "당신은 유튜브 채널 전략가이자 콘텐츠 성과 분석가입니다.",
+        "숫자 요약을 반복하지 말고 원인, 해석, 실행 과제를 우선하세요.",
+        "사용자가 체크한 이번 달 전략을 가장 우선순위 높게 반영하세요.",
+        "모호한 조언, 누구에게나 적용되는 추상론, 과장된 표현은 금지합니다.",
+        "한국어로 작성하고, 대행사나 프리랜서가 클라이언트에게 바로 보여줄 수 있는 보고서 톤으로 답하세요.",
+        "응답은 반드시 JSON 한 개만 반환하세요. 마크다운 코드블록은 쓰지 마세요.",
+        "JSON 스키마:",
+        "{",
+        '  "oneLineSummary": "string",',
+        '  "topProblems": ["string","string","string"],',
+        '  "priorityActions": ["string","string","string"],',
+        '  "formatAndOperations": ["string","string","string"],',
+        '  "thumbnailAndTitle": ["string","string","string"],',
+        '  "nextExperiments": ["string","string","string"],',
+        '  "monthlyRoadmap": ["string","string","string","string"],',
+        '  "closingNote": "string"',
+        "}",
+        "각 배열 항목은 실행 가능한 한 문단 또는 한 문장으로 구체적으로 작성하세요.",
+        "",
+        "분석 데이터:",
+        JSON.stringify(payload, null, 2)
+      ].join("\n");
+    }
+
+    function normalizeAIResult(parsed, fallbackText) {
+      var result = parsed && typeof parsed === "object" ? parsed : {};
+      function normalizeList(value) {
+        if (Array.isArray(value)) return value.map(function(item) { return String(item || "").trim(); }).filter(Boolean);
+        if (typeof value === "string" && value.trim()) return value.split(/\n+/).map(function(item) { return item.replace(/^[-*\d.\s]+/, "").trim(); }).filter(Boolean);
+        return [];
+      }
+      return {
+        oneLineSummary: String(result.oneLineSummary || fallbackText || "").trim(),
+        topProblems: normalizeList(result.topProblems),
+        priorityActions: normalizeList(result.priorityActions),
+        formatAndOperations: normalizeList(result.formatAndOperations),
+        thumbnailAndTitle: normalizeList(result.thumbnailAndTitle),
+        nextExperiments: normalizeList(result.nextExperiments),
+        monthlyRoadmap: normalizeList(result.monthlyRoadmap),
+        closingNote: String(result.closingNote || "").trim()
+      };
+    }
+
+    function renderAIList(items) {
+      if (!items || !items.length) return '<div class="ai-analysis-text">분석 결과가 아직 없습니다.</div>';
+      return '<div class="ai-analysis-list">' + items.map(function(item) {
+        return '<div class="ai-analysis-item">' + esc(item) + '</div>';
+      }).join("") + '</div>';
+    }
+
+    function renderAIAnalysis() {
+      var title = document.getElementById("ai-analysis-title");
+      var grid = document.getElementById("ai-analysis-grid");
+      if (!title || !grid) return;
+
+      if (S.aiLoading) {
+        title.style.display = "flex";
+        grid.style.display = "grid";
+        grid.innerHTML = '<article class="ai-analysis-card card full"><div class="ai-analysis-kicker">AI 심층 분석</div><div class="ai-analysis-title">데이터와 전략을 읽는 중입니다</div><div class="ai-analysis-text">잠시만 기다려주세요. 이번 달 전략과 채널 데이터를 묶어서 실행형 보고서로 정리하고 있습니다.</div></article>';
+        S.aiAnalysisHtml = grid.innerHTML;
+        return;
+      }
+
+      if (S.aiError) {
+        title.style.display = "flex";
+        grid.style.display = "grid";
+        grid.innerHTML = '<article class="ai-analysis-card card full"><div class="ai-analysis-kicker">AI 심층 분석</div><div class="ai-analysis-title">분석을 완료하지 못했습니다</div><div class="ai-analysis-text">' + esc(S.aiError) + '</div></article>';
+        S.aiAnalysisHtml = grid.innerHTML;
+        return;
+      }
+
+      if (!S.aiAnalysis) {
+        title.style.display = "none";
+        grid.style.display = "none";
+        grid.innerHTML = "";
+        S.aiAnalysisHtml = "";
+        return;
+      }
+
+      var a = S.aiAnalysis;
+      grid.style.display = "grid";
+      title.style.display = "flex";
+      grid.innerHTML = '' +
+        '<article class="ai-analysis-card card full">' +
+          '<div class="ai-analysis-stamp">최근 생성 ' + esc(formatDateTime(S.aiRequestedAt)) + '</div>' +
+          '<div class="ai-analysis-kicker">한 줄 총평</div>' +
+          '<div class="ai-analysis-title">' + esc(a.oneLineSummary) + '</div>' +
+          (a.closingNote ? '<div class="ai-analysis-text">' + esc(a.closingNote) + '</div>' : '') +
+        '</article>' +
+        '<article class="ai-analysis-card card">' +
+          '<div class="ai-analysis-kicker">지금 가장 중요한 문제 3개</div>' +
+          renderAIList(a.topProblems) +
+        '</article>' +
+        '<article class="ai-analysis-card card">' +
+          '<div class="ai-analysis-kicker">이번 달 우선 실행 과제 3개</div>' +
+          renderAIList(a.priorityActions) +
+        '</article>' +
+        '<article class="ai-analysis-card card">' +
+          '<div class="ai-analysis-kicker">포맷 · 주제 · 업로드 운영 제안</div>' +
+          renderAIList(a.formatAndOperations) +
+        '</article>' +
+        '<article class="ai-analysis-card card">' +
+          '<div class="ai-analysis-kicker">썸네일 · 제목 개선 제안</div>' +
+          renderAIList(a.thumbnailAndTitle) +
+        '</article>' +
+        '<article class="ai-analysis-card card">' +
+          '<div class="ai-analysis-kicker">다음 실험 3개</div>' +
+          renderAIList(a.nextExperiments) +
+        '</article>' +
+        '<article class="ai-analysis-card card">' +
+          '<div class="ai-analysis-kicker">한 달 실행 로드맵</div>' +
+          renderAIList(a.monthlyRoadmap) +
+        '</article>';
+      S.aiAnalysisHtml = grid.innerHTML;
+    }
+
+    async function runAIAnalysis() {
+      syncStrategyStateFromInputs();
+      updateAIControls();
+      if (!S.summary || !S.videos.length) {
+        S.aiError = "먼저 ZIP 또는 CSV 데이터를 올려주세요.";
+        renderAIAnalysis();
+        updateAIControls();
+        return;
+      }
+      if (!S.geminiApiKey) {
+        S.aiError = "Gemini API 키를 먼저 입력해주세요.";
+        renderAIAnalysis();
+        updateAIControls();
+        return;
+      }
+
+      resetAIAnalysis();
+      S.aiLoading = true;
+      renderAIAnalysis();
+      updateAIControls();
+
+      var payload = buildAIRequestPayload();
+      var prompt = buildGeminiPrompt(payload);
+
+      try {
+        var response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(GEMINI_MODEL) + ":generateContent?key=" + encodeURIComponent(S.geminiApiKey), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.7,
+              responseMimeType: "application/json"
+            }
+          })
+        });
+
+        var data = await response.json().catch(function() { return {}; });
+        if (!response.ok) {
+          var message = data && data.error && data.error.message ? String(data.error.message) : "";
+          if (response.status === 400) throw new Error("API 키가 올바르지 않거나 요청 형식이 맞지 않습니다. 키와 입력값을 다시 확인해주세요.");
+          if (response.status === 403) throw new Error("Gemini API 호출 권한이 없거나 프로젝트 설정이 필요합니다. AI Studio 키 상태를 확인해주세요.");
+          if (response.status === 429) throw new Error("요청 한도에 도달했습니다. 잠시 후 다시 시도해주세요.");
+          throw new Error(message || "Gemini API 호출 중 오류가 발생했습니다.");
+        }
+
+        var text = (((data || {}).candidates || [])[0] || {}).content;
+        var parts = text && text.parts ? text.parts : [];
+        var rawText = parts.map(function(part) { return String(part && part.text || ""); }).join("\n").trim();
+        if (!rawText) throw new Error("Gemini 응답이 비어 있습니다. 다시 시도해주세요.");
+
+        var parsed;
+        try {
+          parsed = JSON.parse(rawText);
+        } catch (err) {
+          parsed = null;
+        }
+
+        S.aiAnalysis = normalizeAIResult(parsed, rawText);
+        S.aiRequestedAt = new Date().toISOString();
+        S.aiLoading = false;
+        S.aiError = "";
+        renderAIAnalysis();
+        updateAIControls();
+      } catch (err) {
+        S.aiLoading = false;
+        S.aiError = err && err.message ? err.message : "AI 심층 분석 중 오류가 발생했습니다.";
+        renderAIAnalysis();
+        updateAIControls();
+      }
+    }
+
     async function copyPrompt(type) {
       var text = getPromptText(type);
       try {
@@ -2031,6 +2882,7 @@
         document.execCommand("copy");
         document.body.removeChild(area);
       }
+      setToastMessage("프롬프트를 복사했습니다");
       showToast();
     }
 
@@ -2116,29 +2968,27 @@
       var headlineGrid = dashboard.querySelector(".headline-grid");
       if (headlineGrid) nodesToAppend.push(headlineGrid.cloneNode(true));
 
-      var actionTitle = dashboard.querySelector(".section-title");
-      var actionGrid = document.getElementById("action-grid");
-      if (actionTitle && actionGrid) {
-        nodesToAppend.push(actionTitle.cloneNode(true));
-        nodesToAppend.push(actionGrid.cloneNode(true));
-      }
-
-      var sectionTitles = dashboard.querySelectorAll(".section-title");
-      function pushSection(titleIndex, selector) {
-        var title = sectionTitles[titleIndex];
+      function pushSectionByTitle(titleText, selector) {
+        var title = Array.from(dashboard.querySelectorAll(".section-title")).find(function(node) {
+          return String(node.textContent || "").trim() === titleText;
+        });
         var section = dashboard.querySelector(selector);
         if (!title || !section) return;
         nodesToAppend.push(title.cloneNode(true));
         nodesToAppend.push(section.cloneNode(true));
       }
 
-      pushSection(1, "#kpi-grid");
-      pushSection(2, "#explain-grid");
-      pushSection(3, ".fmt-grid");
-      pushSection(4, ".chart-grid");
-      pushSection(6, ".highlights");
+      pushSectionByTitle("지금 가장 먼저 해야 할 것", "#action-grid");
+      pushSectionByTitle("핵심 지표", "#kpi-grid");
+      pushSectionByTitle("무슨 뜻인가", "#explain-grid");
+      pushSectionByTitle("포맷 비교", ".fmt-grid");
+      pushSectionByTitle("차트로 보는 원인", ".chart-grid");
+      pushSectionByTitle("AI 심층 분석", "#ai-analysis-grid");
+      pushSectionByTitle("눈에 띄는 영상", ".highlights");
 
-      var listTitle = sectionTitles[7];
+      var listTitle = Array.from(dashboard.querySelectorAll(".section-title")).find(function(node) {
+        return String(node.textContent || "").trim() === "영상별 해설";
+      });
       if (listTitle) nodesToAppend.push(listTitle.cloneNode(true));
 
       var fullListCard = document.createElement("section");
@@ -2181,7 +3031,7 @@
         exportRoot.appendChild(node);
       });
 
-      exportRoot.querySelectorAll("#save-report-btn, .upload-card, #prompt-grid, .toast, .list-actions").forEach(function(node) {
+      exportRoot.querySelectorAll("#save-report-btn, .upload-card, #prompt-grid, .toast, .list-actions, #strategy-card, #api-panel, .api-card").forEach(function(node) {
         node.remove();
       });
       exportRoot.querySelectorAll(".section-title").forEach(function(node) {
@@ -2384,8 +3234,45 @@
         return;
       }
 
+      renderStrategyOptions();
+      renderAIAnalysis();
+      updateGeminiKeyUI();
+      updateAIControls();
+
       var zone = document.getElementById("upload-zone");
       var input = document.getElementById("file-input");
+      var apiInput = document.getElementById("gemini-api-key");
+      var note = document.getElementById("strategy-note");
+
+      STRATEGY_OPTIONS.forEach(function(_, index) {
+        var checkbox = document.getElementById("strategy-option-" + index);
+        if (!checkbox) return;
+        checkbox.addEventListener("change", function() {
+          syncStrategyStateFromInputs();
+          updateAIControls();
+        });
+      });
+      if (note) {
+        note.addEventListener("input", function() {
+          syncStrategyStateFromInputs();
+          updateAIControls();
+        });
+      }
+      if (apiInput) {
+        apiInput.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            saveGeminiKey();
+          }
+        });
+        apiInput.addEventListener("input", function() {
+          if (!apiInput.value && S.geminiApiKey) {
+            S.geminiApiKey = "";
+            updateGeminiKeyUI();
+            updateAIControls();
+          }
+        });
+      }
 
       zone.addEventListener("click", function() { input.click(); });
       zone.addEventListener("dragover", function(e) {
