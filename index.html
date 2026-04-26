@@ -200,6 +200,25 @@
     }
 
     .dashboard{ display:none; }
+    .dashboard-topbar{
+      display:flex;
+      justify-content:flex-end;
+      margin-bottom:16px;
+    }
+    .save-report-btn{
+      border:0;
+      border-radius:999px;
+      padding:12px 18px;
+      background:#2d2118;
+      color:#fff8ee;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+    }
+    .save-report-btn:hover{
+      transform:translateY(-1px);
+    }
     .headline-grid{
       display:grid;
       grid-template-columns:1.6fr 1fr;
@@ -743,6 +762,28 @@
       text-align:center;
       margin-top:10px;
     }
+    .report-meta{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+      padding:0 4px 16px;
+    }
+    .report-chart-img{
+      display:block;
+      width:100%;
+      height:auto;
+      border-radius:18px;
+      background:#fff;
+    }
+    .report-footer{
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+      padding:24px 0 16px;
+    }
+    .report-footer a{
+      color:inherit;
+    }
 
     @media (max-width: 1100px){
       .headline-grid, .chart-grid, .highlights { grid-template-columns:1fr; }
@@ -756,8 +797,8 @@
       .fmt-stats, .metric-row { grid-template-columns:repeat(2,1fr); }
       .video-top { flex-direction:column; }
       .score-value { font-size:30px; }
-      .action-title { font-size:26px; }
-      .action-value, .action-list { font-size:19px; }
+      .action-title { font-size:23px; }
+      .action-value, .action-list { font-size:17px; }
     }
   </style>
 </head>
@@ -806,6 +847,9 @@
     </div>
 
     <main id="dashboard" class="dashboard">
+      <div class="dashboard-topbar">
+        <button id="save-report-btn" class="save-report-btn" onclick="saveReport()">리포트 저장</button>
+      </div>
       <section class="headline-grid">
         <article class="headline-card card">
           <div class="headline-kicker">Executive Summary</div>
@@ -1029,6 +1073,25 @@
       if (value >= good) return { label: "좋음", className: "good" };
       if (value >= mid) return { label: "보통", className: "mid" };
       return { label: "개선 필요", className: "bad" };
+    }
+
+    function actionPriority(metric, value) {
+      if (metric === "ctr") {
+        if (value < 4) return 3;
+        if (value < 6) return 2;
+        return 1;
+      }
+      if (metric === "retention") {
+        if (value < 30) return 3;
+        if (value < 45) return 2;
+        return 1;
+      }
+      if (metric === "subConv") {
+        if (value < 0.1) return 3;
+        if (value < 0.3) return 2;
+        return 1;
+      }
+      return 0;
     }
 
     function metricSummary(metric, value) {
@@ -1319,21 +1382,32 @@
     function renderActions() {
       var actions = [
         {
+          key: "ctr",
           title: "CTR 개선 필요",
           value: "현재 CTR: " + fmtPct(S.summary.aggCTR, 2),
-          items: ["제목 구조 개선", "썸네일 메시지 명확화", "클릭 유도 문장 추가"]
+          items: ["제목 구조 개선", "썸네일 메시지 명확화", "클릭 유도 문장 추가"],
+          priority: actionPriority("ctr", S.summary.aggCTR)
         },
         {
+          key: "retention",
           title: "지속률 개선 필요",
           value: "현재 지속률: " + fmtPct(S._avgRet, 1),
-          items: ["첫 30초 훅 강화", "초반 설명 줄이기", "영상 시작 구조 수정"]
+          items: ["첫 30초 훅 강화", "초반 설명 줄이기", "영상 시작 구조 수정"],
+          priority: actionPriority("retention", S._avgRet)
         },
         {
+          key: "subConv",
           title: "구독 전환 개선 필요",
           value: "현재 구독 전환율: " + fmtPct(S._subConv, 3),
-          items: ["영상 끝 CTA 추가", "구독 이유 명확화", "다음 영상 연결"]
+          items: ["영상 끝 CTA 추가", "구독 이유 명확화", "다음 영상 연결"],
+          priority: actionPriority("subConv", S._subConv)
         }
       ];
+
+      actions.sort(function(a, b) {
+        if (b.priority !== a.priority) return b.priority - a.priority;
+        return a.key.localeCompare(b.key);
+      });
 
       document.getElementById("action-grid").innerHTML = actions.map(function(action, index) {
         return '' +
@@ -1585,8 +1659,8 @@
         data: {
           labels: labels,
           datasets: [
-            { label: "평균 CTR", data: ctrData, backgroundColor: "rgba(154,52,18,.72)", borderRadius: 6 },
-            { label: "평균 지속률", data: retData, backgroundColor: "rgba(15,118,110,.70)", borderRadius: 6 }
+            { label: "평균 CTR", data: ctrData, backgroundColor: "rgba(154,52,18,.72)", borderRadius: 6, yAxisID: "yCtr" },
+            { label: "평균 지속률", data: retData, backgroundColor: "rgba(15,118,110,.70)", borderRadius: 6, yAxisID: "yRet" }
           ]
         },
         options: {
@@ -1597,7 +1671,22 @@
           },
           scales: {
             x: { ticks: { color: "#726456" }, grid: { display: false } },
-            y: { ticks: { color: "#726456" }, grid: { color: "#efe3d4" } }
+            yCtr: {
+              position: "left",
+              ticks: {
+                color: "#9a3412",
+                callback: function(value) { return value + "%"; }
+              },
+              grid: { color: "#efe3d4" }
+            },
+            yRet: {
+              position: "right",
+              ticks: {
+                color: "#0f766e",
+                callback: function(value) { return value + "%"; }
+              },
+              grid: { drawOnChartArea: false }
+            }
           }
         }
       });
@@ -1768,6 +1857,159 @@
       S._toastTimer = setTimeout(function() {
         toast.classList.remove("show");
       }, 1400);
+    }
+
+    function saveReport() {
+      var chartImages = {};
+      Object.keys(S.charts).forEach(function(key) {
+        var chart = S.charts[key];
+        if (!chart || !chart.canvas || !chart.canvas.id || typeof chart.toBase64Image !== "function") return;
+        chartImages[chart.canvas.id] = chart.toBase64Image();
+      });
+
+      var styleTag = document.querySelector("style");
+      var styleHTML = styleTag ? styleTag.outerHTML : "";
+      var dashboard = document.getElementById("dashboard");
+      var exportRoot = document.createElement("div");
+      exportRoot.className = "app";
+
+      var dates = S.videos
+        .map(function(video) { return normalizeDateString(video.uploadDate); })
+        .filter(function(date) { return !!date; });
+      var periodLines = [];
+      if (dates.length) {
+        periodLines.push("분석 기간: " + prettyDate(dates[0]) + " ~ " + prettyDate(dates[dates.length - 1]));
+      }
+      var now = new Date();
+      var yyyy = String(now.getFullYear());
+      var mm = String(now.getMonth() + 1).padStart(2, "0");
+      var dd = String(now.getDate()).padStart(2, "0");
+      periodLines.push("생성일: " + yyyy + "년 " + mm + "월 " + dd + "일");
+      if (periodLines.length) {
+        var meta = document.createElement("div");
+        meta.className = "report-meta";
+        meta.innerHTML = periodLines.map(function(line) {
+          return '<div>' + esc(line) + '</div>';
+        }).join("");
+        exportRoot.appendChild(meta);
+      }
+
+      var nodesToAppend = [];
+      var headlineGrid = dashboard.querySelector(".headline-grid");
+      if (headlineGrid) nodesToAppend.push(headlineGrid.cloneNode(true));
+
+      var actionTitle = dashboard.querySelector(".section-title");
+      var actionGrid = document.getElementById("action-grid");
+      if (actionTitle && actionGrid) {
+        nodesToAppend.push(actionTitle.cloneNode(true));
+        nodesToAppend.push(actionGrid.cloneNode(true));
+      }
+
+      var sectionTitles = dashboard.querySelectorAll(".section-title");
+      function pushSection(titleIndex, selector) {
+        var title = sectionTitles[titleIndex];
+        var section = dashboard.querySelector(selector);
+        if (!title || !section) return;
+        nodesToAppend.push(title.cloneNode(true));
+        nodesToAppend.push(section.cloneNode(true));
+      }
+
+      pushSection(1, "#kpi-grid");
+      pushSection(2, "#explain-grid");
+      pushSection(3, ".fmt-grid");
+      pushSection(4, ".chart-grid");
+      pushSection(6, ".highlights");
+
+      var listTitle = sectionTitles[7];
+      if (listTitle) nodesToAppend.push(listTitle.cloneNode(true));
+
+      var fullListCard = document.createElement("section");
+      fullListCard.className = "list-card card";
+      var sorted = S.videos.slice().sort(function(a, b) { return b[S.sortBy] - a[S.sortBy]; });
+      var fullList = document.createElement("div");
+      fullList.className = "video-list";
+      fullList.innerHTML = sorted.map(function(video, index) {
+        var label = performanceLabel(video);
+        return '' +
+          '<article class="video-item">' +
+            '<div class="video-top">' +
+              '<div>' +
+                '<div class="video-title">' + esc(video.title) + '</div>' +
+                '<div class="video-badges">' +
+                  '<span class="badge rank">#' + (index + 1) + '</span>' +
+                  '<span class="badge ' + label.className + '">' + label.label + '</span>' +
+                  '<span class="badge rank">' + esc(video.category) + '</span>' +
+                  '<span class="badge rank">' + (video.isShorts ? "쇼츠" : "일반 영상") + '</span>' +
+                  '<span class="badge rank">게시일 ' + esc(prettyDate(video.uploadDate)) + '</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="metric-row">' +
+              '<div class="metric"><div class="metric-label">조회수</div><div class="metric-value">' + fmt(video.views) + '</div></div>' +
+              '<div class="metric"><div class="metric-label">CTR</div><div class="metric-value">' + fmtPct(video.ctr, 2) + '</div></div>' +
+              '<div class="metric"><div class="metric-label">지속률</div><div class="metric-value">' + fmtPct(video.retention, 1) + '</div></div>' +
+              '<div class="metric"><div class="metric-label">평균 시청</div><div class="metric-value">' + watchString(video.avgWatchSec) + '</div></div>' +
+              '<div class="metric"><div class="metric-label">구독 전환</div><div class="metric-value">' + (video.subConvRate > 0 ? fmtPct(video.subConvRate, 3) : "—") + '</div></div>' +
+            '</div>' +
+            '<div class="video-copy">' + explainVideo(video) + '</div>' +
+          '</article>';
+      }).join("");
+      fullListCard.appendChild(fullList);
+      nodesToAppend.push(fullListCard);
+
+      var footnote = dashboard.querySelector(".footnote");
+      if (footnote) nodesToAppend.push(footnote.cloneNode(true));
+
+      nodesToAppend.forEach(function(node) {
+        exportRoot.appendChild(node);
+      });
+
+      exportRoot.querySelectorAll("#save-report-btn, .upload-card, #prompt-grid, .toast, .list-actions").forEach(function(node) {
+        node.remove();
+      });
+      exportRoot.querySelectorAll(".toolbar").forEach(function(node) {
+        node.remove();
+      });
+
+      exportRoot.querySelectorAll("canvas").forEach(function(canvas) {
+        var imgSrc = chartImages[canvas.id];
+        var wrap = canvas.parentNode;
+        if (wrap && imgSrc) {
+          wrap.innerHTML = '<img class="report-chart-img" alt="' + esc(canvas.id) + '" src="' + imgSrc + '" />';
+        } else if (wrap) {
+          wrap.remove();
+        }
+      });
+
+      var footer = document.createElement("div");
+      footer.className = "report-footer";
+      footer.innerHTML = 'Produced by 햄 · Threads <a href="https://www.threads.net/@dellacasa_2" target="_blank">@dellacasa_2</a>';
+      exportRoot.appendChild(footer);
+
+      var html = '' +
+        '<!DOCTYPE html>' +
+        '<html lang="ko">' +
+        '<head>' +
+          '<meta charset="UTF-8" />' +
+          '<meta name="viewport" content="width=device-width, initial-scale=1.0" />' +
+          '<title>유튜브 채널 분석 리포트</title>' +
+          styleHTML +
+        '</head>' +
+        '<body>' + exportRoot.outerHTML + '</body>' +
+        '</html>';
+
+      var fileName = "youtube-report-" + yyyy + mm + dd + ".html";
+      var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function() {
+        URL.revokeObjectURL(url);
+      }, 1000);
     }
 
     function performanceLabel(video) {
