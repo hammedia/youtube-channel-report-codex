@@ -1447,6 +1447,34 @@
         "가장 클릭이 잘 된 영상은 \"" + esc(topCTR.title) + "\"입니다. 제목과 썸네일의 방향성을 복제 후보로 삼을 수 있습니다.",
         "지속률이 가장 좋은 일반 영상은 \"" + esc(topRet.title) + "\"입니다. 초반 훅과 전개 구조를 참고하기 좋습니다."
       ];
+      var highCtrLowRetCount = videos.filter(function(video) {
+        return video.ctr >= S.summary.aggCTR && video.retention < S._avgRet;
+      }).length;
+      var lowCtrHighRetCount = videos.filter(function(video) {
+        return video.ctr < S.summary.aggCTR && video.retention >= S._avgRet;
+      }).length;
+      var recentVideoCount = videos.filter(function(video) {
+        if (!video.uploadDate) return false;
+        var parsed = new Date(video.uploadDate);
+        if (isNaN(parsed.getTime())) return false;
+        return (Date.now() - parsed.getTime()) <= 30 * 24 * 60 * 60 * 1000;
+      }).length;
+      var shortsRatio = videos.length ? videos.filter(function(video) { return video.isShorts; }).length / videos.length : 0;
+      if (videos.length && highCtrLowRetCount / videos.length >= 0.4) {
+        bullets.push("클릭은 만들지만 내용에서 이탈이 잦습니다. 도입부 구성과 내용 전개 방식을 전반적으로 점검할 시점입니다.");
+      }
+      if (videos.length && lowCtrHighRetCount / videos.length >= 0.4) {
+        bullets.push("내용 품질은 좋지만 제목과 썸네일이 채널 성장을 막고 있습니다. 클릭을 만드는 제목 설계가 지금 가장 중요한 과제입니다.");
+      }
+      if (recentVideoCount === 0) {
+        bullets.push("최근 30일간 업로드된 영상이 없습니다. 업로드 공백이 길어지면 알고리즘 노출이 줄어들 수 있습니다.");
+      }
+      if (shortsRatio >= 0.7) {
+        bullets.push("영상 대부분이 쇼츠로 구성되어 있습니다. 쇼츠는 노출엔 유리하지만 구독 전환과 팬 형성에는 일반 영상이 더 효과적입니다.");
+      }
+      if (S.summary.aggCTR < 3) {
+        bullets.push("채널 전반의 CTR이 3% 미만으로 낮습니다. 알고리즘이 노출은 시켜주고 있지만 클릭으로 이어지지 않는 상태입니다. 썸네일과 제목 전략을 채널 전체 차원에서 바꿔야 할 시점입니다.");
+      }
       document.getElementById("headline-bullets").innerHTML = bullets.map(function(text) {
         return '<div class="bullet">' + text + '</div>';
       }).join("");
@@ -2130,24 +2158,43 @@
     function performanceLabel(video) {
       var highCtr = video.ctr >= S.summary.aggCTR;
       var highRet = video.retention >= S._avgRet;
-      if (highCtr && highRet) return { label: "복제 후보", className: "good" };
-      if (!highCtr && !highRet) return { label: "재정비 필요", className: "bad" };
-      return { label: "부분 개선", className: "mid" };
+      if (highCtr && highRet) return { label: "핵심 영상", className: "good" };
+      if (highCtr && !highRet) return { label: "도입부 점검", className: "mid" };
+      if (!highCtr && highRet) return { label: "제목 점검", className: "mid" };
+      return { label: "전체 재정비", className: "bad" };
     }
 
     function explainVideo(video) {
+      var highCtr = video.ctr >= S.summary.aggCTR;
+      var highRet = video.retention >= S._avgRet;
       var parts = [];
-      if (video.ctr >= S.summary.aggCTR) parts.push("클릭 유도는 채널 평균보다 좋습니다");
-      else parts.push("클릭 유도는 채널 평균보다 약합니다");
 
-      if (video.retention >= S._avgRet) parts.push("들어온 시청자를 붙잡는 힘도 괜찮습니다");
-      else parts.push("클릭 이후 이탈이 비교적 빠른 편입니다");
+      if (highCtr && highRet) {
+        parts.push("제목과 썸네일이 클릭을 잘 만들고, 내용도 기대를 채웁니다.");
+        parts.push("이 영상의 제목 구조와 내용 흐름을 다른 영상에 적용해볼 만합니다.");
+      } else if (highCtr && !highRet) {
+        parts.push("제목과 썸네일은 클릭을 잘 만들지만, 들어온 시청자가 빨리 이탈하고 있습니다.");
+        parts.push("도입부가 제목의 기대를 충족시키지 못하고 있을 가능성이 높습니다.");
+        parts.push("첫 30초 구성을 점검해보세요.");
+      } else if (!highCtr && highRet) {
+        parts.push("내용은 좋지만 제목과 썸네일이 클릭을 만들지 못하고 있습니다.");
+        parts.push("알고리즘이 노출은 시켜주는데 클릭으로 이어지지 않는 상태입니다.");
+        parts.push("제목 설계와 썸네일을 먼저 개선해보세요.");
+      } else {
+        parts.push("클릭도 적고 들어온 시청자도 빨리 떠납니다.");
+        parts.push("제목·썸네일·도입부 전체를 점검해야 합니다.");
+        parts.push("비슷한 주제에서 성과가 좋은 다른 채널의 구조를 참고해보세요.");
+      }
 
-      if (video.subConvRate >= S._subConv && video.subs > 0) parts.push("팬 전환 효율도 평균 이상입니다");
-      else if (video.subs > 0) parts.push("조회수 대비 구독 전환은 평범합니다");
-      else parts.push("구독 전환은 거의 발생하지 않았습니다");
+      if (video.subs === 0) {
+        parts.push("이 영상에서는 구독 전환이 거의 발생하지 않았습니다.");
+      } else if (video.subConvRate >= S._subConv) {
+        parts.push("구독 전환도 평균 이상으로, 팬이 될 가능성이 높은 시청자를 잘 잡고 있습니다.");
+      } else {
+        parts.push("조회수 대비 구독 전환은 약한 편입니다. 영상 마지막 구독 유도를 점검해보세요.");
+      }
 
-      return parts.join(". ") + ".";
+      return parts.join(" ");
     }
 
     function renderHighlights() {
