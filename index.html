@@ -1942,7 +1942,9 @@
 
     function saveReport() {
       var channelNameInput = prompt(
-        "채널명을 입력하세요 (선택, 건너뛰려면 확인)",
+        S.detectedChannelName
+          ? "채널명을 확인하세요. 수정이 필요하면 바꾸고 확인을 누르세요."
+          : "채널명을 입력하세요 (선택, 건너뛰려면 확인)",
         S.detectedChannelName || ""
       );
       if (channelNameInput === null) return;
