@@ -320,6 +320,57 @@
       color:var(--muted);
     }
 
+    .action-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-bottom:22px;
+    }
+    .action-card{
+      padding:18px;
+      background:var(--panel);
+    }
+    .action-step{
+      width:28px;
+      height:28px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      background:#2d2118;
+      color:#fff8ee;
+      font-size:13px;
+      font-weight:900;
+      margin-bottom:12px;
+    }
+    .action-title{
+      font-size:17px;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+    .action-value{
+      color:var(--brand);
+      font-size:13px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+    .action-list{
+      display:grid;
+      gap:5px;
+      color:#5c4d41;
+      font-size:13px;
+    }
+    .action-list span::before{
+      content:"";
+      display:inline-block;
+      width:5px;
+      height:5px;
+      border-radius:50%;
+      background:var(--brand);
+      margin-right:8px;
+      transform:translateY(-1px);
+    }
+
     .explain-grid{
       display:grid;
       grid-template-columns:repeat(3,1fr);
@@ -421,6 +472,72 @@
       border:1px solid #efe3d4;
       color:#5c4d41;
       font-size:13px;
+    }
+
+    .prompt-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-bottom:22px;
+    }
+    .prompt-card{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .prompt-card h3{
+      font-size:17px;
+      line-height:1.35;
+    }
+    .prompt-desc{
+      color:var(--muted);
+      font-size:13px;
+    }
+    .prompt-preview{
+      min-height:120px;
+      max-height:160px;
+      overflow:auto;
+      white-space:pre-wrap;
+      padding:12px;
+      border-radius:14px;
+      background:#f8f3ec;
+      border:1px solid #efe3d4;
+      color:#3b3028;
+      font-size:12px;
+      line-height:1.55;
+    }
+    .copy-btn{
+      align-self:flex-start;
+      border:none;
+      border-radius:999px;
+      padding:9px 14px;
+      background:#2d2118;
+      color:#fff8ee;
+      cursor:pointer;
+      font-size:13px;
+      font-weight:900;
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:24px;
+      transform:translate(-50%, 12px);
+      opacity:0;
+      pointer-events:none;
+      transition:.18s ease;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#2d2118;
+      color:#fff8ee;
+      font-size:13px;
+      font-weight:900;
+      box-shadow:var(--shadow);
+      z-index:20;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translate(-50%, 0);
     }
 
     .highlights{
@@ -627,13 +744,13 @@
 
     @media (max-width: 1100px){
       .headline-grid, .chart-grid, .highlights { grid-template-columns:1fr; }
-      .kpi-grid, .explain-grid { grid-template-columns:repeat(2,1fr); }
+      .kpi-grid, .action-grid, .explain-grid, .prompt-grid { grid-template-columns:repeat(2,1fr); }
       .metric-row { grid-template-columns:repeat(3,1fr); }
     }
 
     @media (max-width: 720px){
       .hero h1 { font-size:28px; }
-      .kpi-grid, .explain-grid, .fmt-grid, .chart-grid, .highlights { grid-template-columns:1fr; }
+      .kpi-grid, .action-grid, .explain-grid, .fmt-grid, .chart-grid, .prompt-grid, .highlights { grid-template-columns:1fr; }
       .fmt-stats, .metric-row { grid-template-columns:repeat(2,1fr); }
       .video-top { flex-direction:column; }
       .score-value { font-size:30px; }
@@ -663,7 +780,7 @@
       <div id="upload-zone" class="upload-zone">
         <div id="upload-icon" class="upload-icon">📂</div>
         <div id="upload-title" class="upload-title">CSV 파일을 드롭하거나 클릭해서 선택하세요</div>
-        <div class="upload-sub">표 데이터.csv는 필수, 총계.csv와 차트 데이터.csv는 선택입니다. 새로 올리면 이전 상태는 자동 초기화됩니다.</div>
+        <div class="upload-sub">표 데이터.csv는 필수, 총계.csv와 차트 데이터.csv는 선택입니다. 파일 순서는 상관없고 새로 올리면 이전 상태는 자동 초기화됩니다.</div>
         <div class="tag-row">
           <span class="tag no" id="tag-table"><span class="tag-dot"></span>표 데이터.csv 필수</span>
           <span class="tag no" id="tag-total"><span class="tag-dot"></span>총계.csv 선택</span>
@@ -672,8 +789,9 @@
         <div class="csv-guide">
           <strong>YouTube Studio CSV 받는 방법</strong>
           <p>1. YouTube Studio에서 분석하려는 채널의 분석 메뉴로 들어갑니다.</p>
-          <p>2. 기간을 선택한 뒤 오른쪽 위 내보내기 또는 다운로드에서 CSV를 선택합니다.</p>
-          <p>3. 표 데이터.csv를 먼저 올리고, 총계.csv와 차트 데이터.csv를 함께 올리면 추가 차트가 열립니다.</p>
+          <p>2. 기간을 선택합니다. 처음 비교용으로는 보통 최근 90일을 추천합니다.</p>
+          <p>3. 고급 모드로 들어간 뒤 오른쪽 위 내보내기에서 두 옵션 중 CSV를 선택합니다.</p>
+          <p>4. 표 데이터.csv는 필수이고, 총계.csv와 차트 데이터.csv를 함께 올리면 추가 차트가 열립니다. 업로드 순서는 상관없습니다.</p>
         </div>
       </div>
       <input type="file" id="file-input" accept=".csv" multiple style="display:none" />
@@ -704,6 +822,9 @@
           </div>
         </article>
       </section>
+
+      <section class="section-title">지금 가장 먼저 해야 할 것</section>
+      <section id="action-grid" class="action-grid"></section>
 
       <section class="section-title">핵심 지표</section>
       <section id="kpi-grid" class="kpi-grid"></section>
@@ -755,6 +876,9 @@
         </article>
       </section>
 
+      <section class="section-title">AI 실행 프롬프트</section>
+      <section id="prompt-grid" class="prompt-grid"></section>
+
       <section class="section-title">눈에 띄는 영상</section>
       <section class="highlights">
         <article class="highlight-card top card">
@@ -800,6 +924,7 @@
       <div class="footnote">이 리포트는 이해를 돕기 위한 요약형 해석입니다. 세부 진단이 필요하면 상위/하위 영상의 공통점부터 다시 비교해 보시면 좋습니다.</div>
     </main>
   </div>
+  <div id="toast" class="toast">복사 완료</div>
 
   <script>
     var S = {
@@ -1126,6 +1251,7 @@
       document.getElementById("empty-state").style.display = "none";
       document.getElementById("dashboard").style.display = "block";
       renderExecutive();
+      renderActions();
       renderKPI();
       renderExplain();
       renderFormats();
@@ -1133,6 +1259,7 @@
       renderTopChart();
       renderCategoryChart();
       renderVideoTrendChart();
+      renderPrompts();
       renderHighlights();
       renderVideoList();
     }
@@ -1174,6 +1301,38 @@
         "총 노출수: " + fmt(S.summary.totalImpr) + "회",
         "총 시청 시간: " + S.summary.watchHours.toFixed(1) + "시간"
       ].map(function(text) { return '<div class="bullet">' + text + '</div>'; }).join("");
+    }
+
+    function renderActions() {
+      var actions = [
+        {
+          title: "CTR 개선 필요",
+          value: "현재 CTR: " + fmtPct(S.summary.aggCTR, 2),
+          items: ["제목 구조 개선", "썸네일 메시지 명확화", "클릭 유도 문장 추가"]
+        },
+        {
+          title: "지속률 개선 필요",
+          value: "현재 지속률: " + fmtPct(S._avgRet, 1),
+          items: ["첫 30초 훅 강화", "초반 설명 줄이기", "영상 시작 구조 수정"]
+        },
+        {
+          title: "구독 전환 개선 필요",
+          value: "현재 구독 전환율: " + fmtPct(S._subConv, 3),
+          items: ["영상 끝 CTA 추가", "구독 이유 명확화", "다음 영상 연결"]
+        }
+      ];
+
+      document.getElementById("action-grid").innerHTML = actions.map(function(action, index) {
+        return '' +
+          '<article class="action-card card">' +
+            '<div class="action-step">' + (index + 1) + '</div>' +
+            '<div class="action-title">' + action.title + '</div>' +
+            '<div class="action-value">' + action.value + '</div>' +
+            '<div class="action-list">' + action.items.map(function(item) {
+              return '<span>' + item + '</span>';
+            }).join("") + '</div>' +
+          '</article>';
+      }).join("");
     }
 
     function renderKPI() {
@@ -1494,6 +1653,108 @@
       });
 
       noteEl.textContent = "상위 영상들이 하루 반짝인지, 여러 날 누적형인지 비교할 수 있습니다. 지속적으로 쌓이는 영상은 검색형/정보형 자산일 가능성이 큽니다.";
+    }
+
+    function getPromptText(type) {
+      if (type === "ctr") {
+        return "나는 유튜브 채널 운영자다.\n\n" +
+          "내 채널의 평균 CTR은 " + fmtPct(S.summary.aggCTR, 2) + "이다.\n\n" +
+          "내 영상 제목은 다음과 같다:\n\n" +
+          "[여기에 제목 붙여넣기]\n\n" +
+          "이 제목을 클릭률 중심으로 개선해줘.\n\n" +
+          "조건:\n" +
+          "- 한국 유튜브 스타일\n" +
+          "- 과장 없는 신뢰형\n" +
+          "- 제목 10개\n" +
+          "- 썸네일 문구 5개\n" +
+          "- 어떤 심리를 건드리는지 설명";
+      }
+
+      if (type === "retention") {
+        return "나는 유튜브 채널 운영자다.\n\n" +
+          "내 평균 시청 지속률은 " + fmtPct(S._avgRet, 1) + "이다.\n\n" +
+          "아래 영상 도입부를 분석해서\n" +
+          "첫 30초 이탈을 줄이는 구조로 바꿔줘.\n\n" +
+          "영상 스크립트:\n\n" +
+          "[여기에 도입부 붙여넣기]\n\n" +
+          "조건:\n" +
+          "- 초반 훅 강화\n" +
+          "- 긴 인사 제거\n" +
+          "- 궁금증 유도\n" +
+          "- 실제 멘트로 다시 작성";
+      }
+
+      return "내 채널은 조회수 대비 구독 전환율이 낮다.\n\n" +
+        "현재 구독 전환율은 " + fmtPct(S._subConv, 3) + "이다.\n\n" +
+        "영상 끝에서 사용할\n" +
+        "자연스러운 구독 유도 멘트를 만들어줘.\n\n" +
+        "채널 주제:\n" +
+        "[채널 주제 입력]\n\n" +
+        "영상 주제:\n" +
+        "[영상 주제 입력]\n\n" +
+        "조건:\n" +
+        "- 억지 구독 유도 금지\n" +
+        "- 신뢰 기반\n" +
+        "- 자연스러운 흐름\n" +
+        "- 짧은 버전 5개\n" +
+        "- 진정성 버전 5개";
+    }
+
+    function renderPrompts() {
+      var prompts = [
+        {
+          key: "ctr",
+          title: "CTR 개선용 AI 프롬프트",
+          desc: "제목과 썸네일 개선용."
+        },
+        {
+          key: "retention",
+          title: "시청 지속률 개선 프롬프트",
+          desc: "첫 30초 구조 개선용."
+        },
+        {
+          key: "subs",
+          title: "구독 전환 개선 프롬프트",
+          desc: "구독 CTA 개선용."
+        }
+      ];
+
+      document.getElementById("prompt-grid").innerHTML = prompts.map(function(prompt) {
+        var text = getPromptText(prompt.key);
+        return '' +
+          '<article class="prompt-card card">' +
+            '<h3>' + prompt.title + '</h3>' +
+            '<div class="prompt-desc">' + prompt.desc + '</div>' +
+            '<div class="prompt-preview">' + esc(text) + '</div>' +
+            '<button class="copy-btn" onclick="copyPrompt(\'' + prompt.key + '\')">복사하기</button>' +
+          '</article>';
+      }).join("");
+    }
+
+    async function copyPrompt(type) {
+      var text = getPromptText(type);
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (err) {
+        var area = document.createElement("textarea");
+        area.value = text;
+        area.style.position = "fixed";
+        area.style.left = "-9999px";
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        document.body.removeChild(area);
+      }
+      showToast();
+    }
+
+    function showToast() {
+      var toast = document.getElementById("toast");
+      toast.classList.add("show");
+      clearTimeout(S._toastTimer);
+      S._toastTimer = setTimeout(function() {
+        toast.classList.remove("show");
+      }, 1400);
     }
 
     function performanceLabel(video) {
