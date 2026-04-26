@@ -97,6 +97,24 @@
       font-size:15px;
       max-width:780px;
     }
+    .hero-feature {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .hero-feature-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
     .hero-status{
       min-width:250px;
       padding:16px 18px;
@@ -812,6 +830,12 @@
           <p class="hero-sub">
             CSV를 올리면 맨 위에서 결론부터 보고, 아래에서 왜 그런 결과가 나왔는지 차트와 설명으로 확인할 수 있게 구성했습니다.
           </p>
+          <div class="hero-feature">
+            <div class="hero-feature-item">📊 분석 결과를 클라이언트용 리포트로 저장</div>
+            <div class="hero-feature-item">✉️ 채널명·수신자 입력 후 HTML 파일 한 번에 전달</div>
+            <div class="hero-feature-item">🔒 데이터는 브라우저 안에서만 처리 · 서버 저장 없음</div>
+            <div class="hero-feature-item">⚡ 설치 없이 링크 하나로 바로 사용</div>
+          </div>
         </div>
         <div class="hero-status">
           <div class="hero-status-label">읽는 순서</div>
@@ -1868,6 +1892,10 @@
       if (recipientInput === null) return;
       var recipientName = String(recipientInput || "").trim();
 
+      var senderInput = prompt("보내는 분 이름을 입력하세요 (선택, 건너뛰려면 확인)");
+      if (senderInput === null) return;
+      var senderName = String(senderInput || "").trim();
+
       var videoCountInput = prompt("리포트에 포함할 영상 수를 입력하세요 (기본값: 10)", "10");
       if (videoCountInput === null) return;
       var requestedCount = parseInt(String(videoCountInput || "").trim(), 10);
@@ -1900,6 +1928,9 @@
       }
       if (recipientName) {
         metaHTML += '<div style="font-size:14px;color:var(--muted);">수신: ' + esc(recipientName) + '님</div>';
+      }
+      if (senderName) {
+        metaHTML += '<div style="font-size:14px;color:var(--muted);">발신: ' + esc(senderName) + '</div>';
       }
       if (dates.length) {
         metaHTML += '<div>분석 기간: ' + esc(prettyDate(dates[0]) + " ~ " + prettyDate(dates[dates.length - 1])) + '</div>';
