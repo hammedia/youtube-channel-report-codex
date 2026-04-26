@@ -327,47 +327,49 @@
       margin-bottom:22px;
     }
     .action-card{
-      padding:18px;
+      padding:24px;
       background:var(--panel);
     }
     .action-step{
-      width:28px;
-      height:28px;
+      width:42px;
+      height:42px;
       display:flex;
       align-items:center;
       justify-content:center;
       border-radius:999px;
       background:#2d2118;
       color:#fff8ee;
-      font-size:13px;
+      font-size:20px;
       font-weight:900;
-      margin-bottom:12px;
+      margin-bottom:16px;
     }
     .action-title{
-      font-size:17px;
+      font-size:30px;
       font-weight:900;
-      margin-bottom:6px;
+      line-height:1.2;
+      margin-bottom:10px;
     }
     .action-value{
       color:var(--brand);
-      font-size:13px;
+      font-size:22px;
       font-weight:800;
-      margin-bottom:10px;
+      margin-bottom:14px;
     }
     .action-list{
       display:grid;
-      gap:5px;
+      gap:8px;
       color:#5c4d41;
-      font-size:13px;
+      font-size:22px;
+      line-height:1.4;
     }
     .action-list span::before{
       content:"";
       display:inline-block;
-      width:5px;
-      height:5px;
+      width:8px;
+      height:8px;
       border-radius:50%;
       background:var(--brand);
-      margin-right:8px;
+      margin-right:10px;
       transform:translateY(-1px);
     }
 
@@ -754,6 +756,8 @@
       .fmt-stats, .metric-row { grid-template-columns:repeat(2,1fr); }
       .video-top { flex-direction:column; }
       .score-value { font-size:30px; }
+      .action-title { font-size:26px; }
+      .action-value, .action-list { font-size:19px; }
     }
   </style>
 </head>
@@ -1010,9 +1014,10 @@
     function identifyCSV(rows) {
       var head = rows && rows[0];
       if (!head) return null;
-      if (head.length === 2 && String(head[0]).indexOf("날짜") >= 0) return "total";
-      if (head.length === 6 && String(head[0]).indexOf("날짜") >= 0) return "chart";
-      if (head.length >= 9) return "table";
+      var joined = head.map(function(cell) { return String(cell || "").trim(); }).join("|");
+      if (joined.indexOf("동영상 제목") >= 0 && joined.indexOf("노출 클릭률") >= 0) return "table";
+      if (joined === "날짜|조회수") return "total";
+      if (joined.indexOf("날짜") >= 0 && joined.indexOf("콘텐츠") >= 0 && joined.indexOf("동영상 제목") >= 0 && head.length === 6) return "chart";
       return null;
     }
 
@@ -1081,34 +1086,50 @@
         throw new Error("표 데이터 형식이 예상과 다릅니다.");
       }
 
+      var head = rows[0].map(function(cell) { return String(cell || "").trim(); });
+      var idx = {
+        id: head.indexOf("콘텐츠"),
+        title: head.indexOf("동영상 제목"),
+        uploadDate: head.indexOf("동영상 게시 시간"),
+        lenSec: head.indexOf("길이"),
+        views: head.indexOf("조회수"),
+        watchH: head.indexOf("시청 시간(단위: 시간)"),
+        subs: head.indexOf("구독자"),
+        impr: head.indexOf("노출수"),
+        ctr: head.indexOf("노출 클릭률 (%)")
+      };
+      if (Object.keys(idx).some(function(key) { return idx[key] < 0; })) {
+        throw new Error("표 데이터.csv의 컬럼명이 예상과 다릅니다. YouTube Studio 고급 모드에서 받은 표 데이터 CSV를 올려주세요.");
+      }
+
       var s = rows[1];
       var summary = {
-        totalViews: parseIntNum(s[4]),
-        watchHours: parseNum(s[5]),
-        totalSubs: parseIntNum(s[6]),
-        totalImpr: parseIntNum(s[7]),
-        aggCTR: parseNum(s[8])
+        totalViews: parseIntNum(s[idx.views]),
+        watchHours: parseNum(s[idx.watchH]),
+        totalSubs: parseIntNum(s[idx.subs]),
+        totalImpr: parseIntNum(s[idx.impr]),
+        aggCTR: parseNum(s[idx.ctr])
       };
 
       var videos = [];
       for (var i = 2; i < rows.length; i++) {
         var r = rows[i] || [];
-        if (!r[0] || !String(r[0]).trim()) continue;
-        var views = parseIntNum(r[4]);
+        if (!r[idx.id] || !String(r[idx.id]).trim()) continue;
+        var views = parseIntNum(r[idx.views]);
         if (!views) continue;
 
-        var lenSec = parseIntNum(r[3]);
-        var watchH = parseNum(r[5]);
-        var ctr = parseNum(r[8]);
-        var subs = parseIntNum(r[6]);
-        var impr = parseIntNum(r[7]);
+        var lenSec = parseIntNum(r[idx.lenSec]);
+        var watchH = parseNum(r[idx.watchH]);
+        var ctr = parseNum(r[idx.ctr]);
+        var subs = parseIntNum(r[idx.subs]);
+        var impr = parseIntNum(r[idx.impr]);
         var retention = (views > 0 && lenSec > 0) ? Math.min((watchH * 3600) / (views * lenSec) * 100, 100) : 0;
         var avgWatchSec = (views > 0) ? (watchH * 3600 / views) : 0;
 
         videos.push({
-          id: String(r[0]).trim(),
-          title: String(r[1] || "").trim() || "(제목 없음)",
-          uploadDate: normalizeDateString(r[2]),
+          id: String(r[idx.id]).trim(),
+          title: String(r[idx.title] || "").trim() || "(제목 없음)",
+          uploadDate: normalizeDateString(r[idx.uploadDate]),
           lenSec: lenSec,
           views: views,
           watchH: watchH,
@@ -1118,7 +1139,7 @@
           retention: retention,
           avgWatchSec: avgWatchSec,
           subConvRate: views > 0 ? subs / views * 100 : 0,
-          category: getCategory(r[1]),
+          category: getCategory(r[idx.title]),
           isShorts: lenSec > 0 && lenSec <= 60
         });
       }
