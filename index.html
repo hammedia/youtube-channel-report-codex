@@ -3012,7 +3012,7 @@
       Object.keys(S.charts).forEach(function(key) {
         var chart = S.charts[key];
         if (!chart || !chart.canvas || !chart.canvas.id || typeof chart.toBase64Image !== "function") return;
-        chartImages[chart.canvas.id] = chart.toBase64Image("image/jpeg", 0.85);
+        chartImages[chart.canvas.id] = chart.toBase64Image("image/png");
       });
 
       var styleTag = document.querySelector("style");
