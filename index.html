@@ -2061,6 +2061,352 @@
       return "몇몇 영상이 버티고 있지만 구조적인 보완이 필요합니다.";
     }
 
+    function getReportMetaData(includedVideoCount) {
+      var dates = S.videos
+        .map(function(video) { return normalizeDateString(video.uploadDate); })
+        .filter(Boolean)
+        .sort();
+      return {
+        channelName: S.detectedChannelName || "",
+        analysisPeriod: S.detectedPeriod || (dates.length ? prettyDate(dates[0]) + " ~ " + prettyDate(dates[dates.length - 1]) : ""),
+        createdAt: new Date().toISOString(),
+        includedVideoCount: includedVideoCount || S.videos.length,
+        sourceType: S.chart ? "zip_or_full_csv" : (S.total ? "table_total_csv" : "table_csv")
+      };
+    }
+
+    function getExecutiveData() {
+      var videos = S.videos.slice();
+      var topVideo = videos.slice().sort(function(a, b) { return b.views - a.views; })[0] || null;
+      var topCTR = videos.slice().sort(function(a, b) { return b.ctr - a.ctr; })[0] || null;
+      var topRet = videos.filter(function(v) { return v.lenSec > 60; }).sort(function(a, b) { return b.retention - a.retention; })[0] || videos[0] || null;
+      var avgRet = avg(videos.filter(function(v) { return v.lenSec > 0; }), "retention");
+      var subConv = S.summary.totalViews > 0 ? S.summary.totalSubs / S.summary.totalViews * 100 : 0;
+      var score = overallScore(avgRet, subConv);
+      var headline = summaryTone(score) + " ";
+      if (S.summary.aggCTR < 4) headline += "첫 클릭을 만드는 힘이 약한 편입니다.";
+      else if (avgRet < 30) headline += "클릭 이후 시청 유지가 가장 큰 과제입니다.";
+      else headline += "상위 영상의 패턴을 확장하면 더 커질 여지가 있습니다.";
+
+      var bullets = [];
+      if (topVideo) bullets.push("가장 많이 본 영상은 \"" + topVideo.title + "\"이며, 단일 영상 의존도가 높은지 먼저 체크할 필요가 있습니다.");
+      if (topCTR) bullets.push("가장 클릭이 잘 된 영상은 \"" + topCTR.title + "\"입니다. 제목과 썸네일의 방향성을 복제 후보로 삼을 수 있습니다.");
+      if (topRet) bullets.push("지속률이 가장 좋은 일반 영상은 \"" + topRet.title + "\"입니다. 초반 훅과 전개 구조를 참고하기 좋습니다.");
+
+      var highCtrLowRetCount = videos.filter(function(video) {
+        return video.ctr >= S.summary.aggCTR && video.retention < avgRet;
+      }).length;
+      var lowCtrHighRetCount = videos.filter(function(video) {
+        return video.ctr < S.summary.aggCTR && video.retention >= avgRet;
+      }).length;
+      function avgUploadInterval(items) {
+        var sorted = items.slice().sort(function(a, b) {
+          return new Date(a.uploadDate) - new Date(b.uploadDate);
+        });
+        if (sorted.length < 2) return null;
+        var totalDays = 0;
+        for (var i = 1; i < sorted.length; i++) {
+          totalDays += (new Date(sorted[i].uploadDate) - new Date(sorted[i - 1].uploadDate))
+            / (1000 * 60 * 60 * 24);
+        }
+        return totalDays / (sorted.length - 1);
+      }
+      var longVideos = videos.filter(function(video) { return !video.isShorts; });
+      var shortsVideos = videos.filter(function(video) { return video.isShorts; });
+      var longInterval = avgUploadInterval(longVideos);
+      var shortsInterval = avgUploadInterval(shortsVideos);
+      var allInterval = avgUploadInterval(videos);
+      var shortsRatio = videos.length ? shortsVideos.length / videos.length : 0;
+      if (videos.length && highCtrLowRetCount / videos.length >= 0.4) {
+        bullets.push("클릭은 만들지만 내용에서 이탈이 잦습니다. 도입부 구성과 내용 전개 방식을 전반적으로 점검할 시점입니다.");
+      }
+      if (videos.length && lowCtrHighRetCount / videos.length >= 0.4) {
+        bullets.push("내용 품질은 좋지만 제목과 썸네일이 채널 성장을 막고 있습니다. 클릭을 만드는 제목 설계가 지금 가장 중요한 과제입니다.");
+      }
+      var recentFive = videos.slice().sort(function(a, b) {
+        return new Date(b.uploadDate) - new Date(a.uploadDate);
+      }).slice(0, 5);
+      if (recentFive.length >= 5) {
+        var recentWeakCount = recentFive.filter(function(video) {
+          return video.ctr < S.summary.aggCTR && video.retention < avgRet;
+        }).length;
+        var recentStrongCount = recentFive.filter(function(video) {
+          return video.ctr >= S.summary.aggCTR && video.retention >= avgRet;
+        }).length;
+        if (recentWeakCount >= 4) bullets.push("최근 업로드한 영상 대부분이 채널 평균을 밑돌고 있습니다. 제목 방향, 주제 선택, 도입부 구성 중 무엇이 바뀌었는지 점검이 필요합니다.");
+        if (recentStrongCount >= 4) bullets.push("최근 영상들의 성과가 채널 평균을 꾸준히 웃돌고 있습니다. 현재 방향을 유지하면서 업로드 주기를 안정화해보세요.");
+      }
+      if (S.summary.totalViews > 0) {
+        var fanConvRate = S.summary.totalSubs / S.summary.totalViews * 100;
+        if (fanConvRate < 0.05) bullets.push("조회수 대비 구독자 전환이 매우 낮습니다. 시청자가 채널을 기억하게 만드는 요소가 부족한 상태입니다. 채널 정체성을 명확히 하고 구독 유도 멘트를 강화해보세요.");
+        if (fanConvRate >= 0.3) bullets.push("조회수 대비 구독 전환이 우수합니다. 시청자가 채널을 신뢰하고 있다는 신호입니다.");
+      }
+      var impressionVideos = videos.filter(function(video) { return video.impr > 0; });
+      if (impressionVideos.length >= 5) {
+        var lowEfficiencyCount = impressionVideos.filter(function(video) {
+          return video.ctr < S.summary.aggCTR * 0.5;
+        }).length;
+        if (lowEfficiencyCount / impressionVideos.length >= 0.3) bullets.push("노출은 충분히 받고 있지만 클릭으로 이어지지 않는 영상이 많습니다. 알고리즘이 밀어주는 구간을 제대로 활용하지 못하고 있습니다. 이 시기의 썸네일과 제목을 집중적으로 점검해보세요.");
+      }
+      if (longVideos.length >= 2 && longInterval != null && longInterval > 14) bullets.push("일반 영상 평균 업로드 주기가 " + Math.floor(longInterval) + "일입니다. 2주에 하나 이상 올리지 못하면 알고리즘 노출이 줄어들 수 있습니다. 주 1회를 목표로 업로드 주기를 줄여보세요.");
+      if (shortsVideos.length >= 2 && shortsInterval != null && shortsInterval > 3) bullets.push("쇼츠 평균 업로드 주기가 " + Math.floor(shortsInterval) + "일입니다. 쇼츠는 3일에 하나 이상이 알고리즘 노출에 유리합니다.");
+      if ((longVideos.length < 2 || longInterval == null) && (shortsVideos.length < 2 || shortsInterval == null) && allInterval != null && allInterval > 10) bullets.push("전체 영상 평균 업로드 주기가 " + Math.floor(allInterval) + "일입니다. 꾸준한 업로드가 알고리즘 노출 유지에 중요합니다.");
+      if (longInterval != null && longInterval < 3) bullets.push("일반 영상 업로드 주기가 매우 짧습니다. 양보다 각 영상의 완성도와 CTR을 먼저 안정시키는 게 효율적입니다.");
+      if (shortsRatio >= 0.7) bullets.push("영상 대부분이 쇼츠로 구성되어 있습니다. 쇼츠는 노출엔 유리하지만 구독 전환과 팬 형성에는 일반 영상이 더 효과적입니다.");
+      if (S.summary.aggCTR < 3) bullets.push("채널 전반의 CTR이 3% 미만으로 낮습니다. 알고리즘이 노출은 시켜주고 있지만 클릭으로 이어지지 않는 상태입니다. 썸네일과 제목 전략을 채널 전체 차원에서 바꿔야 할 시점입니다.");
+
+      return {
+        headline: headline,
+        description: "총 조회수 " + fmt(S.summary.totalViews) + ", CTR " + fmtPct(S.summary.aggCTR, 2) +
+          ", 평균 지속률 " + fmtPct(avgRet, 1) + ", 구독자 순증 +" + fmt(S.summary.totalSubs) +
+          "를 기준으로 채널 상태를 요약했습니다.",
+        bullets: bullets,
+        healthScore: score,
+        healthLabel: score + "점",
+        healthCopy: summaryTone(score) + " CTR, 지속률, 구독 전환을 이해용으로 합산한 점수입니다.",
+        conditionStats: [
+          { label: "영상 수", value: fmt(videos.length) + "개" },
+          { label: "총 노출수", value: fmt(S.summary.totalImpr) + "회" },
+          { label: "총 시청 시간", value: S.summary.watchHours.toFixed(1) + "시간" }
+        ],
+        avgRetention: avgRet,
+        subConversionRate: subConv
+      };
+    }
+
+    function getActionData() {
+      var actions = [
+        {
+          key: "ctr",
+          title: "CTR 개선 필요",
+          value: "현재 CTR: " + fmtPct(S.summary.aggCTR, 2),
+          items: ["제목 구조 개선", "썸네일 메시지 명확화", "클릭 유도 문장 추가"],
+          priority: actionPriority("ctr", S.summary.aggCTR)
+        },
+        {
+          key: "retention",
+          title: "지속률 개선 필요",
+          value: "현재 지속률: " + fmtPct(S._avgRet, 1),
+          items: ["첫 30초 훅 강화", "초반 설명 줄이기", "영상 시작 구조 수정"],
+          priority: actionPriority("retention", S._avgRet)
+        },
+        {
+          key: "subConv",
+          title: "구독 전환 개선 필요",
+          value: "현재 구독 전환율: " + fmtPct(S._subConv, 3),
+          items: ["영상 끝 CTA 추가", "구독 이유 명확화", "다음 영상 연결"],
+          priority: actionPriority("subConv", S._subConv)
+        }
+      ];
+      actions.sort(function(a, b) {
+        if (b.priority !== a.priority) return b.priority - a.priority;
+        return a.key.localeCompare(b.key);
+      });
+      return actions.map(function(action, index) {
+        return Object.assign({ rank: index + 1 }, action);
+      });
+    }
+
+    function getKpiData() {
+      return [
+        {
+          key: "views",
+          label: "총 조회수",
+          value: fmt(S.summary.totalViews),
+          status: scoreLevel(S.summary.totalViews, 100000, 10000),
+          copy: "채널 전체 도달 규모입니다. " + (S.summary.totalViews >= 100000 ? "안정적인 규모입니다." : "상위 영상 의존도를 함께 봐야 합니다."),
+          accent: "#9a3412"
+        },
+        {
+          key: "ctr",
+          label: "평균 CTR",
+          value: fmtPct(S.summary.aggCTR, 2),
+          status: scoreLevel(S.summary.aggCTR, 5, 2),
+          copy: metricSummary("ctr", S.summary.aggCTR),
+          accent: "#1857a6"
+        },
+        {
+          key: "retention",
+          label: "평균 지속률",
+          value: fmtPct(S._avgRet, 1),
+          status: scoreLevel(S._avgRet, 35, 20),
+          copy: metricSummary("retention", S._avgRet),
+          accent: "#b45309"
+        },
+        {
+          key: "subConvRate",
+          label: "구독 전환율",
+          value: fmtPct(S._subConv, 3),
+          status: scoreLevel(S._subConv, 0.5, 0.1),
+          copy: metricSummary("subConvRate", S._subConv),
+          accent: "#0f766e"
+        }
+      ].map(function(item) {
+        return {
+          key: item.key,
+          label: item.label,
+          value: item.value,
+          statusLabel: item.status.label,
+          statusClass: item.status.className,
+          copy: item.copy,
+          accent: item.accent
+        };
+      });
+    }
+
+    function getExplainData() {
+      var videos = S.videos;
+      var avgViews = videos.reduce(function(sum, v) { return sum + v.views; }, 0) / videos.length;
+      var shorts = videos.filter(function(v) { return v.isShorts; });
+      var longs = videos.filter(function(v) { return !v.isShorts; });
+      return [
+        {
+          title: "지금 제일 먼저 볼 것",
+          body: S.summary.aggCTR < 4
+            ? "현재는 내용보다 클릭 문제가 먼저 보입니다. 좋은 정보가 있어도 썸네일과 제목에서 많이 놓치고 있을 가능성이 큽니다."
+            : S._avgRet < 30
+              ? "클릭은 어느 정도 되지만 시청 유지가 약합니다. 초반 30초 구성과 핵심 메시지 배치를 먼저 손보는 편이 좋습니다."
+              : "기본 지표는 나쁘지 않습니다. 상위 영상의 주제와 표현 방식을 반복 가능한 포맷으로 만드는 단계에 가깝습니다."
+        },
+        {
+          title: "평균 조회수의 의미",
+          body: "영상 1개당 평균 조회수는 약 " + fmt(Math.round(avgViews)) + "회입니다. 다만 평균은 상위 몇 개 영상이 끌어올릴 수 있어서, 아래 Top 3와 하위 3를 같이 보셔야 합니다."
+        },
+        {
+          title: "포맷 해석 가이드",
+          body: shorts.length && longs.length
+            ? "쇼츠와 일반 영상의 역할이 다를 수 있습니다. 쇼츠는 유입, 일반 영상은 신뢰 형성과 구독 전환 쪽에서 강한지 아래 비교 카드로 읽어보시면 됩니다."
+            : "현재 데이터는 한쪽 포맷 비중이 높습니다. 포맷 자체의 우열보다 주제와 초반 훅 설계가 더 큰 영향을 줄 수 있습니다."
+        }
+      ];
+    }
+
+    function getFormatData() {
+      function build(arr, type) {
+        if (!arr.length) {
+          return {
+            count: 0,
+            totalViews: 0,
+            avgViews: 0,
+            avgCtr: 0,
+            avgRetention: 0,
+            subGain: 0,
+            copy: type === "shorts" ? "이번 데이터에는 쇼츠가 없습니다." : "이번 데이터에는 일반 영상이 없습니다."
+          };
+        }
+        var totalViews = arr.reduce(function(sum, v) { return sum + v.views; }, 0);
+        var totalSubs = arr.reduce(function(sum, v) { return sum + v.subs; }, 0);
+        return {
+          count: arr.length,
+          totalViews: totalViews,
+          avgViews: Math.round(totalViews / arr.length),
+          avgCtr: +avg(arr, "ctr").toFixed(2),
+          avgRetention: +avg(arr, "retention").toFixed(1),
+          subGain: totalSubs,
+          copy: type === "shorts"
+            ? "짧은 영상은 빠른 소비가 가능해 유입 확보에 유리한지 확인하는 영역입니다."
+            : "긴 영상은 시청 유지와 전문성 전달, 팬 전환 쪽에서 강한지 확인하는 영역입니다."
+        };
+      }
+      return {
+        shorts: build(S.videos.filter(function(v) { return v.isShorts; }), "shorts"),
+        longform: build(S.videos.filter(function(v) { return !v.isShorts; }), "longform")
+      };
+    }
+
+    function getChartDataForReport() {
+      var dailyViews = S.total ? processTotalData(S.total) : [];
+      var topVideosByViews = S.videos.slice().sort(function(a, b) { return b.views - a.views; }).slice(0, 10).map(compactVideo);
+      var catMap = {};
+      S.videos.forEach(function(v) {
+        if (!catMap[v.category]) catMap[v.category] = { ctr: [], ret: [], views: 0, count: 0 };
+        catMap[v.category].ctr.push(v.ctr);
+        catMap[v.category].ret.push(v.retention);
+        catMap[v.category].views += v.views;
+        catMap[v.category].count += 1;
+      });
+      var categoryPerformance = Object.keys(catMap).sort(function(a, b) {
+        return catMap[b].views - catMap[a].views;
+      }).map(function(key) {
+        return {
+          category: key,
+          count: catMap[key].count,
+          totalViews: catMap[key].views,
+          avgCtr: +(catMap[key].ctr.reduce(function(s, x) { return s + x; }, 0) / catMap[key].ctr.length).toFixed(2),
+          avgRetention: +(catMap[key].ret.reduce(function(s, x) { return s + x; }, 0) / catMap[key].ret.length).toFixed(1)
+        };
+      });
+      var topVideoTimeline = S.chart ? processChartData(S.chart) : { dates: [], byVideo: {}, top5: [] };
+      return {
+        dailyViews: dailyViews,
+        topVideosByViews: topVideosByViews,
+        categoryPerformance: categoryPerformance,
+        topVideoTimeline: topVideoTimeline
+      };
+    }
+
+    function getHighlightData() {
+      return {
+        top: getTopVideos(3).map(function(video) {
+          return Object.assign(compactVideo(video), { explanation: explainVideo(video) });
+        }),
+        bottom: getBottomVideos(3).map(function(video) {
+          return Object.assign(compactVideo(video), { explanation: explainVideo(video) });
+        })
+      };
+    }
+
+    function buildReportData(options) {
+      options = options || {};
+      if (!S.summary || !S.videos.length) return null;
+      var executive = getExecutiveData();
+      S._avgRet = executive.avgRetention;
+      S._subConv = executive.subConversionRate;
+      var sortedVideos = S.videos.slice().sort(function(a, b) {
+        return b[(options.sortBy || S.sortBy)] - a[(options.sortBy || S.sortBy)];
+      });
+      var includedCount = options.includedVideoCount || sortedVideos.length;
+      return {
+        meta: getReportMetaData(includedCount),
+        executive: executive,
+        actions: getActionData(),
+        kpis: getKpiData(),
+        explanations: getExplainData(),
+        formats: getFormatData(),
+        charts: getChartDataForReport(),
+        ai: {
+          hasAnalysis: !!(S.aiAnalysis && !S.aiError),
+          requestedAt: S.aiRequestedAt || "",
+          result: S.aiAnalysis || null,
+          fallbackGuide: {
+            title: "Gemini API 키를 무료로 연결하면 추가 분석을 받아볼 수 있습니다",
+            items: [
+              "전략 유효성 진단",
+              "다음 달 실행 과제",
+              "썸네일·제목 개선 포인트",
+              "포맷·업로드 운영 제안"
+            ]
+          }
+        },
+        highlights: getHighlightData(),
+        videos: sortedVideos.slice(0, includedCount).map(function(video) {
+          return Object.assign(compactVideo(video), {
+            id: video.id,
+            lenSec: video.lenSec,
+            watchHours: video.watchH,
+            subscribersGained: video.subs,
+            impressions: video.impr,
+            explanation: explainVideo(video),
+            performance: performanceLabel(video)
+          });
+        }),
+        strategy: {
+          selectedItems: S.monthlyStrategy.selectedItems.slice(),
+          note: S.monthlyStrategy.note
+        }
+      };
+    }
+
     function render() {
       if (!S.summary || !S.videos.length) {
         document.getElementById("dashboard").style.display = "none";
