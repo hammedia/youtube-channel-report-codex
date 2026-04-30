@@ -1220,7 +1220,7 @@
     }
 
     @page {
-      size: A4 portrait;
+      size: A4 landscape;
       margin: 12mm;
     }
 
@@ -1229,11 +1229,11 @@
         margin:0;
         padding:0;
         background:#fff;
+        background-image:none;
       }
       .app{
         max-width:100%;
         padding:0;
-        zoom:.5;
       }
       .card, section{
         page-break-inside:avoid;
@@ -1569,8 +1569,23 @@
       return values.reduce(function(sum, item) { return sum + Number(item[key] || 0); }, 0) / values.length;
     }
 
+    function nfcText(value) {
+      try {
+        return String(value == null ? "" : value).normalize("NFC");
+      } catch (err) {
+        return String(value == null ? "" : value);
+      }
+    }
+
+    function shortLabel(value, maxLength) {
+      var text = nfcText(value).trim();
+      var chars = Array.from(text);
+      if (chars.length <= maxLength) return text;
+      return chars.slice(0, maxLength).join("") + "...";
+    }
+
     function esc(s) {
-      return String(s == null ? "" : s)
+      return nfcText(s)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
@@ -1875,7 +1890,7 @@
 
         videos.push({
           id: String(r[idx.id]).trim(),
-          title: String(r[idx.title] || "").trim() || "(제목 없음)",
+          title: nfcText(r[idx.title]).trim() || "(제목 없음)",
           uploadDate: normalizeDateString(r[idx.uploadDate]),
           lenSec: lenSec,
           views: views,
@@ -1920,7 +1935,7 @@
 
         if (!byVideo[vid]) {
           byVideo[vid] = {
-            title: String(r[2] || "").trim(),
+            title: nfcText(r[2]).trim(),
             daily: {},
             total: 0
           };
@@ -2778,9 +2793,7 @@
 
     function renderTopChart() {
       var top10 = S.videos.slice().sort(function(a, b) { return b.views - a.views; }).slice(0, 10);
-      var labels = top10.map(function(v) {
-        return v.title.length > 14 ? v.title.slice(0, 14) + "…" : v.title;
-      });
+      var labels = top10.map(function(v) { return shortLabel(v.title, 10); });
       var colors = top10.map(function(v) {
         var strong = v.ctr >= S.summary.aggCTR && v.retention >= S._avgRet;
         var weak = v.ctr < S.summary.aggCTR && v.retention < S._avgRet;
@@ -2813,9 +2826,10 @@
               grid: { color: "#efe3d4" }
             },
             y: {
+              afterFit: function(scale) { scale.width = Math.max(scale.width, 120); },
               ticks: {
                 color: "#726456",
-                font: { size: 8 }
+                font: { size: 11 }
               },
               grid: { display: false }
             }
@@ -3419,13 +3433,225 @@
       });
     }
 
+    function createReportHtml(parts) {
+      return '' +
+        '<!DOCTYPE html>' +
+        '<html lang="ko">' +
+        '<head>' +
+          '<meta charset="UTF-8" />' +
+          '<meta name="viewport" content="width=1120, initial-scale=1.0" />' +
+          '<title>' + esc(parts.docTitle) + '</title>' +
+          parts.styleHTML +
+          parts.exportStyleHTML +
+        '</head>' +
+        '<body>' + parts.exportHTML + parts.autoPrintScript + '</body>' +
+        '</html>';
+    }
+
+    function createReportChartImages() {
+      var images = {};
+      if (typeof Chart === "undefined") return images;
+
+      var stage = document.createElement("div");
+      stage.style.cssText = "position:fixed;left:-9999px;top:-9999px;width:900px;height:auto;visibility:hidden;pointer-events:none;";
+      document.body.appendChild(stage);
+
+      function mergeOptions(options) {
+        options = options || {};
+        options.responsive = false;
+        options.maintainAspectRatio = false;
+        options.animation = false;
+        options.devicePixelRatio = 2;
+        return options;
+      }
+
+      function capture(id, config, height) {
+        var canvas = document.createElement("canvas");
+        canvas.width = 900;
+        canvas.height = height || 260;
+        canvas.style.width = "900px";
+        canvas.style.height = (height || 260) + "px";
+        stage.appendChild(canvas);
+        config.options = mergeOptions(config.options);
+        var chart = new Chart(canvas.getContext("2d"), config);
+        chart.update("none");
+        images[id] = {
+          src: chart.toBase64Image(),
+          height: "190px"
+        };
+        chart.destroy();
+        stage.removeChild(canvas);
+      }
+
+      try {
+        if (S.total) {
+          var trendData = processTotalData(S.total);
+          capture("trend-chart", {
+            type: "line",
+            data: {
+              labels: trendData.map(function(d) { return d.date; }),
+              datasets: [{
+                label: "조회수",
+                data: trendData.map(function(d) { return d.views; }),
+                borderColor: "#9a3412",
+                backgroundColor: "rgba(154,52,18,.12)",
+                fill: true,
+                pointRadius: 0,
+                tension: 0.28,
+                borderWidth: 2.5
+              }]
+            },
+            options: {
+              plugins: { legend: { display: false } },
+              scales: {
+                x: {
+                  ticks: {
+                    color: "#726456",
+                    callback: function(value, index) {
+                      var label = trendData[index] && trendData[index].date || "";
+                      return label ? label.slice(5) : "";
+                    },
+                    maxRotation: 0
+                  },
+                  grid: { color: "#efe3d4" }
+                },
+                y: { ticks: { color: "#726456" }, grid: { color: "#efe3d4" } }
+              }
+            }
+          }, 250);
+        }
+
+        var top5 = S.videos.slice().sort(function(a, b) { return b.views - a.views; }).slice(0, 5);
+        if (top5.length) {
+          capture("top-chart", {
+            type: "bar",
+            data: {
+              labels: top5.map(function(v) { return shortLabel(v.title, 10); }),
+              datasets: [{
+                label: "조회수",
+                data: top5.map(function(v) { return v.views; }),
+                backgroundColor: top5.map(function(v) {
+                  var strong = v.ctr >= S.summary.aggCTR && v.retention >= S._avgRet;
+                  var weak = v.ctr < S.summary.aggCTR && v.retention < S._avgRet;
+                  return strong ? "rgba(22,101,52,.75)" : weak ? "rgba(185,28,28,.65)" : "rgba(154,52,18,.68)";
+                }),
+                borderRadius: 8
+              }]
+            },
+            options: {
+              indexAxis: "y",
+              layout: { padding: { left: 8, right: 18 } },
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { ticks: { color: "#726456", font: { size: 11 } }, grid: { color: "#efe3d4" } },
+                y: {
+                  ticks: { color: "#726456", font: { size: 11 }, padding: 8 },
+                  grid: { display: false }
+                }
+              }
+            }
+          }, 250);
+        }
+
+        var catMap = {};
+        S.videos.forEach(function(v) {
+          if (!catMap[v.category]) catMap[v.category] = { ctr: [], ret: [], views: 0 };
+          catMap[v.category].ctr.push(v.ctr);
+          catMap[v.category].ret.push(v.retention);
+          catMap[v.category].views += v.views;
+        });
+        var catLabels = Object.keys(catMap).sort(function(a, b) { return catMap[b].views - catMap[a].views; });
+        if (catLabels.length) {
+          capture("cat-chart", {
+            type: "bar",
+            data: {
+              labels: catLabels.map(function(label) { return shortLabel(label, 12); }),
+              datasets: [
+                {
+                  label: "평균 CTR",
+                  data: catLabels.map(function(key) { return +(catMap[key].ctr.reduce(function(s, x) { return s + x; }, 0) / catMap[key].ctr.length).toFixed(2); }),
+                  backgroundColor: "rgba(154,52,18,.72)",
+                  borderRadius: 6,
+                  yAxisID: "yCtr"
+                },
+                {
+                  label: "평균 지속률",
+                  data: catLabels.map(function(key) { return +(catMap[key].ret.reduce(function(s, x) { return s + x; }, 0) / catMap[key].ret.length).toFixed(1); }),
+                  backgroundColor: "rgba(15,118,110,.70)",
+                  borderRadius: 6,
+                  yAxisID: "yRet"
+                }
+              ]
+            },
+            options: {
+              plugins: { legend: { labels: { color: "#726456", boxWidth: 28, font: { size: 11 } } } },
+              scales: {
+                x: { ticks: { color: "#726456", font: { size: 11 } }, grid: { display: false } },
+                yCtr: { position: "left", ticks: { color: "#9a3412", callback: function(value) { return value + "%"; } }, grid: { color: "#efe3d4" } },
+                yRet: { position: "right", ticks: { color: "#0f766e", callback: function(value) { return value + "%"; } }, grid: { drawOnChartArea: false } }
+              }
+            }
+          }, 250);
+        }
+
+        if (S.chart) {
+          var parsed = processChartData(S.chart);
+          if (parsed.top5.length) {
+            var colors = ["#9a3412", "#0f766e", "#b45309", "#7c3aed", "#2563eb"];
+            capture("video-trend-chart", {
+              type: "line",
+              data: {
+                labels: parsed.dates,
+                datasets: parsed.top5.map(function(id, index) {
+                  var info = parsed.byVideo[id];
+                  return {
+                    label: shortLabel(info.title, 10),
+                    data: parsed.dates.map(function(date) { return info.daily[date] || 0; }),
+                    borderColor: colors[index],
+                    pointRadius: 0,
+                    borderWidth: 2,
+                    tension: 0.25
+                  };
+                })
+              },
+              options: {
+                plugins: { legend: { labels: { color: "#726456", boxWidth: 10, font: { size: 10 } } } },
+                scales: {
+                  x: {
+                    ticks: {
+                      color: "#726456",
+                      callback: function(value, index) {
+                        var label = parsed.dates[index] || "";
+                        return label ? label.slice(5) : "";
+                      },
+                      maxRotation: 0
+                    },
+                    grid: { color: "#efe3d4" }
+                  },
+                  y: { ticks: { color: "#726456" }, grid: { color: "#efe3d4" } }
+                }
+              }
+            }, 250);
+          }
+        }
+      } catch (err) {
+        images = {};
+      } finally {
+        if (stage.parentNode) stage.parentNode.removeChild(stage);
+      }
+
+      return images;
+    }
+
     function generateReport(channelName, recipientName, senderName, requestedCount, options) {
       options = options || {};
+      var includeAIGuide = options.includeAIGuide === true;
 
-      var chartImages = {};
+      var chartImages = createReportChartImages();
       Object.keys(S.charts).forEach(function(key) {
         var chart = S.charts[key];
         if (!chart || !chart.canvas || !chart.canvas.id || typeof chart.toBase64Image !== "function") return;
+        if (chartImages[chart.canvas.id]) return;
         var wrap = chart.canvas.parentNode;
         chartImages[chart.canvas.id] = {
           src: chart.toBase64Image(),
@@ -3521,8 +3747,9 @@
         return list.map(function(video, index) {
           var label = performanceLabel(video);
           var rank = startIndex + index + 1;
+          var itemClass = rank > 5 ? "video-item report-video-item-extra" : "video-item";
           return '' +
-            '<article class="video-item">' +
+            '<article class="' + itemClass + '">' +
               '<div class="video-top">' +
                 '<div>' +
                   '<div class="video-title">' + esc(video.title) + '</div>' +
@@ -3610,6 +3837,9 @@
 
       var page3 = createPage();
       appendSection(page3, "차트로 보는 원인", ".chart-grid");
+      page3.querySelectorAll(".chart-title").forEach(function(title) {
+        title.textContent = nfcText(title.textContent).replace("조회수 상위 10개 영상", "조회수 상위 5개 영상");
+      });
       exportRoot.appendChild(page3);
 
       var page4 = createPage();
@@ -3619,11 +3849,22 @@
       var aiGrid = cloneSelector("#ai-analysis-grid");
       if (S.aiAnalysis && !S.aiError && aiGrid && S.aiAnalysisHtml) {
         page4.appendChild(aiGrid);
-      } else {
+      } else if (includeAIGuide) {
         var aiGuideWrap = document.createElement("section");
         aiGuideWrap.className = "ai-analysis-grid";
         aiGuideWrap.appendChild(buildAIGuideCard());
         page4.appendChild(aiGuideWrap);
+      } else {
+        var aiEmptyWrap = document.createElement("section");
+        aiEmptyWrap.className = "ai-analysis-grid report-ai-empty-grid";
+        var aiEmpty = document.createElement("article");
+        aiEmpty.className = "ai-analysis-card card full report-ai-empty";
+        aiEmpty.innerHTML = '' +
+          '<div class="ai-analysis-kicker">AI 심층 분석</div>' +
+          '<div class="ai-analysis-title">이번 출력본에는 AI 심층 분석이 포함되지 않았습니다</div>' +
+          '<div class="ai-analysis-text">Gemini API 키를 연결하면 전략 유효성, 다음 달 실행 과제, 썸네일·제목 개선 포인트까지 별도 분석으로 추가할 수 있습니다.</div>';
+        aiEmptyWrap.appendChild(aiEmpty);
+        page4.appendChild(aiEmptyWrap);
       }
       appendSection(page4, "눈에 띄는 영상", ".highlights");
       exportRoot.appendChild(page4);
@@ -3631,6 +3872,7 @@
       var videoTitleBase = findTitleNode("영상별 해설");
       for (var start = 0; start < includedVideos.length; start += 10) {
         var page = createPage();
+        page.className += start >= 5 ? " report-video-page report-video-page-extra" : " report-video-page";
         var chunk = includedVideos.slice(start, start + 10);
         var titleNode = videoTitleBase ? videoTitleBase.cloneNode(true) : document.createElement("section");
         titleNode.className = "section-title";
@@ -3641,6 +3883,13 @@
         rangeCopy.className = "report-range-copy";
         rangeCopy.textContent = (start + 1) + " ~ " + (start + chunk.length) + "번 / 총 " + includedVideos.length + "개";
         page.appendChild(rangeCopy);
+
+        if (start === 0 && includedVideos.length > 5) {
+          var printNote = document.createElement("div");
+          printNote.className = "report-print-video-note";
+          printNote.textContent = "PDF에서는 상위 5개만 표시합니다. 전체 상세 목록은 HTML 리포트에서 확인하세요.";
+          page.appendChild(printNote);
+        }
 
         var listCard = document.createElement("section");
         listCard.className = "list-card card";
@@ -3671,7 +3920,9 @@
 
       var exportStyleHTML =
         '<style>' +
-          '.report-export{max-width:1120px;padding:24px 18px 56px;}' +
+          '@page{size:A4 landscape;margin:10mm;}' +
+          'html,body{min-width:1120px;background:#fff !important;background-image:none !important;}' +
+          '.report-export{width:1120px;max-width:none;min-width:1120px;padding:24px 18px 56px;}' +
           '.report-page{margin:0 auto 28px;page-break-after:always;break-after:page;}' +
           '.report-page:last-child{page-break-after:auto;break-after:auto;}' +
           '.report-meta-compact{padding:0 4px 8px;font-size:11px;line-height:1.45;}' +
@@ -3699,6 +3950,8 @@
           '.report-summary-compact,.report-first-action-last .action-card{min-height:230px;}' +
           '.report-export .section-title{margin-bottom:10px;}' +
           '.report-export .action-grid,.report-export .kpi-grid,.report-export .explain-grid,.report-export .fmt-grid,.report-export .chart-grid,.report-export .highlights,.report-export .ai-analysis-grid{margin-bottom:0;}' +
+          '.report-export .action-grid{grid-template-columns:repeat(3,minmax(0,1fr));}' +
+          '.report-export .kpi-grid,.report-export .explain-grid,.report-export .fmt-grid,.report-export .chart-grid,.report-export .highlights,.report-export .ai-analysis-grid{grid-template-columns:repeat(2,minmax(0,1fr));}' +
           '.report-export .kpi-grid{gap:8px;}' +
           '.report-export .kpi-card{padding:12px;}' +
           '.report-export .kpi-value{font-size:18px;margin-bottom:6px;}' +
@@ -3715,14 +3968,15 @@
           '.report-export .fmt-stat{padding:8px;border-radius:11px;}' +
           '.report-export .fmt-stat-value{font-size:13px;}' +
           '.report-export .chart-grid{gap:12px;}' +
-          '.report-export .chart-card{padding:14px;}' +
+          '.report-export .chart-card{padding:14px;overflow:hidden;}' +
           '.report-export .chart-title{font-size:16px;margin-bottom:5px;line-height:1.2;}' +
           '.report-export .chart-sub{font-size:11px;margin-bottom:8px;line-height:1.5;}' +
-          '.report-export .chart-wrap{height:150px;overflow:hidden;}' +
+          '.report-export .chart-wrap{height:190px;overflow:hidden;}' +
           '.report-export .chart-note{margin-top:10px;padding:10px 12px;font-size:11px;line-height:1.5;}' +
           '.report-export .chart-wrap{overflow:hidden;}' +
           '.report-export .report-chart-img{display:block;width:100%;height:100%;object-fit:contain;}' +
           '.report-range-copy{font-size:12px;color:var(--muted);font-weight:700;margin:-4px 0 12px;}' +
+          '.report-print-video-note{display:none;font-size:11px;color:var(--muted);font-weight:800;margin:-4px 0 10px;}' +
           '.report-strategy-card{padding:16px 18px;margin-bottom:16px;background:var(--panel);}' +
           '.report-strategy-label{font-size:13px;color:var(--ink);font-weight:800;margin:0 0 8px;}' +
           '.report-strategy-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}' +
@@ -3754,25 +4008,18 @@
           '.report-export .metric-label{font-size:9px;}' +
           '.report-export .metric-value{font-size:12px;}' +
           '.report-export .video-copy{font-size:11px;padding:8px 9px;border-radius:10px;line-height:1.45;}' +
-          '@media (max-width: 1100px){.report-export .report-first-layout,.report-export .report-first-actions-grid,.report-export .report-first-actions-pair,.report-export .action-grid,.report-export .kpi-grid,.report-export .explain-grid,.report-export .fmt-grid,.report-export .chart-grid,.report-export .highlights,.report-export .ai-analysis-grid{grid-template-columns:1fr;}.report-summary-compact,.report-first-action-last .action-card{min-height:0;}.report-ai-guide .ai-analysis-list{grid-template-columns:1fr;}}' +
           '@media print{' +
-            '@page{size:A4 portrait;margin:12mm;}' +
-            'html,body{background:#fff !important;color:#201a16 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
-            '.app.report-export{zoom:.86 !important;max-width:1120px !important;width:1120px !important;padding:0 !important;margin:0 auto !important;background:#fff !important;}' +
+            'html,body{min-width:1120px !important;margin:0 !important;padding:0 !important;background:#fff !important;background-image:none !important;color:#201a16 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
+            '.app.report-export{zoom:1 !important;width:1040px !important;min-width:1040px !important;max-width:none !important;padding:0 !important;margin:0 auto !important;background:#fff !important;}' +
             '.report-page{margin:0 auto !important;page-break-after:always;break-after:page;background:#fff !important;}' +
             '.report-page:last-child{page-break-after:auto;break-after:auto;}' +
             '.report-page + .report-page{margin-top:0 !important;}' +
-            '.report-export .report-first-layout{grid-template-columns:1.75fr .9fr !important;}' +
-            '.report-export .report-first-actions-grid{grid-template-columns:1.75fr .9fr !important;}' +
-            '.report-export .report-first-actions-pair{grid-template-columns:1fr 1fr !important;}' +
-            '.report-export .action-grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}' +
-            '.report-export .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}' +
-            '.report-export .explain-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}' +
-            '.report-export .fmt-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}' +
-            '.report-export .chart-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}' +
-            '.report-export .highlights{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}' +
-            '.report-export .ai-analysis-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}' +
-            '.report-ai-guide .ai-analysis-list{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}' +
+            '.report-export .card{box-shadow:none !important;border-color:#eadfce !important;background:#fffdf8 !important;}' +
+            '.report-export .chart-wrap{height:190px !important;overflow:hidden !important;}' +
+            '.report-export .report-chart-img{width:100% !important;height:100% !important;object-fit:contain !important;}' +
+            '.report-print-video-note{display:block !important;}' +
+            '.report-video-item-extra,.report-video-page-extra{display:none !important;}' +
+            '.report-export .video-item{break-inside:avoid;page-break-inside:avoid;}' +
           '}' +
         '</style>';
 
@@ -3787,18 +4034,13 @@
         '<\/script>'
       ) : "";
 
-      var html = '' +
-        '<!DOCTYPE html>' +
-        '<html lang="ko">' +
-        '<head>' +
-          '<meta charset="UTF-8" />' +
-          '<meta name="viewport" content="width=device-width, initial-scale=1.0" />' +
-          '<title>' + esc(docTitle) + '</title>' +
-          styleHTML +
-          exportStyleHTML +
-        '</head>' +
-        '<body>' + exportRoot.outerHTML + autoPrintScript + '</body>' +
-        '</html>';
+      var html = createReportHtml({
+        docTitle: docTitle,
+        styleHTML: styleHTML,
+        exportStyleHTML: exportStyleHTML,
+        exportHTML: exportRoot.outerHTML,
+        autoPrintScript: autoPrintScript
+      });
 
       var fileName = baseFileName + ".html";
       var blob = new Blob([html], { type: "text/html;charset=utf-8" });
