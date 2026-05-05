@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>함동민 — 햄PD | 1인미디어 프로듀서</title>
+  <title>함동민 — ハムPD | 一人メディアプロデューサー</title>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
@@ -45,7 +45,7 @@
       backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
     }
     .nav-logo { font-family: var(--font-main); font-weight: 700; font-size: 1rem; color: var(--ink); text-decoration: none; letter-spacing: 0.05em; }
-    nav ul { list-style: none; display: flex; gap: 32px; }
+    nav ul { list-style: none; display: flex; gap: 32px; flex-wrap: wrap; }
     nav ul li a { font-family: var(--font-main); font-size: 0.8rem; font-weight: 500; color: var(--ink-soft); text-decoration: none; letter-spacing: 0.06em; transition: color 0.25s, border-color 0.25s; border-bottom: 1px solid transparent; }
     nav ul li a:hover { color: var(--accent); border-color: rgba(122,92,71,0.38); }
     .lang-switch { display: flex; gap: 8px; align-items: center; }
@@ -136,59 +136,6 @@
     .channel-tag { display: inline-block; font-family: var(--font-main); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; padding: 4px 12px; border-radius: 999px; margin-top: 10px; }
     .tag-personal { background: rgba(122,92,71,0.10); color: var(--accent); }
     .tag-client { background: rgba(0,112,74,0.10); color: var(--accent2); }
-    .video-embed {
-      margin-top: 16px;
-      border-radius: 12px;
-      overflow: hidden;
-      width: 100%;
-      max-width: 560px;
-      height: 315px;
-      display: block;
-      position: relative;
-      cursor: pointer;
-      background: #000;
-    }
-    .video-embed iframe { width: 100%; height: 100%; border: none; display: block; }
-    .video-thumb {
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      transition: filter 0.25s;
-    }
-    .video-embed::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(0,0,0,0.35) 100%);
-      pointer-events: none;
-    }
-    .video-embed:hover .video-thumb { filter: brightness(0.82); }
-    .video-play {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      background: rgba(220, 32, 32, 0.92);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s, transform 0.2s;
-      z-index: 2;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-    .video-embed:hover .video-play {
-      background: rgb(220, 32, 32);
-      transform: translate(-50%, -50%) scale(1.08);
-    }
-    .video-play svg {
-      width: 24px; height: 24px;
-      fill: white;
-      margin-left: 4px;
-    }
 
     .eq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
     .eq-block, .cred-block { background: rgba(245,243,238,0.72); border: 1px solid var(--line); border-radius: 12px; padding: 24px; box-shadow: 0 12px 30px rgba(44,34,26,0.035); }
@@ -198,8 +145,8 @@
     .eq-block ul li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.7; flex-shrink: 0; }
 
     .career-list { display: flex; flex-direction: column; }
-    .career-item { display: grid; grid-template-columns: 160px 1fr; gap: 32px; padding: 32px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-soft); position: relative; margin-bottom: 18px; }
-    .career-item::before { content: ''; position: absolute; left: 184px; top: 24px; bottom: 24px; width: 1px; background: var(--line); }
+    .career-item { display: grid; grid-template-columns: 210px 1fr; gap: 32px; padding: 32px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-soft); position: relative; margin-bottom: 18px; }
+    .career-item::before { content: ''; position: absolute; left: 234px; top: 24px; bottom: 24px; width: 1px; background: var(--line); }
     .career-item:last-child { margin-bottom: 0; }
     .career-year { font-family: var(--font-main); font-size: 0.78rem; font-weight: 700; color: var(--accent); padding-top: 4px; letter-spacing: 0.04em; line-height: 1.7; }
     .career-year .duration { display: block; font-size: 0.72rem; font-weight: 400; color: var(--ink-soft); margin-top: 4px; }
@@ -230,14 +177,64 @@
     footer { text-align: center; padding: 48px 40px; font-family: var(--font-main); font-size: 0.75rem; font-weight: 400; color: var(--ink-soft); letter-spacing: 0.08em; position: relative; z-index: 1; }
     .ch-link { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); transition: color 0.2s, border-color 0.2s; }
     .ch-link:hover { color: var(--accent); border-color: var(--accent); }
+    .video-embed {
+      margin-top: 16px; border-radius: 12px; overflow: hidden;
+      width: 100%; max-width: 560px; height: 315px; display: block;
+      position: relative; cursor: pointer; background: #000;
+    }
+    .video-embed iframe { width: 100%; height: 100%; border: none; display: block; }
+    .video-thumb {
+      width: 100%; height: 100%;
+      background-size: cover; background-position: center;
+      transition: filter 0.25s;
+    }
+    .video-embed::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(0,0,0,0.35) 100%);
+      pointer-events: none;
+    }
+    .video-embed:hover .video-thumb { filter: brightness(0.82); }
+    .video-play {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(220, 32, 32, 0.92);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, transform 0.2s;
+      z-index: 2; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .video-embed:hover .video-play {
+      background: rgb(220, 32, 32);
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+    .video-play svg { width: 24px; height: 24px; fill: white; margin-left: 4px; }
 
     .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
 
+    @media (max-width: 960px) {
+      nav {
+        padding: 18px 24px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 14px 20px;
+      }
+      .nav-logo { flex: 1 1 auto; }
+      .lang-switch { flex: 0 0 auto; margin-left: auto; }
+      nav ul {
+        width: 100%;
+        gap: 12px 18px;
+      }
+      .hero { padding-top: 190px; }
+    }
+
     @media (max-width: 700px) {
-      nav { padding: 18px 20px; flex-wrap: wrap; gap: 12px; }
-      nav ul { gap: 14px; flex-wrap: wrap; }
+      nav { padding: 16px 20px; }
+      .nav-logo { font-size: 0.95rem; }
+      nav ul { gap: 10px 14px; }
       nav ul li a { font-size: 0.74rem; }
+      .lang-switch { margin-left: 0; }
       section { padding: 80px 24px; }
       .wc-bg svg { opacity: 0.13; filter: blur(64px); }
       .blob1 { width: 92vw; }
@@ -248,7 +245,7 @@
       .career-item { grid-template-columns: 1fr; gap: 8px; }
       .career-item::before { display: none; }
       .contact-wrap { grid-template-columns: 1fr; gap: 40px; }
-      .hero { padding-top: 140px; }
+      .hero { padding-top: 220px; }
       .hero h1 { font-size: 2.55rem; }
       .hero-inner { flex-direction: column-reverse; gap: 36px; align-items: flex-start; }
       .hero-photo img { width: 200px; height: 240px; }
@@ -276,19 +273,19 @@
 </div>
 
 <nav>
-  <a class="nav-logo" href="#">함동민 · 햄PD</a>
+  <a class="nav-logo" href="#">함동민 · ハムPD</a>
   <ul>
-    <li><a href="#about">소개</a></li>
-    <li><a href="#channels">채널</a></li>
-    <li><a href="#equipment">장비</a></li>
-    <li><a href="#career">경력</a></li>
-    <li><a href="#credentials">역량</a></li>
-    <li><a href="#dashboard">분석도구</a></li>
-    <li><a href="#contact">연락처</a></li>
+    <li><a href="#about">紹介</a></li>
+    <li><a href="#channels">チャンネル</a></li>
+    <li><a href="#equipment">機材</a></li>
+    <li><a href="#career">経歴</a></li>
+    <li><a href="#credentials">スキル</a></li>
+    <li><a href="#dashboard">分析ツール</a></li>
+    <li><a href="#contact">お問い合わせ</a></li>
   </ul>
   <div class="lang-switch">
-    <a href="./index.html" class="lang-btn active">🇰🇷 KR</a>
-    <a href="./index_jp.html" class="lang-btn">🇯🇵 JP</a>
+    <a href="./index.html" class="lang-btn">🇰🇷 KR</a>
+    <a href="./index_jp.html" class="lang-btn active">🇯🇵 JP</a>
   </div>
 </nav>
 
@@ -297,25 +294,25 @@
   <section class="hero">
     <div class="hero-inner">
       <div class="hero-text">
-        <p class="hero-label fade-up">1인미디어 프로듀서</p>
-        <h1 class="fade-up">함동민<br><em>햄PD</em></h1>
-        <p class="hero-sub fade-up">기획 · 촬영 · 편집 · 퍼블리싱 — 혼자서 전부</p>
+        <p class="hero-label fade-up">一人メディアプロデューサー</p>
+        <h1 class="fade-up">함동민<br><em>ハムPD</em></h1>
+        <p class="hero-sub fade-up">企画・撮影・編集・配信 — すべてひとりで</p>
         <p class="hero-desc fade-up">
-          30년에 걸친 현장 경험을 콘텐츠로 설계합니다.<br>
-          스타벅스 14년, 레스토랑 창업 8년, 하이엔드 공간 기획을 거쳐<br>
-          지금은 5개 YouTube 채널을 혼자 기획·제작·운영하는 1인 미디어 프로듀서입니다.
+          退職した日、正直、途方に暮れました。<br>
+          50代を過ぎて無職になり、周りも心配し、私自身も不安でした。<br>
+          何も知らない状態から始めた今、5つのYouTubeチャンネルをひとりで企画・制作・運営しています。
         </p>
         <div class="hero-tags fade-up">
-          <span class="hero-tag">브랜드 스토리텔링</span>
-          <span class="hero-tag">고객 경험 설계</span>
-          <span class="hero-tag">1인미디어 제작</span>
-          <span class="hero-tag">하이엔드 오디오</span>
-          <span class="hero-tag">조직 문화 전파</span>
+          <span class="hero-tag">ブランドストーリーテリング</span>
+          <span class="hero-tag">顧客体験設計</span>
+          <span class="hero-tag">一人メディア制作</span>
+          <span class="hero-tag">ハイエンドオーディオ</span>
+          <span class="hero-tag">組織文化伝播</span>
         </div>
         <div class="hero-scroll fade-up">scroll to explore</div>
       </div>
       <div class="hero-photo">
-        <img src="./profile.JPG" alt="함동민 햄PD">
+        <img src="./profile.JPG" alt="함동민 ハムPD">
       </div>
     </div>
   </section>
@@ -324,85 +321,85 @@
 
   <section id="about">
     <p class="sec-label">About</p>
-    <h2 class="sec-title">저는 이런 사람입니다</h2>
+    <h2 class="sec-title">私はこんな人間です</h2>
     <div class="about-body">
-      <p>퇴사하던 날, 솔직히 막막했습니다.</p>
-      <p>50대가 넘어 백수가 되자 주변도 걱정했고, 나 역시 걱정했습니다. 기획도, 촬영도, 편집도 전부 몰랐습니다. 퇴사 후 Claude·ChatGPT·Gemini를 선생님 삼아 하나씩 독학했습니다. 완전히 새로운 세계였습니다.</p>
-      <p>무속 채널, 병원 채널, 오디오 채널. 하나씩 조심스럽게 계약했고, 지금은 5개 채널을 혼자 기획·촬영·편집·퍼블리싱합니다. 내가 만든 콘텐츠로 수익을 만들어가고 있습니다.</p>
-      <p>아무것도 모르는 상태에서 다시 시작했다는 사실 자체가, 저의 50대 인생 2막입니다.</p>
-      <p>아직 갈 길은 멉니다. 그래도 오늘도, 달립니다.</p>
-      <p><strong>포기하지 않으면, 끝난 게 아니니까요.</strong></p>
-      <blockquote>"스스로 설계한 삶을 자신이 옳다고 믿는 방식으로"</blockquote>
+      <p>退職した日、正直、途方に暮れました。</p>
+      <p>50代を過ぎて無職になり、周りも心配し、私自身も不安でした。企画も、撮影も、編集も、全部わかりませんでした。退職後、Claude・ChatGPT・Geminiを先生に、ひとつひとつ独学しました。まったく新しい世界でした。</p>
+      <p>霊能チャンネル、病院チャンネル、オーディオチャンネル。ひとつずつ慎重に契約し、今は5つのチャンネルをひとりで企画・撮影・編集・配信しています。自分が作ったコンテンツで収益を生み出しています。</p>
+      <p>何も知らない状態から再スタートしたという事実そのものが、私の50代・人生第2章です。</p>
+      <p>まだ道は長い。それでも今日も、走り続けます。</p>
+      <p><strong>諦めなければ、終わりじゃないから。</strong></p>
+      <blockquote>「自らが設計した人生を、自分が正しいと信じる方法で」</blockquote>
     </div>
   </section>
 
   <section id="channels">
     <p class="sec-label fade-up">Channels</p>
-    <h2 class="sec-title fade-up">운영 채널</h2>
+    <h2 class="sec-title fade-up">運営チャンネル</h2>
 
     <div class="channel-group fade-up">
-      <p class="channel-group-label">개인 채널</p>
+      <p class="channel-group-label">個人チャンネル</p>
       <div class="channel-card">
         <span class="channel-num"><i data-lucide="headphones"></i></span>
         <div class="channel-info">
-          <h3><a href="https://www.youtube.com/@ookkio" target="_blank" class="ch-link">우리끼리오디오</a></h3>
-          <p>하이파이 오디오 전문 채널. 스피커 케이블 연결 영상 70K+ 뷰, Shorts 누적 3M+ 뷰. 일본·브라질·미국 시청자 중심의 국제적 오디오 커뮤니티.</p>
-          <span class="channel-tag tag-personal">오디오 · 하이파이</span>
+          <h3><a href="https://www.youtube.com/@ookkio" target="_blank" class="ch-link">ウリッキリオーディオ</a></h3>
+          <p>ハイファイオーディオ専門チャンネル。スピーカーケーブル接続動画70K+再生、Shorts累計3M+再生。日本・ブラジル・アメリカの視聴者を中心とした国際的なオーディオコミュニティ。</p>
+          <span class="channel-tag tag-personal">オーディオ・ハイファイ</span>
           <div class="video-embed" data-video-id="duw8G46JzwQ">
             <div class="video-thumb" style="background-image:url('https://img.youtube.com/vi/duw8G46JzwQ/hqdefault.jpg')"></div>
-            <button class="video-play" aria-label="영상 재생"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+            <button class="video-play" aria-label="動画を再生"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
           </div>
         </div>
       </div>
       <div class="channel-card">
         <span class="channel-num"><i data-lucide="flag"></i></span>
         <div class="channel-info">
-          <h3><a href="https://www.youtube.com/channel/UCqy1LrWDKht1ACXTmtLShEg" target="_blank" class="ch-link">이번인생은경주다</a></h3>
-          <p>50대의 인생 재정비 서사를 담은 채널. 늦은 시작, 다시 달리는 삶을 주제로 같은 세대의 공감을 이끌어냅니다.</p>
-          <span class="channel-tag tag-personal">인생 · 재도전</span>
+          <h3><a href="https://www.youtube.com/channel/UCqy1LrWDKht1ACXTmtLShEg" target="_blank" class="ch-link">今回の人生はレースだ</a></h3>
+          <p>50代の人生再設計をテーマにしたチャンネル。遅いスタート、もう一度走る人生をテーマに、同世代の共感を呼び起こします。</p>
+          <span class="channel-tag tag-personal">人生・再挑戦</span>
           <div class="video-embed" data-video-id="jc0vNk4tjtM">
             <div class="video-thumb" style="background-image:url('https://img.youtube.com/vi/jc0vNk4tjtM/hqdefault.jpg')"></div>
-            <button class="video-play" aria-label="영상 재생"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+            <button class="video-play" aria-label="動画を再生"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
           </div>
         </div>
       </div>
     </div>
 
     <div class="channel-group fade-up">
-      <p class="channel-group-label">클라이언트 채널 관리</p>
+      <p class="channel-group-label">クライアントチャンネル管理</p>
       <div class="channel-card">
         <span class="channel-num"><i data-lucide="stethoscope"></i></span>
         <div class="channel-info">
-          <h3><a href="https://www.youtube.com/channel/UC7nfli6RwhfkT8-L3tjcwPg" target="_blank" class="ch-link">성형외과전문의 김종명 (디바성형외과)</a></h3>
-          <p>의료 전문 채널. 안면거상·지방이식·실리프팅 등 장편 수술 정보 영상과 Shorts 시리즈 제작. YouTube 의료 전문가 배지 취득 목표.</p>
-          <span class="channel-tag tag-client">의료 · 성형외과</span>
+          <h3><a href="https://www.youtube.com/channel/UC7nfli6RwhfkT8-L3tjcwPg" target="_blank" class="ch-link">整形外科専門医キム・ジョンミョン（DIVAクリニック）</a></h3>
+          <p>医療専門チャンネル。フェイスリフト・脂肪移植・スレッドリフトなど長編手術情報動画とShortsシリーズ制作。YouTube医療専門家バッジ取得目標。</p>
+          <span class="channel-tag tag-client">医療・美容外科</span>
           <div class="video-embed" data-video-id="sgVzKxMxCEM">
             <div class="video-thumb" style="background-image:url('https://img.youtube.com/vi/sgVzKxMxCEM/hqdefault.jpg')"></div>
-            <button class="video-play" aria-label="영상 재생"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+            <button class="video-play" aria-label="動画を再生"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
           </div>
         </div>
       </div>
       <div class="channel-card">
         <span class="channel-num"><i data-lucide="moon-star"></i></span>
         <div class="channel-info">
-          <h3><a href="https://www.youtube.com/channel/UCwI4qqT9ta850_Aak-0kP8Q" target="_blank" class="ch-link">광명천신보살TV</a></h3>
-          <p>무속·영성 콘텐츠 채널. 시청자 공감 기반의 스토리텔링 운영.</p>
-          <span class="channel-tag tag-client">영성 · 무속</span>
+          <h3><a href="https://www.youtube.com/channel/UCwI4qqT9ta850_Aak-0kP8Q" target="_blank" class="ch-link">クァンミョンチョンシンボサルTV</a></h3>
+          <p>巫俗・スピリチュアルコンテンツチャンネル。視聴者共感型ストーリーテリング運営。</p>
+          <span class="channel-tag tag-client">スピリチュアル・巫俗</span>
           <div class="video-embed" data-video-id="f5bZ-rKDITM">
             <div class="video-thumb" style="background-image:url('https://img.youtube.com/vi/f5bZ-rKDITM/hqdefault.jpg')"></div>
-            <button class="video-play" aria-label="영상 재생"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+            <button class="video-play" aria-label="動画を再生"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
           </div>
         </div>
       </div>
       <div class="channel-card">
         <span class="channel-num"><i data-lucide="speaker"></i></span>
         <div class="channel-info">
-          <h3><a href="https://www.youtube.com/@Wassadacom" target="_blank" class="ch-link">와싸다닷컴</a></h3>
-          <p>오디오 쇼핑몰 전문 채널. 제품 소개 및 리뷰 콘텐츠 운영.</p>
-          <span class="channel-tag tag-client">오디오 · 쇼핑</span>
+          <h3><a href="https://www.youtube.com/@Wassadacom" target="_blank" class="ch-link">ワッサダドットコム</a></h3>
+          <p>オーディオショッピングモール専門チャンネル。製品紹介・レビューコンテンツ運営。</p>
+          <span class="channel-tag tag-client">オーディオ・ショッピング</span>
           <div class="video-embed" data-video-id="PGzwTeTgvHY">
             <div class="video-thumb" style="background-image:url('https://img.youtube.com/vi/PGzwTeTgvHY/hqdefault.jpg')"></div>
-            <button class="video-play" aria-label="영상 재생"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+            <button class="video-play" aria-label="動画を再生"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
           </div>
         </div>
       </div>
@@ -413,19 +410,19 @@
 
   <section id="equipment">
     <p class="sec-label fade-up">Equipment</p>
-    <h2 class="sec-title fade-up">제작 장비</h2>
+    <h2 class="sec-title fade-up">制作機材</h2>
     <div class="eq-grid fade-up">
       <div class="eq-block">
-        <h3><i data-lucide="camera"></i> 카메라</h3>
+        <h3><i data-lucide="camera"></i> カメラ</h3>
         <ul>
-          <li>Sony A6700 (메인)</li>
+          <li>Sony A6700（メイン）</li>
           <li>iPhone 15 Pro + Blackmagic Cam</li>
           <li>DJI Pocket 3</li>
           <li>DJI Osmo Action 6</li>
         </ul>
       </div>
       <div class="eq-block">
-        <h3><i data-lucide="mic"></i> 오디오</h3>
+        <h3><i data-lucide="mic"></i> オーディオ</h3>
         <ul>
           <li>RØDE Wireless GO II</li>
           <li>TASCAM X8</li>
@@ -435,21 +432,21 @@
         </ul>
       </div>
       <div class="eq-block">
-        <h3><i data-lucide="lightbulb"></i> 조명</h3>
+        <h3><i data-lucide="lightbulb"></i> 照明</h3>
         <ul>
-          <li>Amaran 200x (키)</li>
-          <li>Godox ML100Bi + 소프트박스 (필)</li>
-          <li>Zhiyun F100 (림/배경)</li>
+          <li>Amaran 200x（キー）</li>
+          <li>Godox ML100Bi + ソフトボックス（フィル）</li>
+          <li>Zhiyun F100（リム/背景）</li>
           <li>Sunwayfoto FL-96C</li>
         </ul>
       </div>
       <div class="eq-block">
-        <h3><i data-lucide="monitor"></i> 편집·AI</h3>
+        <h3><i data-lucide="monitor"></i> 編集・AI</h3>
         <ul>
-          <li>MacBook Pro M4 Pro 14" — 편집 전용</li>
-          <li>MacBook Pro M1 13" — AI·자동화 허브</li>
+          <li>MacBook Pro M4 Pro 14" — 編集専用</li>
+          <li>MacBook Pro M1 13" — AI・自動化ハブ</li>
           <li>Final Cut Pro / Vrew</li>
-          <li>Claude · ChatGPT · Gemini 멀티 워크플로</li>
+          <li>Claude・ChatGPT・Gemini マルチワークフロー</li>
         </ul>
       </div>
     </div>
@@ -459,103 +456,103 @@
 
   <section id="career">
     <p class="sec-label fade-up">Career</p>
-    <h2 class="sec-title fade-up">경력</h2>
+    <h2 class="sec-title fade-up">経歴</h2>
 
     <div class="career-list">
 
       <div class="career-item fade-up">
-        <div class="career-year">2025 — 현재<span class="duration">1인미디어</span></div>
+        <div class="career-year">2025年 — 現在<span class="duration">一人メディア</span></div>
         <div class="career-body">
-          <h3>햄미디어</h3>
-          <div class="role">1인미디어 프로듀서</div>
-          <p>퇴사 후 Claude·ChatGPT·Gemini로 기획·촬영·편집을 독학했습니다. 아무것도 모르는 상태에서 시작해 지금은 5개 채널을 혼자 기획·촬영·편집·퍼블리싱합니다. 클라이언트 채널 대행으로 수익을 만들어가며 AI와 함께 매일 성장하고 있습니다.</p>
+          <h3>ハムメディア</h3>
+          <div class="role">一人メディアプロデューサー</div>
+          <p>退職後、Claude・ChatGPT・Geminiで企画・撮影・編集を独学しました。何も知らない状態から始め、今は5つのチャンネルをひとりで企画・撮影・編集・配信しています。クライアントチャンネル代行で収益を生み出しながら、AIとともに毎日成長しています。</p>
           <div class="career-awards">
-            <span class="career-award">5개 채널 全과정 단독 수행</span>
-            <span class="career-award">AI 독학으로 전 과정 습득</span>
+            <span class="career-award">5チャンネル全工程単独対応</span>
+            <span class="career-award">AI独学で全工程習得</span>
           </div>
         </div>
       </div>
 
       <div class="career-item fade-up">
-        <div class="career-year">2024. 05 — 2025. 04<span class="duration">1년</span></div>
+        <div class="career-year">2024年05月 — 2025年04月<span class="duration">1年</span></div>
         <div class="career-body">
-          <h3>어코스틱스 스페이스</h3>
-          <div class="role">기획 부장 / 초기 사업기획 멤버</div>
-          <p>고급 주택 대상 하이엔드 오디오룸·스마트 HVAC·조명·소리·공기 통합 설계 총괄. 상지건설 Escala 프로젝트 참여 — 정숙 25dBA, 청취 동선, 공조·조명 통합 제어. 전체 프로젝트 기획·일정 관리, 고객사 커뮤니케이션, 기술 사양서 및 임원 보고 문서 작성.</p>
+          <h3>アコースティクス・スペース</h3>
+          <div class="role">企画部長 / 初期事業企画メンバー</div>
+          <p>高級住宅向けハイエンドオーディオルーム・スマートHVAC・照明・音響・空気統合設計を総括。サンジ建設Escalaプロジェクト参加 — 静粛25dBA、聴取動線、空調・照明統合制御。全プロジェクト企画・スケジュール管理、顧客コミュニケーション、技術仕様書および役員報告文書作成。</p>
           <div class="career-awards">
-            <span class="career-award">Escala 프로젝트 참여</span>
-            <span class="career-award">프리미엄 공간 통합 설계</span>
+            <span class="career-award">Escalaプロジェクト参加</span>
+            <span class="career-award">プレミアム空間統合設計</span>
           </div>
         </div>
       </div>
 
       <div class="career-item fade-up">
-        <div class="career-year">2023. 05 — 2024. 01<span class="duration">9개월</span></div>
+        <div class="career-year">2023年05月 — 2024年01月<span class="duration">9ヶ月</span></div>
         <div class="career-body">
-          <h3>대우개발컨설팅</h3>
-          <div class="role">부장 / 공장 부동산 컨설턴트</div>
-          <p>공장·창고 등 산업용 부동산 중개 실무. 입지 분석·예산 최적화·구조 활용 계획 제안. 고객·공장 운영자·건축주 등 의사결정자별 신뢰 구축.</p>
+          <h3>テウ開発コンサルティング</h3>
+          <div class="role">部長 / 工場不動産コンサルタント</div>
+          <p>工場・倉庫など産業用不動産仲介実務。立地分析・予算最適化・構造活用計画提案。顧客・工場運営者・建築主など意思決定者別信頼構築。</p>
         </div>
       </div>
 
       <div class="career-item fade-up">
-        <div class="career-year">2022. 02 — 2022. 10<span class="duration">9개월</span></div>
+        <div class="career-year">2022年02月 — 2022年10月<span class="duration">9ヶ月</span></div>
         <div class="career-body">
-          <h3>에이브이와사람들 (와싸다닷컴)</h3>
-          <div class="role">운영팀 부장</div>
-          <p>하이엔드 오디오 제품 상담 및 판매. YouTube 영상 촬영·편집·채널 운영. 브랜드 인지도 향상 기여.</p>
+          <h3>エービーワッサダ（ワッサダドットコム）</h3>
+          <div class="role">運営チーム部長</div>
+          <p>ハイエンドオーディオ製品相談・販売。YouTube動画撮影・編集・チャンネル運営。ブランド認知度向上に貢献。</p>
         </div>
       </div>
 
       <div class="career-item fade-up">
-        <div class="career-year">2014. 06 — 2022. 07<span class="duration">8년 2개월</span></div>
+        <div class="career-year">2014年06月 — 2022年07月<span class="duration">8年2ヶ月</span></div>
         <div class="career-body">
-          <h3>델라카사</h3>
-          <div class="role">오너 셰프 / 대표</div>
-          <p>인천 신포동·청라에 이탈리안 레스토랑 '델라카사' 1·2호점 직접 기획·런칭·운영. 고급 고객층 타깃으로 매출 2배 성장. 지역 건축양식에서 영감 받은 인테리어 콘셉트 직접 설계. 메뉴·공간·서비스·브랜딩·수익 구조 전반 총괄. 팬데믹 2호점 폐점 경험은 이후 "실패 회복 콘텐츠" 철학의 실질적 기반이 됨.</p>
+          <h3>デッラカーサ</h3>
+          <div class="role">オーナーシェフ / 代表</div>
+          <p>仁川新浦洞・青羅にイタリアンレストラン「デッラカーサ」1・2号店を企画・立ち上げ・運営。高級顧客層をターゲットに売上2倍成長。地域の建築様式からインスピレーションを得たインテリアコンセプトを自ら設計。メニュー・空間・サービス・ブランディング・収益構造を全て自分で運営。パンデミックによる2号店閉店を経て「失敗回復コンテンツ」哲学の実質的基盤を形成。</p>
           <div class="career-awards">
-            <span class="career-award">매출 2배 성장</span>
-            <span class="career-award">브랜드 기획·운영 全과정</span>
+            <span class="career-award">売上2倍成長</span>
+            <span class="career-award">ブランド企画・運営全工程</span>
           </div>
         </div>
       </div>
 
       <div class="career-item fade-up">
-        <div class="career-year">2001. 01 — 2014. 05<span class="duration">13년 5개월</span></div>
+        <div class="career-year">2001年01月 — 2014年05月<span class="duration">13年5ヶ月</span></div>
         <div class="career-body">
-          <h3>스타벅스 커피 코리아</h3>
-          <div class="role">바리스타 → 점장 → 지역 매니저 → 인재개발팀 리더십 트레이너 → 인천 지역 총괄 매니저</div>
-          <p>적자 매장 3곳(GS점·김포공항 1·2호점)을 흑자로 전환하고, 부평·영등포·충청·인천 4개 권역 총괄 매니저를 역임했습니다. 인재개발팀에서는 전 직급별 교육 프로그램과 이머전 프로그램(Immersion Program)을 직접 설계·운영했습니다. 별명 '햄(Ham)'이 이 시기 탄생했습니다.</p>
+          <h3>スターバックスコーヒーコリア</h3>
+          <div class="role">バリスタ → 店長 → エリアマネージャー → 人材開発チームリーダーシップトレーナー → 仁川地域総括マネージャー</div>
+          <p>赤字店舗3店（GS店・金浦空港1・2号店）を黒字転換し、富平・永登浦・忠清・仁川の4エリア総括マネージャーを歴任。人材開発チームでは全職級別の教育プログラムとイマージョンプログラム（Immersion Program）を直接設計・運営しました。ニックネーム「ハム(Ham)」はこの時期に誕生しました。</p>
           <div class="career-awards">
-            <span class="career-award">🏆 올해의 매니저상</span>
-            <span class="career-award">🏆 올해의 지역 매니저상</span>
-            <span class="career-award">적자 매장 3곳 흑자 전환</span>
-            <span class="career-award">시애틀 본사 초청 · 하워드 슐츠 미팅</span>
-            <span class="career-award">커피 마스터 · 지역 커피 마스터</span>
-            <span class="career-award">전국 직급별 교육 프로그램 설계</span>
+            <span class="career-award">🏆 年間最優秀マネージャー賞</span>
+            <span class="career-award">🏆 年間最優秀エリアマネージャー賞</span>
+            <span class="career-award">赤字店舗3店 黒字転換</span>
+            <span class="career-award">シアトル本社招聘・ハワード・シュルツ会長ミーティング</span>
+            <span class="career-award">コーヒーマスター・地域コーヒーマスター</span>
+            <span class="career-award">全国職級別教育プログラム設計</span>
           </div>
         </div>
       </div>
 
       <div class="career-item fade-up">
-        <div class="career-year">1996 — 1999<span class="duration">해외 체류</span></div>
+        <div class="career-year">1996年 — 1999年<span class="duration">海外滞在</span></div>
         <div class="career-body">
-          <h3>해외 언어·문화 연수</h3>
-          <div class="role">일본 도쿄 (1년 5개월) / 미국 캘리포니아 프레즈노 (1년)</div>
-          <p>일본 도쿄: 언어유학 + 다양한 업종 현장 근무, 서비스 감수성·JLPT 1급 취득. 미국 캘리포니아: 영어 집중 연수 및 현지 근무, 글로벌 사고·다문화 커뮤니케이션 역량 형성.</p>
+          <h3>海外語学・文化研修</h3>
+          <div class="role">日本東京（1年5ヶ月）/ 米国カリフォルニア州フレズノ（1年）</div>
+          <p>東京：語学留学＋現地アルバイト、サービス感性・JLPT1級取得。米国カリフォルニア：英語集中研修および現地勤務、グローバル思考・多文化コミュニケーション能力形成。</p>
           <div class="career-awards">
-            <span class="career-award">일본어 JLPT 1급</span>
-            <span class="career-award">다문화 커뮤니케이션</span>
+            <span class="career-award">日本語JLPT1級</span>
+            <span class="career-award">多文化コミュニケーション</span>
           </div>
         </div>
       </div>
 
       <div class="career-item fade-up">
-        <div class="career-year">1994 — 1996<span class="duration">군 복무</span></div>
+        <div class="career-year">1994年 — 1996年<span class="duration">兵役</span></div>
         <div class="career-body">
-          <h3>대한민국 육군</h3>
-          <div class="role">공병부대 운전병 · 병장 만기 제대</div>
-          <p>팀워크·명령 체계·시간 관리 등 조직 생활 기초 체득. 임기응변 능력·긴급 상황 대응 훈련. 이후 리더십 기반 형성의 기점.</p>
+          <h3>大韓民国陸軍</h3>
+          <div class="role">工兵部隊 運転兵・兵長満期除隊</div>
+          <p>チームワーク・命令系統・時間管理など組織生活の基礎を習得。臨機応変能力・緊急対応訓練。</p>
         </div>
       </div>
 
@@ -566,38 +563,38 @@
 
   <section id="credentials">
     <p class="sec-label fade-up">Skills & Credentials</p>
-    <h2 class="sec-title fade-up">역량 및 자격</h2>
+    <h2 class="sec-title fade-up">スキル・資格</h2>
     <div class="cred-grid fade-up">
       <div class="cred-block">
-        <h3>🛠 핵심 역량</h3>
+        <h3>🛠 コアスキル</h3>
         <ul>
-          <li>매장·공간 운영 최적화</li>
-          <li>브랜드 기획 및 성장 전략</li>
-          <li>고객 경험 디자인</li>
-          <li>팀 리더십 / 인재 개발</li>
-          <li>교육 프로그램 설계</li>
-          <li>YouTube 콘텐츠 全과정 제작</li>
-          <li>생성형 AI 활용 (멀티 워크플로)</li>
+          <li>店舗・空間運営最適化</li>
+          <li>ブランド企画および成長戦略</li>
+          <li>顧客体験デザイン</li>
+          <li>チームリーダーシップ / 人材育成</li>
+          <li>教育プログラム設計</li>
+          <li>YouTubeコンテンツ全工程制作</li>
+          <li>生成AI活用（マルチワークフロー）</li>
         </ul>
       </div>
       <div class="cred-block">
-        <h3>🌐 어학 / 자격</h3>
+        <h3>🌐 語学・資格</h3>
         <ul>
-          <li>일본어 JLPT 1급 (2000. 09)</li>
-          <li>영어 (비즈니스 회화)</li>
-          <li>1종보통운전면허 (2017. 09)</li>
+          <li>日本語 JLPT1級（2000年09月）</li>
+          <li>英語（ビジネス会話）</li>
+          <li>第一種普通自動車免許（2017年09月）</li>
           <li>Final Cut Pro</li>
-          <li>PowerPoint · Excel · Word</li>
+          <li>PowerPoint・Excel・Word</li>
         </ul>
       </div>
       <div class="cred-block">
-        <h3>🎯 몰입 활동</h3>
+        <h3>🎯 趣味・没入活動</h3>
         <ul>
-          <li>하이엔드 오디오 컬렉션</li>
-          <li>만년필 컬렉션 (12종+)</li>
-          <li>사진·카메라</li>
-          <li>자동차·모터사이클 (서킷 주행)</li>
-          <li>로드바이크</li>
+          <li>ハイエンドオーディオコレクション</li>
+          <li>万年筆コレクション（12種以上）</li>
+          <li>写真・カメラ</li>
+          <li>自動車・モーターサイクル（サーキット走行）</li>
+          <li>ロードバイク</li>
         </ul>
       </div>
     </div>
@@ -607,23 +604,22 @@
 
   <section id="dashboard">
     <p class="sec-label">Tools</p>
-    <h2 class="sec-title">YouTube 채널 분석 도구</h2>
+    <h2 class="sec-title">YouTubeチャンネル分析ツール</h2>
     <p style="font-family:var(--font-main); font-size:0.95rem; font-weight:400; color:var(--ink-soft); line-height:2.0; max-width:640px;">
-      YouTube 스튜디오에서 내보낸 데이터를 업로드하면 채널 성과를 자동으로 분석해주는 도구입니다. 누구나 무료로 사용할 수 있습니다.
+      YouTube Studioから書き出したデータをアップロードすると、チャンネル成果を自動で分析してくれるツールです。どなたでも無料でご利用いただけます。
     </p>
-    <a href="https://hammedia.github.io/youtube-channel-report-codex" target="_blank" style="display:inline-block; margin-top:24px; padding:13px 28px; background:var(--accent); color:#fff; font-family:var(--font-main); font-size:0.9rem; font-weight:600; letter-spacing:0.06em; text-decoration:none; border-radius:999px; box-shadow:0 14px 30px rgba(122,92,71,0.16);">대시보드 열기 →</a>
+    <a href="https://hammedia.github.io/youtube-channel-report-codex" target="_blank" style="display:inline-block; margin-top:24px; padding:13px 28px; background:var(--accent); color:#fff; font-family:var(--font-main); font-size:0.9rem; font-weight:600; letter-spacing:0.06em; text-decoration:none; border-radius:999px; box-shadow:0 14px 30px rgba(122,92,71,0.16);">ツールを開く →</a>
   </section>
 
   <section id="contact">
     <p class="sec-label fade-up">Contact & SNS</p>
-    <h2 class="sec-title fade-up">연락처</h2>
+    <h2 class="sec-title fade-up">お問い合わせ</h2>
     <div class="contact-wrap fade-up">
       <div>
         <a class="contact-email" href="mailto:hammedia002@gmail.com">hammedia002@gmail.com</a>
-        <p class="contact-phone">010-3936-3571</p>
         <p class="contact-note">
-          채널 제작 대행 · 콜라보 · 협찬 · 강의 문의 환영합니다.<br>
-          인천 부평구 베이스 · 보통 1–2일 내 답변.
+          チャンネル制作代行・コラボ・スポンサー・講演のお問い合わせ歓迎します。<br>
+          仁川富平区ベース・通常1〜2日以内にご返信します。
         </p>
       </div>
       <div>
@@ -631,31 +627,31 @@
           <li>
             <a href="https://www.youtube.com/@ookkio" target="_blank">
               <div class="sns-icon">▶</div>
-              <div><div class="sns-name">우리끼리오디오</div><div class="sns-handle">youtube.com/@ookkio</div></div>
+              <div><div class="sns-name">ウリッキリオーディオ</div><div class="sns-handle">youtube.com/@ookkio</div></div>
             </a>
           </li>
           <li>
             <a href="https://www.youtube.com/channel/UCqy1LrWDKht1ACXTmtLShEg" target="_blank">
               <div class="sns-icon">▶</div>
-              <div><div class="sns-name">이번인생은경주다</div><div class="sns-handle">youtube.com/channel</div></div>
+              <div><div class="sns-name">今回の人生はレースだ</div><div class="sns-handle">youtube.com/channel</div></div>
             </a>
           </li>
           <li>
             <a href="https://www.youtube.com/channel/UC7nfli6RwhfkT8-L3tjcwPg" target="_blank">
               <div class="sns-icon">▶</div>
-              <div><div class="sns-name">성형외과전문의 김종명</div><div class="sns-handle">youtube.com/channel</div></div>
+              <div><div class="sns-name">整形外科専門医キム・ジョンミョン</div><div class="sns-handle">youtube.com/channel</div></div>
             </a>
           </li>
           <li>
             <a href="https://www.youtube.com/channel/UCwI4qqT9ta850_Aak-0kP8Q" target="_blank">
               <div class="sns-icon">▶</div>
-              <div><div class="sns-name">광명천신보살TV</div><div class="sns-handle">youtube.com/channel</div></div>
+              <div><div class="sns-name">クァンミョンチョンシンボサルTV</div><div class="sns-handle">youtube.com/channel</div></div>
             </a>
           </li>
           <li>
             <a href="https://www.youtube.com/@Wassadacom" target="_blank">
               <div class="sns-icon">▶</div>
-              <div><div class="sns-name">와싸다닷컴</div><div class="sns-handle">youtube.com/@Wassadacom</div></div>
+              <div><div class="sns-name">ワッサダドットコム</div><div class="sns-handle">youtube.com/@Wassadacom</div></div>
             </a>
           </li>
           <li>
@@ -670,12 +666,6 @@
               <div><div class="sns-name">Instagram</div><div class="sns-handle">@dellacasa_2</div></div>
             </a>
           </li>
-          <li>
-            <a href="https://github.com/hammedia" target="_blank">
-              <div class="sns-icon">⌥</div>
-              <div><div class="sns-name">GitHub</div><div class="sns-handle">hammedia</div></div>
-            </a>
-          </li>
         </ul>
       </div>
     </div>
@@ -684,7 +674,7 @@
 </main>
 
 <footer>
-  © 2025 함동민 · 햄PD — Ham Media. All rights reserved.
+  © 2025 함동민 · ハムPD — Ham Media. All rights reserved.
 </footer>
 
 <script>
