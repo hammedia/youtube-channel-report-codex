@@ -9,18 +9,18 @@
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <style>
     :root{
-      --bg:#f4efe7;
-      --paper:#fffdf8;
-      --panel:#fffaf2;
-      --ink:#201a16;
-      --muted:#726456;
-      --line:#e4d8c7;
-      --brand:#9a3412;
-      --brand-2:#0f766e;
-      --gold:#b45309;
-      --bad:#b91c1c;
-      --good:#166534;
-      --chip:#f3e7d7;
+      --bg:#F5F3EE;
+      --paper:#F9F7F3;
+      --panel:#F9F7F3;
+      --ink:#1C1814;
+      --muted:#4A423C;
+      --line:#E6E1D9;
+      --brand:#7EB5E8;
+      --brand-2:#00704A;
+      --gold:#F4DC59;
+      --bad:#CC0000;
+      --good:#00704A;
+      --chip:#F5F3EE;
       --shadow:0 18px 45px rgba(32, 26, 22, 0.08);
     }
 
@@ -28,8 +28,8 @@
     body{
       font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
       background:
-        radial-gradient(circle at top left, rgba(154,52,18,.08), transparent 30%),
-        radial-gradient(circle at top right, rgba(15,118,110,.08), transparent 22%),
+        radial-gradient(circle at top left, rgba(126,181,232,.08), transparent 30%),
+        radial-gradient(circle at top right, rgba(0,112,74,.08), transparent 22%),
         var(--bg);
       color:var(--ink);
       min-height:100vh;
@@ -64,8 +64,8 @@
       padding:22px;
       margin-bottom:16px;
       background:
-        linear-gradient(140deg, rgba(154,52,18,.07), rgba(255,253,248,.9) 42%),
-        linear-gradient(220deg, rgba(15,118,110,.06), rgba(255,253,248,.9) 68%);
+        linear-gradient(140deg, rgba(126,181,232,.07), rgba(255,253,248,.9) 42%),
+        linear-gradient(220deg, rgba(0,112,74,.06), rgba(255,253,248,.9) 68%);
     }
     .hero-top{
       display:flex;
@@ -133,15 +133,15 @@
       min-width:220px;
       padding:13px 15px;
       border-radius:14px;
-      background:#fff6eb;
-      border:1px solid #f3d5b1;
+      background:#F9F7F3;
+      border:1px solid #E6E1D9;
     }
     .hero-status-label{
       font-size:10px;
       font-weight:800;
       letter-spacing:.12em;
       text-transform:uppercase;
-      color:#9a3412;
+      color:#7EB5E8;
       margin-bottom:6px;
     }
     .hero-status strong{
@@ -151,7 +151,7 @@
     }
     .hero-status p{
       font-size:12px;
-      color:#7c5d44;
+      color:#4A423C;
     }
 
     .upload-card{
@@ -162,8 +162,8 @@
       padding:16px;
       margin-bottom:16px;
       background:
-        linear-gradient(135deg, rgba(15,118,110,.07), rgba(255,253,248,.96) 42%),
-        linear-gradient(220deg, rgba(154,52,18,.06), rgba(255,253,248,.96) 70%);
+        linear-gradient(135deg, rgba(0,112,74,.07), rgba(255,253,248,.96) 42%),
+        linear-gradient(220deg, rgba(126,181,232,.06), rgba(255,253,248,.96) 70%);
     }
     .api-disclosure summary{
       list-style:none;
@@ -209,15 +209,15 @@
       padding:7px 10px;
       border-radius:999px;
       border:1px solid var(--line);
-      background:#fff8ee;
-      color:#7c5d44;
+      background:#F9F7F3;
+      color:#4A423C;
       font-size:11px;
       font-weight:800;
       white-space:nowrap;
     }
     .api-status-badge.ready{
-      background:#e9f7ef;
-      border-color:#9ed3b0;
+      background:#E7F2EC;
+      border-color:#B8DCC9;
       color:var(--good);
     }
     .api-body{
@@ -235,9 +235,9 @@
     }
     .text-input, .strategy-note{
       width:100%;
-      border:1px solid #d8cab7;
+      border:1px solid #E6E1D9;
       border-radius:16px;
-      background:#fffdf9;
+      background:#F9F7F3;
       color:var(--ink);
       font:inherit;
     }
@@ -254,14 +254,14 @@
     .text-input:focus, .strategy-note:focus{
       outline:none;
       border-color:var(--brand);
-      box-shadow:0 0 0 4px rgba(154,52,18,.08);
+      box-shadow:0 0 0 4px rgba(126,181,232,.08);
     }
     .inline-btn{
       border:none;
       border-radius:999px;
       padding:10px 15px;
-      background:#2d2118;
-      color:#fff8ee;
+      background:#1C1814;
+      color:#F9F7F3;
       font-size:13px;
       font-weight:900;
       cursor:pointer;
@@ -297,8 +297,8 @@
       margin-top: 12px;
       padding: 12px 14px;
       border-radius: 12px;
-      background: #f8f3ec;
-      border: 1px solid #efe3d4;
+      background: #F5F3EE;
+      border: 1px solid #F5F3EE;
       font-size: 12px;
     }
     .api-guide-title {
@@ -337,7 +337,7 @@
     .strategy-card{
       padding:16px;
       margin-bottom:16px;
-      background:linear-gradient(180deg,#fff8ee,#fffdf8);
+      background:linear-gradient(180deg,#F9F7F3,#F9F7F3);
     }
     .strategy-top{
       display:flex;
@@ -370,8 +370,8 @@
       align-items:flex-start;
       padding:11px 12px;
       border-radius:14px;
-      border:1px solid #efe3d4;
-      background:#fffdf9;
+      border:1px solid #F5F3EE;
+      background:#F9F7F3;
     }
     .strategy-option input{
       margin-top:3px;
@@ -380,7 +380,7 @@
     }
     .strategy-option span{
       font-size:12px;
-      color:#3b3028;
+      color:#1C1814;
       font-weight:700;
       line-height:1.45;
     }
@@ -401,8 +401,8 @@
       border:none;
       border-radius:999px;
       padding:11px 15px;
-      background:linear-gradient(135deg, #9a3412, #0f766e);
-      color:#fffaf2;
+      background:linear-gradient(135deg, #7EB5E8, #00704A);
+      color:#F9F7F3;
       font-size:13px;
       font-weight:900;
       cursor:pointer;
@@ -415,15 +415,15 @@
       margin-top:10px;
       padding:10px 12px;
       border-radius:13px;
-      border:1px solid #efe3d4;
-      background:#f8f3ec;
-      color:#5c4d41;
+      border:1px solid #F5F3EE;
+      background:#F5F3EE;
+      color:#4A423C;
       font-size:12px;
     }
     .ai-status.error{
-      border-color:#f2c4c4;
-      background:#fff3f3;
-      color:#8d2020;
+      border-color:#E8B5B5;
+      background:#FBEBEB;
+      color:#CC0000;
     }
     .ai-analysis-grid{
       display:grid;
@@ -452,7 +452,7 @@
       margin-bottom:8px;
     }
     .ai-analysis-text{
-      color:#4f4339;
+      color:#4A423C;
       font-size:12px;
       line-height:1.65;
       white-space:pre-line;
@@ -465,9 +465,9 @@
     .ai-analysis-item{
       padding:10px 12px;
       border-radius:13px;
-      background:#f8f3ec;
-      border:1px solid #efe3d4;
-      color:#4f4339;
+      background:#F5F3EE;
+      border:1px solid #F5F3EE;
+      color:#4A423C;
       font-size:12px;
       line-height:1.55;
     }
@@ -477,25 +477,25 @@
       gap:8px;
       padding:6px 10px;
       border-radius:999px;
-      background:#edf7f6;
+      background:#E7F2EC;
       color:var(--brand-2);
       font-size:11px;
       font-weight:800;
       margin-bottom:8px;
     }
     .upload-zone{
-      border:2px dashed #d9c5ae;
+      border:2px dashed #E6E1D9;
       border-radius:22px;
       padding:22px 14px;
       text-align:center;
       cursor:pointer;
       transition:.18s ease;
-      background:linear-gradient(180deg,#fffaf4,#fffdf9);
+      background:linear-gradient(180deg,#F9F7F3,#F9F7F3);
     }
     .upload-zone:hover, .upload-zone.drag{
       border-color:var(--brand);
       transform:translateY(-1px);
-      background:#fff7ee;
+      background:#F9F7F3;
     }
     .upload-icon{ font-size:28px; margin-bottom:6px; }
     .upload-title{ font-size:14px; font-weight:800; margin-bottom:4px; }
@@ -504,8 +504,8 @@
       margin-top:12px;
       padding:12px 14px;
       border-radius:14px;
-      background:#f8f3ec;
-      border:1px solid #efe3d4;
+      background:#F5F3EE;
+      border:1px solid #F5F3EE;
       text-align:left;
     }
     .csv-guide strong{
@@ -532,14 +532,14 @@
       border-radius:999px;
       padding:5px 10px;
       border:1px solid var(--line);
-      background:#f7f1e7;
+      background:#F5F3EE;
       color:var(--muted);
       font-size:11px;
       font-weight:700;
     }
     .tag.ok{
-      background:#e9f7ef;
-      border-color:#9ed3b0;
+      background:#E7F2EC;
+      border-color:#B8DCC9;
       color:var(--good);
     }
     .tag-dot{
@@ -568,8 +568,8 @@
       border:0;
       border-radius:999px;
       padding:10px 15px;
-      background:#2d2118;
-      color:#fff8ee;
+      background:#1C1814;
+      color:#F9F7F3;
       font-size:13px;
       font-weight:800;
       cursor:pointer;
@@ -616,7 +616,7 @@
       display:flex;
       gap:10px;
       font-size:10px;
-      color:#3b3028;
+      color:#1C1814;
     }
     .bullet::before{
       content:"•";
@@ -634,7 +634,7 @@
       gap:6px;
       padding:4px 7px;
       border-radius:999px;
-      background:#edf7f6;
+      background:#E7F2EC;
       color:var(--brand-2);
       font-size:9px;
       font-weight:800;
@@ -691,9 +691,9 @@
       font-weight:800;
       margin-bottom:8px;
     }
-    .kpi-status.good{ background:#e9f7ef; color:var(--good); }
-    .kpi-status.mid{ background:#fff4df; color:var(--gold); }
-    .kpi-status.bad{ background:#fdeaea; color:var(--bad); }
+    .kpi-status.good{ background:#E7F2EC; color:var(--good); }
+    .kpi-status.mid{ background:#FCF4D6; color:var(--gold); }
+    .kpi-status.bad{ background:#FBEBEB; color:var(--bad); }
     .kpi-copy{
       font-size:12px;
       color:var(--muted);
@@ -717,8 +717,8 @@
       align-items:center;
       justify-content:center;
       border-radius:999px;
-      background:#2d2118;
-      color:#fff8ee;
+      background:#1C1814;
+      color:#F9F7F3;
       font-size:14px;
       font-weight:900;
       margin-bottom:8px;
@@ -738,7 +738,7 @@
     .action-list{
       display:grid;
       gap:4px;
-      color:#5c4d41;
+      color:#4A423C;
       font-size:11px;
       line-height:1.4;
     }
@@ -790,8 +790,8 @@
       font-weight:800;
       margin-bottom:10px;
     }
-    .fmt-badge.shorts{ background:#fdeaf0; color:#a61b4d; }
-    .fmt-badge.long{ background:#eaf4fd; color:#1857a6; }
+    .fmt-badge.shorts{ background:#E7F2EC; color:#1C1814; }
+    .fmt-badge.long{ background:#E8F2FC; color:#1C1814; }
     .fmt-title{
       font-size:16px;
       font-weight:900;
@@ -810,8 +810,8 @@
     .fmt-stat{
       padding:10px;
       border-radius:13px;
-      background:#f8f3ec;
-      border:1px solid #efe3d4;
+      background:#F5F3EE;
+      border:1px solid #F5F3EE;
     }
     .fmt-stat-label{
       font-size:10px;
@@ -856,9 +856,9 @@
       margin-top:10px;
       padding:10px 12px;
       border-radius:12px;
-      background:#f8f3ec;
-      border:1px solid #efe3d4;
-      color:#5c4d41;
+      background:#F5F3EE;
+      border:1px solid #F5F3EE;
+      color:#4A423C;
       font-size:12px;
     }
 
@@ -889,9 +889,9 @@
       white-space:pre-wrap;
       padding:10px;
       border-radius:12px;
-      background:#f8f3ec;
-      border:1px solid #efe3d4;
-      color:#3b3028;
+      background:#F5F3EE;
+      border:1px solid #F5F3EE;
+      color:#1C1814;
       font-size:11px;
       line-height:1.55;
     }
@@ -900,8 +900,8 @@
       border:none;
       border-radius:999px;
       padding:8px 12px;
-      background:#2d2118;
-      color:#fff8ee;
+      background:#1C1814;
+      color:#F9F7F3;
       cursor:pointer;
       font-size:12px;
       font-weight:900;
@@ -916,8 +916,8 @@
       transition:.18s ease;
       padding:9px 12px;
       border-radius:999px;
-      background:#2d2118;
-      color:#fff8ee;
+      background:#1C1814;
+      color:#F9F7F3;
       font-size:12px;
       font-weight:900;
       box-shadow:var(--shadow);
@@ -937,8 +937,8 @@
     .highlight-card{
       padding:16px;
     }
-    .highlight-card.top{ background:linear-gradient(180deg,#f3fbf1,#fffdf8); }
-    .highlight-card.bottom{ background:linear-gradient(180deg,#fff4f4,#fffdf8); }
+    .highlight-card.top{ background:linear-gradient(180deg,#E7F2EC,#F9F7F3); }
+    .highlight-card.bottom{ background:linear-gradient(180deg,#FBEBEB,#F9F7F3); }
     .highlight-head{
       display:flex;
       justify-content:space-between;
@@ -957,7 +957,7 @@
       padding:4px 8px;
       font-size:10px;
       font-weight:800;
-      background:#f7f1e7;
+      background:#F5F3EE;
       color:var(--muted);
     }
     .rank-list{
@@ -985,7 +985,7 @@
     }
     .rank-copy{
       font-size:12px;
-      color:#4f4339;
+      color:#4A423C;
     }
 
     .list-card{
@@ -1007,8 +1007,8 @@
     }
     .sort-btn{
       border:none;
-      background:#f2e8db;
-      color:#6d5b4d;
+      background:#F5F3EE;
+      color:#4A423C;
       border-radius:999px;
       padding:7px 11px;
       font-size:12px;
@@ -1017,8 +1017,8 @@
       transition:.15s ease;
     }
     .sort-btn.on{
-      background:#2d2118;
-      color:#fff9f1;
+      background:#1C1814;
+      color:#F9F7F3;
     }
     .list-help{
       color:var(--muted);
@@ -1032,7 +1032,7 @@
       border:1px solid var(--line);
       border-radius:16px;
       padding:12px;
-      background:#fffdf9;
+      background:#F9F7F3;
     }
     .video-top{
       display:flex;
@@ -1060,10 +1060,10 @@
       font-size:10px;
       font-weight:800;
     }
-    .badge.rank{ background:#efe7db; color:#5c4d41; }
-    .badge.good{ background:#e9f7ef; color:var(--good); }
-    .badge.mid{ background:#fff4df; color:var(--gold); }
-    .badge.bad{ background:#fdeaea; color:var(--bad); }
+    .badge.rank{ background:#F5F3EE; color:#4A423C; }
+    .badge.good{ background:#E7F2EC; color:var(--good); }
+    .badge.mid{ background:#FCF4D6; color:var(--gold); }
+    .badge.bad{ background:#FBEBEB; color:var(--bad); }
     .metric-row{
       display:grid;
       grid-template-columns:repeat(5,1fr);
@@ -1072,9 +1072,9 @@
     }
     .metric{
       border-radius:12px;
-      background:#f8f3ec;
+      background:#F5F3EE;
       padding:8px 10px;
-      border:1px solid #efe3d4;
+      border:1px solid #F5F3EE;
     }
     .metric-label{
       font-size:10px;
@@ -1087,9 +1087,9 @@
     }
     .video-copy{
       font-size:12px;
-      color:#4f4339;
-      background:#fcf7f0;
-      border:1px solid #efe3d4;
+      color:#4A423C;
+      background:#F9F7F3;
+      border:1px solid #F5F3EE;
       border-radius:12px;
       padding:9px 10px;
     }
@@ -1108,8 +1108,8 @@
       font-size:13px;
       font-weight:900;
       cursor:pointer;
-      background:#2d2118;
-      color:#fff8ee;
+      background:#1C1814;
+      color:#F9F7F3;
     }
     .more-btn[disabled]{
       opacity:.45;
@@ -1385,7 +1385,7 @@
         </article>
       </section>
 
-      <section class="section-title">지금 가장 먼저 해야 할 것</section>
+      <section class="section-title">지표별 진단과 다음 액션</section>
       <section id="action-grid" class="action-grid"></section>
 
       <section class="section-title">핵심 지표</section>
@@ -1688,7 +1688,7 @@
         return "초반 이탈이 큰 편이라 메시지 구조를 손볼 필요가 있습니다.";
       }
       if (metric === "subConvRate") {
-        if (value >= 0.5) return "팬 전환이 잘 일어나는 편입니다.";
+        if (value >= 0.3) return "팬 전환이 잘 일어나는 편입니다.";
         if (value >= 0.1) return "유입은 되지만 구독 전환은 평범한 수준입니다.";
         return "조회수 대비 팬 전환이 약해 구독 유도 설계가 필요합니다.";
       }
@@ -2064,16 +2064,17 @@
 
     function overallScore(avgRet, subConv) {
       if (!S.summary) return 0;
-      var ctrScore = Math.min(100, (S.summary.aggCTR / 7) * 100);
-      var retScore = Math.min(100, ((avgRet || 0) / 50) * 100);
-      var subScore = Math.min(100, ((subConv || 0) / 0.5) * 100);
+      var ctrScore = Math.min(100, (S.summary.aggCTR / 6) * 100);
+      var retScore = Math.min(100, ((avgRet || 0) / 45) * 100);
+      var subScore = Math.min(100, ((subConv || 0) / 0.4) * 100);
       return Math.round(ctrScore * 0.35 + retScore * 0.4 + subScore * 0.25);
     }
 
     function summaryTone(score) {
       if (score >= 80) return "전체적으로 건강한 채널 흐름입니다.";
-      if (score >= 60) return "기본 체력은 있지만 병목이 분명합니다.";
-      return "몇몇 영상이 버티고 있지만 구조적인 보완이 필요합니다.";
+      if (score >= 60) return "기본 체력은 탄탄합니다. 병목 한두 곳만 풀면 됩니다.";
+      if (score >= 40) return "잘 버티는 지표와 손볼 지표가 섞여 있습니다.";
+      return "지금은 기초 지표부터 다시 잡아갈 단계입니다.";
     }
 
     function getReportMetaData(includedVideoCount) {
@@ -2104,7 +2105,12 @@
       else headline += "상위 영상의 패턴을 확장하면 더 커질 여지가 있습니다.";
 
       var bullets = [];
-      if (topVideo) bullets.push("가장 많이 본 영상은 \"" + topVideo.title + "\"이며, 단일 영상 의존도가 높은지 먼저 체크할 필요가 있습니다.");
+      var avgViewsExec = videos.length ? videos.reduce(function(s, v) { return s + v.views; }, 0) / videos.length : 0;
+      if (topVideo && avgViewsExec > 0 && topVideo.views >= avgViewsExec * 3) {
+        bullets.push("가장 많이 본 영상은 \"" + topVideo.title + "\"입니다. 이 영상에 조회수가 크게 쏠려 있어, 단일 영상 의존도를 함께 보는 편이 좋습니다.");
+      } else if (topVideo) {
+        bullets.push("가장 많이 본 영상은 \"" + topVideo.title + "\"입니다. 특정 영상에 과하게 쏠리지 않고 고르게 보는 흐름입니다.");
+      }
       if (topCTR) bullets.push("가장 클릭이 잘 된 영상은 \"" + topCTR.title + "\"입니다. 제목과 썸네일의 방향성을 복제 후보로 삼을 수 있습니다.");
       if (topRet) bullets.push("지속률이 가장 좋은 일반 영상은 \"" + topRet.title + "\"입니다. 초반 훅과 전개 구조를 참고하기 좋습니다.");
 
@@ -2149,12 +2155,12 @@
           return video.ctr >= S.summary.aggCTR && video.retention >= avgRet;
         }).length;
         if (recentWeakCount >= 4) bullets.push("최근 업로드한 영상 대부분이 채널 평균을 밑돌고 있습니다. 제목 방향, 주제 선택, 도입부 구성 중 무엇이 바뀌었는지 점검이 필요합니다.");
-        if (recentStrongCount >= 4) bullets.push("최근 영상들의 성과가 채널 평균을 꾸준히 웃돌고 있습니다. 현재 방향을 유지하면서 업로드 주기를 안정화해보세요.");
+        if (recentStrongCount >= 3) bullets.push("최근 영상들의 성과가 채널 평균을 꾸준히 웃돌고 있습니다. 현재 방향을 유지하면서 업로드 주기를 안정화해보세요.");
       }
       if (S.summary.totalViews > 0) {
         var fanConvRate = S.summary.totalSubs / S.summary.totalViews * 100;
         if (fanConvRate < 0.05) bullets.push("조회수 대비 구독자 전환이 매우 낮습니다. 시청자가 채널을 기억하게 만드는 요소가 부족한 상태입니다. 채널 정체성을 명확히 하고 구독 유도 멘트를 강화해보세요.");
-        if (fanConvRate >= 0.3) bullets.push("조회수 대비 구독 전환이 우수합니다. 시청자가 채널을 신뢰하고 있다는 신호입니다.");
+        if (fanConvRate >= 0.2) bullets.push("조회수 대비 구독 전환이 우수합니다. 시청자가 채널을 신뢰하고 있다는 신호입니다.");
       }
       var impressionVideos = videos.filter(function(video) { return video.impr > 0; });
       if (impressionVideos.length >= 5) {
@@ -2189,35 +2195,35 @@
       };
     }
 
-    function getActionData() {
-      var actions = [
-        {
-          key: "ctr",
-          title: "CTR 개선 필요",
-          value: "현재 CTR: " + fmtPct(S.summary.aggCTR, 2),
-          items: ["제목 구조 개선", "썸네일 메시지 명확화", "클릭 유도 문장 추가"],
-          priority: actionPriority("ctr", S.summary.aggCTR)
-        },
-        {
-          key: "retention",
-          title: "지속률 개선 필요",
-          value: "현재 지속률: " + fmtPct(S._avgRet, 1),
-          items: ["첫 30초 훅 강화", "초반 설명 줄이기", "영상 시작 구조 수정"],
-          priority: actionPriority("retention", S._avgRet)
-        },
-        {
-          key: "subConv",
-          title: "구독 전환 개선 필요",
-          value: "현재 구독 전환율: " + fmtPct(S._subConv, 3),
-          items: ["영상 끝 CTA 추가", "구독 이유 명확화", "다음 영상 연결"],
-          priority: actionPriority("subConv", S._subConv)
-        }
-      ];
+    function buildActionCards() {
+      function ctrCard(v) {
+        var p = actionPriority("ctr", v);
+        if (p === 1) return { key: "ctr", title: "CTR 강점", value: "현재 CTR: " + fmtPct(v, 2), items: ["잘된 제목·썸네일 패턴 분석", "성공 케이스 포맷으로 정리", "다음 영상에 같은 공식 적용"], priority: p };
+        if (p === 2) return { key: "ctr", title: "CTR 다듬기", value: "현재 CTR: " + fmtPct(v, 2), items: ["상위 CTR 영상 제목 구조 분석", "썸네일 첫 단어 강하게", "후킹 문장 한 줄 추가"], priority: p };
+        return { key: "ctr", title: "CTR 개선 필요", value: "현재 CTR: " + fmtPct(v, 2), items: ["제목 구조 개선", "썸네일 메시지 명확화", "클릭 유도 문장 추가"], priority: p };
+      }
+      function retCard(v) {
+        var p = actionPriority("retention", v);
+        if (p === 1) return { key: "retention", title: "지속률 강점", value: "현재 지속률: " + fmtPct(v, 1), items: ["잘 붙잡은 영상 전개 분석", "초반 훅 구조 그대로 유지", "같은 리듬 다음 영상에 반복"], priority: p };
+        if (p === 2) return { key: "retention", title: "지속률 다듬기", value: "현재 지속률: " + fmtPct(v, 1), items: ["첫 30초 군더더기 정리", "핵심 메시지 앞으로 당기기", "중반 이탈 구간 점검"], priority: p };
+        return { key: "retention", title: "지속률 개선 필요", value: "현재 지속률: " + fmtPct(v, 1), items: ["첫 30초 훅 강화", "초반 설명 줄이기", "영상 시작 구조 수정"], priority: p };
+      }
+      function subCard(v) {
+        var p = actionPriority("subConv", v);
+        if (p === 1) return { key: "subConv", title: "구독 전환 강점", value: "현재 구독 전환율: " + fmtPct(v, 3), items: ["구독으로 이어진 영상 공통점 분석", "채널 정체성 메시지 유지", "시리즈·연결 구조 확장"], priority: p };
+        if (p === 2) return { key: "subConv", title: "구독 전환 다듬기", value: "현재 구독 전환율: " + fmtPct(v, 3), items: ["영상 끝 CTA 한 줄 추가", "구독 이유 명확히 언급", "다음 영상 예고 붙이기"], priority: p };
+        return { key: "subConv", title: "구독 전환 개선 필요", value: "현재 구독 전환율: " + fmtPct(v, 3), items: ["영상 끝 CTA 추가", "구독 이유 명확화", "다음 영상 연결"], priority: p };
+      }
+      var actions = [ctrCard(S.summary.aggCTR), retCard(S._avgRet), subCard(S._subConv)];
       actions.sort(function(a, b) {
         if (b.priority !== a.priority) return b.priority - a.priority;
         return a.key.localeCompare(b.key);
       });
-      return actions.map(function(action, index) {
+      return actions;
+    }
+
+    function getActionData() {
+      return buildActionCards().map(function(action, index) {
         return Object.assign({ rank: index + 1 }, action);
       });
     }
@@ -2230,7 +2236,7 @@
           value: fmt(S.summary.totalViews),
           status: scoreLevel(S.summary.totalViews, 100000, 10000),
           copy: "채널 전체 도달 규모입니다. " + (S.summary.totalViews >= 100000 ? "안정적인 규모입니다." : "상위 영상 의존도를 함께 봐야 합니다."),
-          accent: "#9a3412"
+          accent: "#7EB5E8"
         },
         {
           key: "ctr",
@@ -2238,7 +2244,7 @@
           value: fmtPct(S.summary.aggCTR, 2),
           status: scoreLevel(S.summary.aggCTR, 5, 2),
           copy: metricSummary("ctr", S.summary.aggCTR),
-          accent: "#1857a6"
+          accent: "#7EB5E8"
         },
         {
           key: "retention",
@@ -2246,15 +2252,15 @@
           value: fmtPct(S._avgRet, 1),
           status: scoreLevel(S._avgRet, 35, 20),
           copy: metricSummary("retention", S._avgRet),
-          accent: "#b45309"
+          accent: "#F4DC59"
         },
         {
           key: "subConvRate",
           label: "구독 전환율",
           value: fmtPct(S._subConv, 3),
-          status: scoreLevel(S._subConv, 0.5, 0.1),
+          status: scoreLevel(S._subConv, 0.3, 0.1),
           copy: metricSummary("subConvRate", S._subConv),
-          accent: "#0f766e"
+          accent: "#00704A"
         }
       ].map(function(item) {
         return {
@@ -2471,8 +2477,12 @@
         ", 평균 지속률 " + fmtPct(avgRet, 1) + ", 구독자 순증 +" + fmt(S.summary.totalSubs) +
         "를 기준으로 채널 상태를 요약했습니다.";
 
+      var avgViewsExec = videos.length ? videos.reduce(function(s, v) { return s + v.views; }, 0) / videos.length : 0;
+      var topViewLine = (avgViewsExec > 0 && topVideo.views >= avgViewsExec * 3)
+        ? "가장 많이 본 영상은 \"" + esc(topVideo.title) + "\"입니다. 이 영상에 조회수가 크게 쏠려 있어, 단일 영상 의존도를 함께 보는 편이 좋습니다."
+        : "가장 많이 본 영상은 \"" + esc(topVideo.title) + "\"입니다. 특정 영상에 과하게 쏠리지 않고 고르게 보는 흐름입니다.";
       var bullets = [
-        "가장 많이 본 영상은 \"" + esc(topVideo.title) + "\"이며, 단일 영상 의존도가 높은지 먼저 체크할 필요가 있습니다.",
+        topViewLine,
         "가장 클릭이 잘 된 영상은 \"" + esc(topCTR.title) + "\"입니다. 제목과 썸네일의 방향성을 복제 후보로 삼을 수 있습니다.",
         "지속률이 가장 좋은 일반 영상은 \"" + esc(topRet.title) + "\"입니다. 초반 훅과 전개 구조를 참고하기 좋습니다."
       ];
@@ -2519,7 +2529,7 @@
         if (recentWeakCount >= 4) {
           bullets.push("최근 업로드한 영상 대부분이 채널 평균을 밑돌고 있습니다. 제목 방향, 주제 선택, 도입부 구성 중 무엇이 바뀌었는지 점검이 필요합니다.");
         }
-        if (recentStrongCount >= 4) {
+        if (recentStrongCount >= 3) {
           bullets.push("최근 영상들의 성과가 채널 평균을 꾸준히 웃돌고 있습니다. 현재 방향을 유지하면서 업로드 주기를 안정화해보세요.");
         }
       }
@@ -2528,7 +2538,7 @@
         if (fanConvRate < 0.05) {
           bullets.push("조회수 대비 구독자 전환이 매우 낮습니다. 시청자가 채널을 기억하게 만드는 요소가 부족한 상태입니다. 채널 정체성을 명확히 하고 구독 유도 멘트를 강화해보세요.");
         }
-        if (fanConvRate >= 0.3) {
+        if (fanConvRate >= 0.2) {
           bullets.push("조회수 대비 구독 전환이 우수합니다. 시청자가 채널을 신뢰하고 있다는 신호입니다.");
         }
       }
@@ -2575,34 +2585,7 @@
     }
 
     function renderActions() {
-      var actions = [
-        {
-          key: "ctr",
-          title: "CTR 개선 필요",
-          value: "현재 CTR: " + fmtPct(S.summary.aggCTR, 2),
-          items: ["제목 구조 개선", "썸네일 메시지 명확화", "클릭 유도 문장 추가"],
-          priority: actionPriority("ctr", S.summary.aggCTR)
-        },
-        {
-          key: "retention",
-          title: "지속률 개선 필요",
-          value: "현재 지속률: " + fmtPct(S._avgRet, 1),
-          items: ["첫 30초 훅 강화", "초반 설명 줄이기", "영상 시작 구조 수정"],
-          priority: actionPriority("retention", S._avgRet)
-        },
-        {
-          key: "subConv",
-          title: "구독 전환 개선 필요",
-          value: "현재 구독 전환율: " + fmtPct(S._subConv, 3),
-          items: ["영상 끝 CTA 추가", "구독 이유 명확화", "다음 영상 연결"],
-          priority: actionPriority("subConv", S._subConv)
-        }
-      ];
-
-      actions.sort(function(a, b) {
-        if (b.priority !== a.priority) return b.priority - a.priority;
-        return a.key.localeCompare(b.key);
-      });
+      var actions = buildActionCards();
 
       document.getElementById("action-grid").innerHTML = actions.map(function(action, index) {
         return '' +
@@ -2624,28 +2607,28 @@
           value: fmt(S.summary.totalViews),
           status: scoreLevel(S.summary.totalViews, 100000, 10000),
           copy: "채널 전체 도달 규모입니다. " + (S.summary.totalViews >= 100000 ? "안정적인 규모입니다." : "상위 영상 의존도를 함께 봐야 합니다."),
-          accent: "#9a3412"
+          accent: "#7EB5E8"
         },
         {
           label: "평균 CTR",
           value: fmtPct(S.summary.aggCTR, 2),
           status: scoreLevel(S.summary.aggCTR, 5, 2),
           copy: metricSummary("ctr", S.summary.aggCTR),
-          accent: "#1857a6"
+          accent: "#7EB5E8"
         },
         {
           label: "평균 지속률",
           value: fmtPct(S._avgRet, 1),
           status: scoreLevel(S._avgRet, 35, 20),
           copy: metricSummary("retention", S._avgRet),
-          accent: "#b45309"
+          accent: "#F4DC59"
         },
         {
           label: "구독 전환율",
           value: fmtPct(S._subConv, 3),
-          status: scoreLevel(S._subConv, 0.5, 0.1),
+          status: scoreLevel(S._subConv, 0.3, 0.1),
           copy: metricSummary("subConvRate", S._subConv),
-          accent: "#0f766e"
+          accent: "#00704A"
         }
       ];
 
@@ -2754,8 +2737,8 @@
           datasets: [{
             label: "조회수",
             data: values,
-            borderColor: "#9a3412",
-            backgroundColor: "rgba(154,52,18,.12)",
+            borderColor: "#7EB5E8",
+            backgroundColor: "rgba(126,181,232,.12)",
             fill: true,
             pointRadius: 0,
             tension: 0.28,
@@ -2771,18 +2754,18 @@
           scales: {
             x: {
               ticks: {
-                color: "#726456",
+                color: "#4A423C",
                 callback: function(value, index) {
                   var label = labels[index] || "";
                   return label ? label.slice(5) : "";
                 },
                 maxRotation: 0
               },
-              grid: { color: "#efe3d4" }
+              grid: { color: "#F5F3EE" }
             },
             y: {
-              ticks: { color: "#726456" },
-              grid: { color: "#efe3d4" }
+              ticks: { color: "#4A423C" },
+              grid: { color: "#F5F3EE" }
             }
           }
         }
@@ -2797,7 +2780,7 @@
       var colors = top10.map(function(v) {
         var strong = v.ctr >= S.summary.aggCTR && v.retention >= S._avgRet;
         var weak = v.ctr < S.summary.aggCTR && v.retention < S._avgRet;
-        return strong ? "rgba(22,101,52,.75)" : weak ? "rgba(185,28,28,.65)" : "rgba(154,52,18,.68)";
+        return strong ? "rgba(22,101,52,.75)" : weak ? "rgba(185,28,28,.65)" : "rgba(126,181,232,.68)";
       });
 
       if (S.charts.top) S.charts.top.destroy();
@@ -2820,15 +2803,15 @@
           scales: {
             x: {
               ticks: {
-                color: "#726456",
+                color: "#4A423C",
                 font: { size: 9 }
               },
-              grid: { color: "#efe3d4" }
+              grid: { color: "#F5F3EE" }
             },
             y: {
               afterFit: function(scale) { scale.width = Math.max(scale.width, 120); },
               ticks: {
-                color: "#726456",
+                color: "#4A423C",
                 font: { size: 11 }
               },
               grid: { display: false }
@@ -2865,30 +2848,30 @@
         data: {
           labels: labels,
           datasets: [
-            { label: "평균 CTR", data: ctrData, backgroundColor: "rgba(154,52,18,.72)", borderRadius: 6, yAxisID: "yCtr" },
-            { label: "평균 지속률", data: retData, backgroundColor: "rgba(15,118,110,.70)", borderRadius: 6, yAxisID: "yRet" }
+            { label: "평균 CTR", data: ctrData, backgroundColor: "rgba(126,181,232,.72)", borderRadius: 6, yAxisID: "yCtr" },
+            { label: "평균 지속률", data: retData, backgroundColor: "rgba(0,112,74,.70)", borderRadius: 6, yAxisID: "yRet" }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { labels: { color: "#726456" } }
+            legend: { labels: { color: "#4A423C" } }
           },
           scales: {
-            x: { ticks: { color: "#726456" }, grid: { display: false } },
+            x: { ticks: { color: "#4A423C" }, grid: { display: false } },
             yCtr: {
               position: "left",
               ticks: {
-                color: "#9a3412",
+                color: "#7EB5E8",
                 callback: function(value) { return value + "%"; }
               },
-              grid: { color: "#efe3d4" }
+              grid: { color: "#F5F3EE" }
             },
             yRet: {
               position: "right",
               ticks: {
-                color: "#0f766e",
+                color: "#00704A",
                 callback: function(value) { return value + "%"; }
               },
               grid: { drawOnChartArea: false }
@@ -2920,7 +2903,7 @@
       }
 
       card.style.display = "block";
-      var colors = ["#9a3412", "#0f766e", "#b45309", "#7c3aed", "#2563eb"];
+      var colors = ["#7EB5E8", "#00704A", "#F4DC59", "#4A423C", "#1C1814"];
       var datasets = parsed.top5.map(function(id, index) {
         var info = parsed.byVideo[id];
         return {
@@ -2941,21 +2924,21 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { labels: { color: "#726456", boxWidth: 10 } }
+            legend: { labels: { color: "#4A423C", boxWidth: 10 } }
           },
           scales: {
             x: {
               ticks: {
-                color: "#726456",
+                color: "#4A423C",
                 callback: function(value, index) {
                   var label = parsed.dates[index] || "";
                   return label ? label.slice(5) : "";
                 },
                 maxRotation: 0
               },
-              grid: { color: "#efe3d4" }
+              grid: { color: "#F5F3EE" }
             },
-            y: { ticks: { color: "#726456" }, grid: { color: "#efe3d4" } }
+            y: { ticks: { color: "#4A423C" }, grid: { color: "#F5F3EE" } }
           }
         }
       });
@@ -3493,8 +3476,8 @@
               datasets: [{
                 label: "조회수",
                 data: trendData.map(function(d) { return d.views; }),
-                borderColor: "#9a3412",
-                backgroundColor: "rgba(154,52,18,.12)",
+                borderColor: "#7EB5E8",
+                backgroundColor: "rgba(126,181,232,.12)",
                 fill: true,
                 pointRadius: 0,
                 tension: 0.28,
@@ -3506,16 +3489,16 @@
               scales: {
                 x: {
                   ticks: {
-                    color: "#726456",
+                    color: "#4A423C",
                     callback: function(value, index) {
                       var label = trendData[index] && trendData[index].date || "";
                       return label ? label.slice(5) : "";
                     },
                     maxRotation: 0
                   },
-                  grid: { color: "#efe3d4" }
+                  grid: { color: "#F5F3EE" }
                 },
-                y: { ticks: { color: "#726456" }, grid: { color: "#efe3d4" } }
+                y: { ticks: { color: "#4A423C" }, grid: { color: "#F5F3EE" } }
               }
             }
           }, 250);
@@ -3533,7 +3516,7 @@
                 backgroundColor: top5.map(function(v) {
                   var strong = v.ctr >= S.summary.aggCTR && v.retention >= S._avgRet;
                   var weak = v.ctr < S.summary.aggCTR && v.retention < S._avgRet;
-                  return strong ? "rgba(22,101,52,.75)" : weak ? "rgba(185,28,28,.65)" : "rgba(154,52,18,.68)";
+                  return strong ? "rgba(22,101,52,.75)" : weak ? "rgba(185,28,28,.65)" : "rgba(126,181,232,.68)";
                 }),
                 borderRadius: 8
               }]
@@ -3543,9 +3526,9 @@
               layout: { padding: { left: 8, right: 18 } },
               plugins: { legend: { display: false } },
               scales: {
-                x: { ticks: { color: "#726456", font: { size: 11 } }, grid: { color: "#efe3d4" } },
+                x: { ticks: { color: "#4A423C", font: { size: 11 } }, grid: { color: "#F5F3EE" } },
                 y: {
-                  ticks: { color: "#726456", font: { size: 11 }, padding: 8 },
+                  ticks: { color: "#4A423C", font: { size: 11 }, padding: 8 },
                   grid: { display: false }
                 }
               }
@@ -3570,25 +3553,25 @@
                 {
                   label: "평균 CTR",
                   data: catLabels.map(function(key) { return +(catMap[key].ctr.reduce(function(s, x) { return s + x; }, 0) / catMap[key].ctr.length).toFixed(2); }),
-                  backgroundColor: "rgba(154,52,18,.72)",
+                  backgroundColor: "rgba(126,181,232,.72)",
                   borderRadius: 6,
                   yAxisID: "yCtr"
                 },
                 {
                   label: "평균 지속률",
                   data: catLabels.map(function(key) { return +(catMap[key].ret.reduce(function(s, x) { return s + x; }, 0) / catMap[key].ret.length).toFixed(1); }),
-                  backgroundColor: "rgba(15,118,110,.70)",
+                  backgroundColor: "rgba(0,112,74,.70)",
                   borderRadius: 6,
                   yAxisID: "yRet"
                 }
               ]
             },
             options: {
-              plugins: { legend: { labels: { color: "#726456", boxWidth: 28, font: { size: 11 } } } },
+              plugins: { legend: { labels: { color: "#4A423C", boxWidth: 28, font: { size: 11 } } } },
               scales: {
-                x: { ticks: { color: "#726456", font: { size: 11 } }, grid: { display: false } },
-                yCtr: { position: "left", ticks: { color: "#9a3412", callback: function(value) { return value + "%"; } }, grid: { color: "#efe3d4" } },
-                yRet: { position: "right", ticks: { color: "#0f766e", callback: function(value) { return value + "%"; } }, grid: { drawOnChartArea: false } }
+                x: { ticks: { color: "#4A423C", font: { size: 11 } }, grid: { display: false } },
+                yCtr: { position: "left", ticks: { color: "#7EB5E8", callback: function(value) { return value + "%"; } }, grid: { color: "#F5F3EE" } },
+                yRet: { position: "right", ticks: { color: "#00704A", callback: function(value) { return value + "%"; } }, grid: { drawOnChartArea: false } }
               }
             }
           }, 250);
@@ -3597,7 +3580,7 @@
         if (S.chart) {
           var parsed = processChartData(S.chart);
           if (parsed.top5.length) {
-            var colors = ["#9a3412", "#0f766e", "#b45309", "#7c3aed", "#2563eb"];
+            var colors = ["#7EB5E8", "#00704A", "#F4DC59", "#4A423C", "#1C1814"];
             capture("video-trend-chart", {
               type: "line",
               data: {
@@ -3615,20 +3598,20 @@
                 })
               },
               options: {
-                plugins: { legend: { labels: { color: "#726456", boxWidth: 10, font: { size: 10 } } } },
+                plugins: { legend: { labels: { color: "#4A423C", boxWidth: 10, font: { size: 10 } } } },
                 scales: {
                   x: {
                     ticks: {
-                      color: "#726456",
+                      color: "#4A423C",
                       callback: function(value, index) {
                         var label = parsed.dates[index] || "";
                         return label ? label.slice(5) : "";
                       },
                       maxRotation: 0
                     },
-                    grid: { color: "#efe3d4" }
+                    grid: { color: "#F5F3EE" }
                   },
-                  y: { ticks: { color: "#726456" }, grid: { color: "#efe3d4" } }
+                  y: { ticks: { color: "#4A423C" }, grid: { color: "#F5F3EE" } }
                 }
               }
             }, 250);
@@ -4009,12 +3992,12 @@
           '.report-export .metric-value{font-size:12px;}' +
           '.report-export .video-copy{font-size:11px;padding:8px 9px;border-radius:10px;line-height:1.45;}' +
           '@media print{' +
-            'html,body{min-width:1120px !important;margin:0 !important;padding:0 !important;background:#fff !important;background-image:none !important;color:#201a16 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
+            'html,body{min-width:1120px !important;margin:0 !important;padding:0 !important;background:#fff !important;background-image:none !important;color:#1C1814 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
             '.app.report-export{zoom:1 !important;width:1040px !important;min-width:1040px !important;max-width:none !important;padding:0 !important;margin:0 auto !important;background:#fff !important;}' +
             '.report-page{margin:0 auto !important;page-break-after:always;break-after:page;background:#fff !important;}' +
             '.report-page:last-child{page-break-after:auto;break-after:auto;}' +
             '.report-page + .report-page{margin-top:0 !important;}' +
-            '.report-export .card{box-shadow:none !important;border-color:#eadfce !important;background:#fffdf8 !important;}' +
+            '.report-export .card{box-shadow:none !important;border-color:#E6E1D9 !important;background:#F9F7F3 !important;}' +
             '.report-export .chart-wrap{height:190px !important;overflow:hidden !important;}' +
             '.report-export .report-chart-img{width:100% !important;height:100% !important;object-fit:contain !important;}' +
             '.report-print-video-note{display:block !important;}' +
