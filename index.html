@@ -1813,8 +1813,8 @@
       }
       if (metric === "retention") {
         if (value >= 50) return "들어온 시청자를 비교적 잘 붙잡고 있습니다.";
-        if (value >= 30) return "초반 훅과 전개만 다듬으면 더 올라갈 수 있습니다.";
-        return "초반 이탈이 큰 편이라 메시지 구조를 손볼 필요가 있습니다.";
+        if (value >= 30) return "도입부 전개와 핵심 메시지만 다듬으면 더 올라갈 수 있습니다.";
+        return "시청 유지가 낮은 편이라 메시지 구조를 손볼 필요가 있습니다.";
       }
       if (metric === "subConvRate") {
         if (value >= 0.3) return "팬 전환이 잘 일어나는 편입니다.";
@@ -2289,7 +2289,7 @@
         bullets.push("가장 많이 본 영상은 \"" + topVideo.title + "\"입니다. 특정 영상에 과하게 쏠리지 않고 고르게 보는 흐름입니다.");
       }
       if (topCTR) bullets.push("가장 클릭이 잘 된 영상은 \"" + topCTR.title + "\"입니다. 제목과 썸네일의 방향성을 복제 후보로 삼을 수 있습니다.");
-      if (topRet) bullets.push("지속률이 가장 좋은 일반 영상은 \"" + topRet.title + "\"입니다. 초반 훅과 전개 구조를 참고하기 좋습니다.");
+      if (topRet) bullets.push("지속률이 가장 좋은 일반 영상은 \"" + topRet.title + "\"입니다. 도입부 전개와 내용 구조를 참고하기 좋습니다.");
 
       var highCtrLowRetCount = videos.filter(function(video) {
         return video.ctr >= S.summary.aggCTR && video.retention < avgRet;
@@ -2381,9 +2381,9 @@
       }
       function retCard(v) {
         var p = actionPriority("retention", v);
-        if (p === 1) return { key: "retention", title: "지속률 강점", value: "현재 지속률: " + fmtPct(v, 1), items: ["잘 붙잡은 영상 전개 분석", "초반 훅 구조 그대로 유지", "같은 리듬 다음 영상에 반복"], priority: p };
-        if (p === 2) return { key: "retention", title: "지속률 다듬기", value: "현재 지속률: " + fmtPct(v, 1), items: ["첫 30초 군더더기 정리", "핵심 메시지 앞으로 당기기", "중반 이탈 구간 점검"], priority: p };
-        return { key: "retention", title: "지속률 개선 필요", value: "현재 지속률: " + fmtPct(v, 1), items: ["첫 30초 훅 강화", "초반 설명 줄이기", "영상 시작 구조 수정"], priority: p };
+        if (p === 1) return { key: "retention", title: "지속률 강점", value: "현재 지속률: " + fmtPct(v, 1), items: ["잘 붙잡은 영상 전개 분석", "도입부 구조 유지", "같은 리듬 다음 영상에 반복"], priority: p };
+        if (p === 2) return { key: "retention", title: "지속률 다듬기", value: "현재 지속률: " + fmtPct(v, 1), items: ["영상 도입부 군더더기 정리", "핵심 메시지 앞으로 당기기", "중반 이탈 구간 점검"], priority: p };
+        return { key: "retention", title: "지속률 개선 필요", value: "현재 지속률: " + fmtPct(v, 1), items: ["도입부 메시지 강화", "도입부 설명 줄이기", "영상 시작 구조 수정"], priority: p };
       }
       function subCard(v) {
         var p = actionPriority("subConv", v);
@@ -2463,7 +2463,7 @@
           body: S.summary.aggCTR < 4
             ? "현재는 내용보다 클릭 문제가 먼저 보입니다. 좋은 정보가 있어도 썸네일과 제목에서 많이 놓치고 있을 가능성이 큽니다."
             : S._avgRet < 30
-              ? "클릭은 어느 정도 되지만 시청 유지가 약합니다. 초반 30초 구성과 핵심 메시지 배치를 먼저 손보는 편이 좋습니다."
+              ? "클릭은 어느 정도 되지만 시청 유지가 약합니다. 영상 도입부 구성과 핵심 메시지 배치를 먼저 손보는 편이 좋습니다."
               : "기본 지표는 나쁘지 않습니다. 상위 영상의 주제와 표현 방식을 반복 가능한 포맷으로 만드는 단계에 가깝습니다."
         },
         {
@@ -2474,7 +2474,7 @@
           title: "포맷 해석 가이드",
           body: shorts.length && longs.length
             ? "쇼츠와 일반 영상의 역할이 다를 수 있습니다. 쇼츠는 유입, 일반 영상은 신뢰 형성과 구독 전환 쪽에서 강한지 아래 비교 카드로 읽어보시면 됩니다."
-            : "현재 데이터는 한쪽 포맷 비중이 높습니다. 포맷 자체의 우열보다 주제와 초반 훅 설계가 더 큰 영향을 줄 수 있습니다."
+            : "현재 데이터는 한쪽 포맷 비중이 높습니다. 포맷 자체의 우열보다 주제와 도입부 설계가 더 큰 영향을 줄 수 있습니다."
         }
       ];
     }
@@ -2661,7 +2661,7 @@
       var bullets = [
         topViewLine,
         "가장 클릭이 잘 된 영상은 \"" + esc(topCTR.title) + "\"입니다. 제목과 썸네일의 방향성을 복제 후보로 삼을 수 있습니다.",
-        "지속률이 가장 좋은 일반 영상은 \"" + esc(topRet.title) + "\"입니다. 초반 훅과 전개 구조를 참고하기 좋습니다."
+        "지속률이 가장 좋은 일반 영상은 \"" + esc(topRet.title) + "\"입니다. 도입부 전개와 내용 구조를 참고하기 좋습니다."
       ];
       var highCtrLowRetCount = videos.filter(function(video) {
         return video.ctr >= S.summary.aggCTR && video.retention < S._avgRet;
@@ -2831,7 +2831,7 @@
           body: S.summary.aggCTR < 4
             ? "현재는 내용보다 클릭 문제가 먼저 보입니다. 좋은 정보가 있어도 썸네일과 제목에서 많이 놓치고 있을 가능성이 큽니다."
             : S._avgRet < 30
-              ? "클릭은 어느 정도 되지만 시청 유지가 약합니다. 초반 30초 구성과 핵심 메시지 배치를 먼저 손보는 편이 좋습니다."
+              ? "클릭은 어느 정도 되지만 시청 유지가 약합니다. 영상 도입부 구성과 핵심 메시지 배치를 먼저 손보는 편이 좋습니다."
               : "기본 지표는 나쁘지 않습니다. 상위 영상의 주제와 표현 방식을 반복 가능한 포맷으로 만드는 단계에 가깝습니다."
         },
         {
@@ -2842,7 +2842,7 @@
           title: "포맷 해석 가이드",
           body: shorts.length && longs.length
             ? "쇼츠와 일반 영상의 역할이 다를 수 있습니다. 쇼츠는 유입, 일반 영상은 신뢰 형성과 구독 전환 쪽에서 강한지 아래 비교 카드로 읽어보시면 됩니다."
-            : "현재 데이터는 한쪽 포맷 비중이 높습니다. 포맷 자체의 우열보다 주제와 초반 훅 설계가 더 큰 영향을 줄 수 있습니다."
+            : "현재 데이터는 한쪽 포맷 비중이 높습니다. 포맷 자체의 우열보다 주제와 도입부 설계가 더 큰 영향을 줄 수 있습니다."
         }
       ];
 
@@ -3142,11 +3142,11 @@
         return "나는 유튜브 채널 운영자다.\n\n" +
           "내 평균 시청 지속률은 " + fmtPct(S._avgRet, 1) + "이다.\n\n" +
           "아래 영상 도입부를 분석해서\n" +
-          "첫 30초 이탈을 줄이는 구조로 바꿔줘.\n\n" +
+          "영상 도입부의 시청 이탈을 줄이는 구조로 바꿔줘.\n\n" +
           "영상 스크립트:\n\n" +
           "[여기에 도입부 붙여넣기]\n\n" +
           "조건:\n" +
-          "- 초반 훅 강화\n" +
+          "- 도입부 메시지 강화\n" +
           "- 긴 인사 제거\n" +
           "- 궁금증 유도\n" +
           "- 실제 멘트로 다시 작성";
@@ -3178,7 +3178,7 @@
         {
           key: "retention",
           title: "시청 지속률 개선 프롬프트",
-          desc: "첫 30초 구조 개선용."
+          desc: "영상 도입부 구조 개선용."
         },
         {
           key: "subs",
@@ -3204,14 +3204,25 @@
     }
 
     function getBottomVideos(count) {
-      return S.videos.slice().sort(function(a, b) { return a.views - b.views; }).slice(0, count || 5);
+      count = count || 5;
+      if (!S.videos.length) return [];
+      var channelViews = S.summary && S.summary.totalViews ? S.summary.totalViews : 0;
+      var minComparableViews = Math.max(100, Math.round(channelViews * 0.0001));
+      var comparable = S.videos.filter(function(video) {
+        return video.views >= minComparableViews;
+      });
+      if (comparable.length < count) {
+        comparable = S.videos.filter(function(video) { return video.views >= 100; });
+      }
+      if (comparable.length < count) comparable = S.videos.slice();
+      return comparable.slice().sort(function(a, b) { return a.views - b.views; }).slice(0, count);
     }
 
     function buildAIPatternBullets() {
       var bullets = [];
       if (!S.summary || !S.videos.length) return bullets;
       if (S.summary.aggCTR < 4) bullets.push("채널 평균 CTR이 낮아 첫 클릭 병목이 뚜렷합니다.");
-      if (S._avgRet < 30) bullets.push("클릭 이후 초반 이탈이 커서 지속률 개선이 필요합니다.");
+      if (S._avgRet < 30) bullets.push("클릭 이후 시청 유지가 낮아 지속률 개선이 필요합니다.");
       if (S._subConv < 0.1) bullets.push("조회수 대비 구독 전환이 약해 팬 전환 설계 보강이 필요합니다.");
       var shorts = S.videos.filter(function(video) { return video.isShorts; }).length;
       if (S.videos.length && shorts / S.videos.length >= 0.7) bullets.push("쇼츠 비중이 높아 유입 대비 팬 형성 구조가 약할 수 있습니다.");
@@ -3564,7 +3575,7 @@
       var confirmEl = document.getElementById("save-modal-confirm");
       if (titleEl) titleEl.textContent = isPdf ? "PDF 저장 옵션" : "리포트 저장 옵션";
       if (subEl) subEl.textContent = isPdf
-        ? "아래 정보를 기준으로 저장본 리포트를 만든 뒤 같은 레이아웃으로 PDF 인쇄창을 엽니다."
+        ? "저장본 리포트를 만든 뒤 PDF 인쇄창을 엽니다. 완성본처럼 저장하려면 인쇄 옵션에서 머리글과 바닥글을 꺼주세요."
         : "아래 정보를 입력하면 HTML 리포트가 다운로드됩니다.";
       if (confirmEl) confirmEl.textContent = isPdf ? "PDF 열기" : "리포트 생성";
       document.getElementById("m-channel").value = S.detectedChannelName || "";
@@ -3811,6 +3822,7 @@
     function generateReport(channelName, recipientName, senderName, requestedCount, options) {
       options = options || {};
       var includeAIGuide = options.includeAIGuide === true;
+      var isPdfExport = options.autoPrint === true || options.pdfMode === true;
 
       var chartImages = createReportChartImages();
       Object.keys(S.charts).forEach(function(key) {
@@ -3833,6 +3845,8 @@
       var sorted = S.videos.slice().sort(function(a, b) { return b[S.sortBy] - a[S.sortBy]; });
       var includedVideos = sorted.slice(0, requestedCount);
       var includedCount = includedVideos.length;
+      var reportVideos = isPdfExport ? includedVideos.slice(0, Math.min(5, includedVideos.length)) : includedVideos;
+      var reportVideoCount = reportVideos.length;
       var dates = S.videos
         .map(function(video) { return normalizeDateString(video.uploadDate); })
         .filter(function(date) { return !!date; });
@@ -3858,7 +3872,7 @@
       var mm = String(now.getMonth() + 1).padStart(2, "0");
       var dd = String(now.getDate()).padStart(2, "0");
       var createdDateText = yyyy + "년 " + mm + "월 " + dd + "일";
-      metaHTML += '<div>수록 영상: 상위 ' + includedCount + '개 (조회수 기준)</div>';
+      metaHTML += '<div>수록 영상: 상위 ' + reportVideoCount + '개 (조회수 기준)</div>';
       metaHTML += '<div>생성일: ' + createdDateText + '</div>';
       metaHTML += '<div class="report-footer" style="margin-top:16px;">Produced by 햄 · Threads <a href="https://www.threads.net/@dellacasa_2" target="_blank">@dellacasa_2</a></div>';
       metaBlock.innerHTML = metaHTML;
@@ -3912,9 +3926,8 @@
         return list.map(function(video, index) {
           var label = performanceLabel(video);
           var rank = startIndex + index + 1;
-          var itemClass = rank > 5 ? "video-item report-video-item-extra" : "video-item";
           return '' +
-            '<article class="' + itemClass + '">' +
+            '<article class="video-item">' +
               '<div class="video-top">' +
                 '<div>' +
                   '<div class="video-title">' + esc(video.title) + '</div>' +
@@ -4010,16 +4023,18 @@
       var page4 = createPage();
       if (strategyBlock) page4.appendChild(strategyBlock);
       var aiTitle = findTitleNode("AI 심층 분석");
-      if (aiTitle) page4.appendChild(aiTitle.cloneNode(true));
       var aiGrid = cloneSelector("#ai-analysis-grid");
       if (S.aiAnalysis && !S.aiError && aiGrid && S.aiAnalysisHtml) {
+        if (aiTitle) page4.appendChild(aiTitle.cloneNode(true));
         page4.appendChild(aiGrid);
       } else if (includeAIGuide) {
+        if (aiTitle) page4.appendChild(aiTitle.cloneNode(true));
         var aiGuideWrap = document.createElement("section");
         aiGuideWrap.className = "ai-analysis-grid";
         aiGuideWrap.appendChild(buildAIGuideCard());
         page4.appendChild(aiGuideWrap);
-      } else {
+      } else if (!isPdfExport) {
+        if (aiTitle) page4.appendChild(aiTitle.cloneNode(true));
         var aiEmptyWrap = document.createElement("section");
         aiEmptyWrap.className = "ai-analysis-grid report-ai-empty-grid";
         var aiEmpty = document.createElement("article");
@@ -4035,10 +4050,11 @@
       exportRoot.appendChild(page4);
 
       var videoTitleBase = findTitleNode("영상별 해설");
-      for (var start = 0; start < includedVideos.length; start += 10) {
+      var videoChunkSize = isPdfExport ? 3 : 10;
+      for (var start = 0; start < reportVideos.length; start += videoChunkSize) {
         var page = createPage();
-        page.className += start >= 5 ? " report-video-page report-video-page-extra" : " report-video-page";
-        var chunk = includedVideos.slice(start, start + 10);
+        page.className += " report-video-page";
+        var chunk = reportVideos.slice(start, start + videoChunkSize);
         var titleNode = videoTitleBase ? videoTitleBase.cloneNode(true) : document.createElement("section");
         titleNode.className = "section-title";
         titleNode.textContent = "영상별 해설";
@@ -4046,10 +4062,10 @@
 
         var rangeCopy = document.createElement("div");
         rangeCopy.className = "report-range-copy";
-        rangeCopy.textContent = (start + 1) + " ~ " + (start + chunk.length) + "번 / 총 " + includedVideos.length + "개";
+        rangeCopy.textContent = (start + 1) + " ~ " + (start + chunk.length) + "번 / 총 " + reportVideoCount + "개";
         page.appendChild(rangeCopy);
 
-        if (start === 0 && includedVideos.length > 5) {
+        if (isPdfExport && start === 0 && includedVideos.length > reportVideoCount) {
           var printNote = document.createElement("div");
           printNote.className = "report-print-video-note";
           printNote.textContent = "PDF에서는 상위 5개만 표시합니다. 전체 상세 목록은 HTML 리포트에서 확인하세요.";
@@ -4183,7 +4199,6 @@
             '.report-export .chart-wrap{height:190px !important;overflow:hidden !important;}' +
             '.report-export .report-chart-img{width:100% !important;height:100% !important;object-fit:contain !important;}' +
             '.report-print-video-note{display:block !important;}' +
-            '.report-video-item-extra,.report-video-page-extra{display:none !important;}' +
             '.report-export .video-item{break-inside:avoid;page-break-inside:avoid;}' +
           '}' +
         '</style>';
@@ -4258,7 +4273,7 @@
       } else if (highCtr && !highRet) {
         parts.push("제목과 썸네일은 클릭을 잘 만들지만, 들어온 시청자가 빨리 이탈하고 있습니다.");
         parts.push("도입부가 제목의 기대를 충족시키지 못하고 있을 가능성이 높습니다.");
-        parts.push("첫 30초 구성을 점검해보세요.");
+        parts.push("영상 도입부 구성을 점검해보세요.");
       } else if (!highCtr && highRet) {
         parts.push("내용은 좋지만 제목과 썸네일이 클릭을 만들지 못하고 있습니다.");
         parts.push("알고리즘이 노출은 시켜주는데 클릭으로 이어지지 않는 상태입니다.");
@@ -4283,7 +4298,7 @@
     function renderHighlights() {
       var sorted = S.videos.slice().sort(function(a, b) { return b.views - a.views; });
       var top3 = sorted.slice(0, 3);
-      var bottom3 = sorted.slice(-3).reverse();
+      var bottom3 = getBottomVideos(3);
 
       function markup(list, prefix) {
         return list.map(function(video, index) {
