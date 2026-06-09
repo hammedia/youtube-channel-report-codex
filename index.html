@@ -1860,6 +1860,39 @@
       }).join("");
     }
 
+    function clearStrategyInputs() {
+      S.monthlyStrategy.selectedItems = [];
+      S.monthlyStrategy.note = "";
+      document.querySelectorAll("#strategy-grid input").forEach(function(input) {
+        input.checked = false;
+      });
+      var note = document.getElementById("strategy-note");
+      if (note) note.value = "";
+    }
+
+    function updateAIWorkspaceVisibility() {
+      var hasKey = !!S.geminiApiKey;
+      var hasData = !!(S.summary && S.videos && S.videos.length);
+      var showWorkspace = hasKey && hasData;
+      var strategyCard = document.getElementById("strategy-card");
+      if (strategyCard) strategyCard.style.display = showWorkspace ? "" : "none";
+
+      if (!hasKey) {
+        clearStrategyInputs();
+        if (S.aiAnalysis || S.aiError || S.aiLoading) resetAIAnalysis();
+      }
+
+      if (!showWorkspace) {
+        var title = document.getElementById("ai-analysis-title");
+        var grid = document.getElementById("ai-analysis-grid");
+        if (title) title.style.display = "none";
+        if (grid) {
+          grid.style.display = "none";
+          if (!hasKey) grid.innerHTML = "";
+        }
+      }
+    }
+
     function updateGeminiKeyUI() {
       var badge = document.getElementById("api-status-badge");
       var panel = document.getElementById("api-panel");
@@ -1873,6 +1906,7 @@
     }
 
     function updateAIControls() {
+      updateAIWorkspaceVisibility();
       var count = document.getElementById("strategy-count");
       var hint = document.getElementById("ai-run-hint");
       var button = document.getElementById("run-ai-btn");
