@@ -15,6 +15,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <style>
     :root{
       --bg:#F5F3EE;
@@ -3575,9 +3577,9 @@
       var confirmEl = document.getElementById("save-modal-confirm");
       if (titleEl) titleEl.textContent = isPdf ? "PDF 저장 옵션" : "리포트 저장 옵션";
       if (subEl) subEl.textContent = isPdf
-        ? "저장본 리포트를 만든 뒤 PDF 인쇄창을 엽니다. 완성본처럼 저장하려면 인쇄 옵션에서 머리글과 바닥글을 꺼주세요."
+        ? "저장본 리포트를 PDF 파일로 바로 다운로드합니다. 브라우저 인쇄 머리글과 바닥글은 들어가지 않습니다."
         : "아래 정보를 입력하면 HTML 리포트가 다운로드됩니다.";
-      if (confirmEl) confirmEl.textContent = isPdf ? "PDF 열기" : "리포트 생성";
+      if (confirmEl) confirmEl.textContent = isPdf ? "PDF 다운로드" : "리포트 생성";
       document.getElementById("m-channel").value = S.detectedChannelName || "";
       document.getElementById("m-recipient").value = "";
       document.getElementById("m-sender").value = "";
@@ -3590,7 +3592,7 @@
       document.getElementById("save-modal").classList.remove("show");
     }
 
-    function confirmSaveReport() {
+    async function confirmSaveReport() {
       syncStrategyStateFromInputs();
       var channelName = String(document.getElementById("m-channel").value || "").trim();
       var recipientName = String(document.getElementById("m-recipient").value || "").trim();
@@ -3598,15 +3600,36 @@
       var requestedCount = parseInt(document.getElementById("m-count").value, 10);
       if (!requestedCount || requestedCount < 1) requestedCount = 10;
       var exportMode = S.exportMode || "html";
+      var confirmEl = document.getElementById("save-modal-confirm");
+      var previousText = confirmEl ? confirmEl.textContent : "";
+      if (confirmEl) {
+        confirmEl.disabled = true;
+        confirmEl.textContent = exportMode === "pdf" ? "PDF 생성 중..." : "리포트 생성 중...";
+      }
       closeSaveModal();
-      generateReport(channelName, recipientName, senderName, requestedCount, {
-        autoPrint: exportMode === "pdf",
-        download: exportMode !== "pdf"
-      });
-      trackToolUsage("report_exported", {
-        mode: exportMode,
-        video_count: requestedCount
-      });
+      try {
+        await generateReport(channelName, recipientName, senderName, requestedCount, {
+          directPdf: exportMode === "pdf",
+          pdfMode: exportMode === "pdf",
+          download: exportMode !== "pdf"
+        });
+        trackToolUsage("report_exported", {
+          mode: exportMode,
+          video_count: requestedCount
+        });
+      } catch (err) {
+        console.error(err);
+        trackToolUsage("report_export_failed", {
+          mode: exportMode,
+          reason: err && err.message ? err.message : "unknown"
+        });
+        alert(err && err.message ? err.message : "리포트 생성 중 오류가 발생했습니다.");
+      } finally {
+        if (confirmEl) {
+          confirmEl.disabled = false;
+          confirmEl.textContent = previousText || (exportMode === "pdf" ? "PDF 다운로드" : "리포트 생성");
+        }
+      }
     }
 
     function createReportHtml(parts) {
@@ -3620,7 +3643,7 @@
           parts.styleHTML +
           parts.exportStyleHTML +
         '</head>' +
-        '<body>' + parts.exportHTML + parts.autoPrintScript + '</body>' +
+        '<body>' + parts.exportHTML + '</body>' +
         '</html>';
     }
 
@@ -3819,10 +3842,84 @@
       return images;
     }
 
-    function generateReport(channelName, recipientName, senderName, requestedCount, options) {
+    function waitForImages(root) {
+      var images = Array.from(root.querySelectorAll("img"));
+      if (!images.length) return Promise.resolve();
+      return Promise.all(images.map(function(img) {
+        if (img.complete) return Promise.resolve();
+        return new Promise(function(resolve) {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      })).then(function() {});
+    }
+
+    async function downloadReportPdf(exportRoot, exportStyleHTML, fileName) {
+      if (typeof window.html2canvas !== "function" || !window.jspdf || !window.jspdf.jsPDF) {
+        throw new Error("PDF 생성 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시도해주세요.");
+      }
+
+      var styleTemplate = document.createElement("template");
+      styleTemplate.innerHTML = exportStyleHTML;
+      var exportStyle = styleTemplate.content.querySelector("style");
+      var stage = document.createElement("div");
+      var renderRoot = exportRoot.cloneNode(true);
+      stage.style.cssText = [
+        "position:absolute",
+        "left:-20000px",
+        "top:0",
+        "width:1120px",
+        "min-width:1120px",
+        "background:#fff",
+        "z-index:-1",
+        "pointer-events:none"
+      ].join(";");
+      stage.appendChild(renderRoot);
+
+      try {
+        if (exportStyle) document.head.appendChild(exportStyle);
+        document.body.appendChild(stage);
+        await waitForImages(stage);
+        await new Promise(function(resolve) { requestAnimationFrame(function() { requestAnimationFrame(resolve); }); });
+
+        var jsPDF = window.jspdf.jsPDF;
+        var pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+        var pageWidth = 297;
+        var pageHeight = 210;
+        var pages = Array.from(renderRoot.querySelectorAll(".report-page"));
+        if (!pages.length) throw new Error("PDF로 만들 보고서 페이지를 찾지 못했습니다.");
+
+        for (var i = 0; i < pages.length; i++) {
+          var canvas = await window.html2canvas(pages[i], {
+            backgroundColor: "#ffffff",
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            windowWidth: 1120,
+            width: Math.ceil(pages[i].scrollWidth),
+            height: Math.ceil(pages[i].scrollHeight)
+          });
+          var imgData = canvas.toDataURL("image/jpeg", 0.94);
+          var ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+          var imgWidth = canvas.width * ratio;
+          var imgHeight = canvas.height * ratio;
+          var x = (pageWidth - imgWidth) / 2;
+          var y = 0;
+          if (i > 0) pdf.addPage("a4", "landscape");
+          pdf.addImage(imgData, "JPEG", x, y, imgWidth, imgHeight);
+        }
+
+        pdf.save(fileName);
+      } finally {
+        if (stage.parentNode) stage.parentNode.removeChild(stage);
+        if (exportStyle && exportStyle.parentNode) exportStyle.parentNode.removeChild(exportStyle);
+      }
+    }
+
+    async function generateReport(channelName, recipientName, senderName, requestedCount, options) {
       options = options || {};
       var includeAIGuide = options.includeAIGuide === true;
-      var isPdfExport = options.autoPrint === true || options.pdfMode === true;
+      var isPdfExport = options.directPdf === true || options.pdfMode === true;
 
       var chartImages = createReportChartImages();
       Object.keys(S.charts).forEach(function(key) {
@@ -4206,20 +4303,17 @@
       var safeChannelName = channelName.replace(/[\\/:*?"<>|]/g, "").trim();
       var baseFileName = (safeChannelName ? safeChannelName + "_" : "youtube_report_") + yyyy + mm + dd + "_report";
       var docTitle = baseFileName;
-      var autoPrintScript = options.autoPrint ? (
-        '<script>' +
-          'window.addEventListener("load",function(){' +
-            'setTimeout(function(){window.focus();window.print();},300);' +
-          '});' +
-        '<\/script>'
-      ) : "";
+
+      if (options.directPdf) {
+        await downloadReportPdf(exportRoot, exportStyleHTML, baseFileName + ".pdf");
+        return;
+      }
 
       var html = createReportHtml({
         docTitle: docTitle,
         styleHTML: styleHTML,
         exportStyleHTML: exportStyleHTML,
-        exportHTML: exportRoot.outerHTML,
-        autoPrintScript: autoPrintScript
+        exportHTML: exportRoot.outerHTML
       });
 
       var fileName = baseFileName + ".html";
