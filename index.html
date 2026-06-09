@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>유튜브 채널 분석 보고서</title>
   <link rel="icon" href="data:," />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4R371K60ED"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag("js", new Date());
+    gtag("config", "G-4R371K60ED");
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
@@ -67,6 +74,36 @@
       background:
         linear-gradient(140deg, rgba(126,181,232,.07), rgba(255,253,248,.9) 42%),
         linear-gradient(220deg, rgba(0,112,74,.06), rgba(255,253,248,.9) 68%);
+    }
+    .brand-bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+      padding:0 2px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .brand-bar a{
+      color:var(--ink);
+      text-decoration:none;
+    }
+    .brand-bar a:hover{
+      color:var(--brand-2);
+    }
+    .brand-status{
+      padding:5px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(249,247,243,.72);
+      color:var(--muted);
+      letter-spacing:0;
+      text-transform:none;
+      white-space:nowrap;
     }
     .hero-top{
       display:flex;
@@ -158,6 +195,23 @@
     .upload-card{
       padding:16px;
       margin-bottom:16px;
+    }
+    .primary-upload{
+      border-color:rgba(126,181,232,.55);
+      box-shadow:0 22px 58px rgba(32, 26, 22, 0.11);
+    }
+    .primary-upload .section-title{
+      color:var(--ink);
+    }
+    .privacy-note{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:#F5F3EE;
+      border:1px solid var(--line);
+      color:var(--muted);
+      font-size:11px;
+      text-align:left;
     }
     .api-card{
       padding:16px;
@@ -1256,76 +1310,44 @@
 </head>
 <body>
   <div class="app">
+    <header class="brand-bar" aria-label="HAM MEDIA tool header">
+      <a href="https://hammedia.co.kr/" target="_blank" rel="noopener">HAM MEDIA AI Studio</a>
+      <span class="brand-status">공개 도구 · 브라우저 처리</span>
+    </header>
+
     <section class="hero card">
       <div class="hero-top">
         <div>
-          <div class="eyebrow">채널 분석 리포트</div>
-          <h1>숫자만 보는 대시보드가 아니라<br />바로 읽히는 보고서형 분석 툴</h1>
+          <div class="eyebrow">YouTube Studio ZIP 분석</div>
+          <h1>YouTube Studio 데이터를 넣으면<br />바로 읽히는 채널 리포트가 나옵니다</h1>
           <p class="hero-sub">
-            CSV를 올리면 맨 위에서 결론부터 보고, 아래에서 왜 그런 결과가 나왔는지 차트와 설명으로 확인할 수 있게 구성했습니다.
+            조회수, CTR, 지속률, 구독 전환을 한 화면에서 정리하고 HTML 또는 PDF 리포트로 저장할 수 있습니다.
           </p>
           <div class="hero-feature">
-            <div class="hero-feature-item">📊 분석 결과를 클라이언트용 리포트로 저장</div>
-            <div class="hero-feature-item">✉️ 채널명·수신자 입력 후 HTML 파일 한 번에 전달</div>
-            <div class="hero-feature-item">🔒 데이터는 브라우저 안에서만 처리 · 서버 저장 없음</div>
-            <div class="hero-feature-item">⚡ 설치 없이 링크 하나로 바로 사용</div>
+            <div class="hero-feature-item">YouTube Studio ZIP 권장</div>
+            <div class="hero-feature-item">결론부터 읽는 보고서형 화면</div>
+            <div class="hero-feature-item">HTML/PDF 저장 지원</div>
+            <div class="hero-feature-item">선택형 AI 심층 분석</div>
           </div>
           <div class="hero-credit">
-            Made by <a href="https://www.threads.net/@dellacasa_2" target="_blank">햄 @dellacasa_2</a>
-            · 오류나 피드백은 Threads 댓글로 알려주세요
+            Made by <a href="https://hammedia.co.kr/" target="_blank" rel="noopener">HAM MEDIA AI Studio</a>
+            · 콘텐츠 운영자가 직접 쓰기 위해 만든 분석 도구입니다.
           </div>
         </div>
         <div class="hero-status">
-          <div class="hero-status-label">읽는 순서</div>
-          <strong>결론 → 원인 → 실행 포인트</strong>
-          <p>처음 보는 사람도 다시 공부하지 않도록, 각 섹션마다 “이게 무슨 뜻인지” 설명 문장을 함께 보여줍니다.</p>
+          <div class="hero-status-label">먼저 할 일</div>
+          <strong>ZIP 파일을 그대로 올리기</strong>
+          <p>업로드하면 결론, 핵심 지표, 영상별 목록이 자동으로 열립니다. API 키는 나중에 필요할 때만 입력하면 됩니다.</p>
         </div>
       </div>
     </section>
 
-    <section class="api-card card">
-      <details id="api-panel" class="api-disclosure" open>
-        <summary>
-          <div class="api-summary">
-            <div>
-              <div class="api-step">1단계 · Gemini API 키 입력</div>
-              <div class="api-title">브라우저 안에서만 AI 심층 분석을 실행할 준비</div>
-              <div class="api-copy">Gemini API 키를 입력하면 업로드한 채널 데이터와 이번 달 전략을 바탕으로 실행형 분석을 추가로 받을 수 있습니다.</div>
-            </div>
-            <div id="api-status-badge" class="api-status-badge">미입력</div>
-          </div>
-        </summary>
-        <div class="api-body">
-          <div class="api-input-row">
-            <input id="gemini-api-key" class="text-input" type="password" autocomplete="off" spellcheck="false" placeholder="Gemini API 키를 입력하세요" />
-            <button id="save-api-key-btn" class="inline-btn" type="button" onclick="saveGeminiKey()">키 저장</button>
-          </div>
-          <div class="api-guide">
-            <div class="api-guide-title">🔑 Gemini API 키가 없으신가요?</div>
-            <ol class="api-guide-steps">
-              <li><a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a> 접속
-                  (유튜브에 사용하는 구글 계정으로 로그인)</li>
-              <li>왼쪽 메뉴에서 <strong>API 키</strong> 클릭</li>
-              <li>오른쪽 상단 <strong>API 키 만들기</strong> 클릭</li>
-              <li>생성된 키 목록에서 <strong>Generative Language API Key</strong> 항목 복사</li>
-              <li>위 입력창에 붙여넣기 후 저장</li>
-            </ol>
-            <div class="api-guide-note">✅ 무료 계정으로도 사용 가능합니다.</div>
-            <div class="api-guide-note2">💳 구글 계정에 카드를 등록하면 요청 한도가 대폭 늘어납니다. (선택사항)</div>
-          </div>
-          <div class="api-help">
-            <span>입력한 키는 브라우저 메모리에만 유지되며 새로고침하면 사라집니다.</span>
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Gemini API 키 발급</a>
-          </div>
-        </div>
-      </details>
-    </section>
-
-    <section class="upload-card card">
+    <section class="upload-card primary-upload card">
+      <div class="section-title">Start Here</div>
       <div id="upload-zone" class="upload-zone">
         <div id="upload-icon" class="upload-icon">📂</div>
-        <div id="upload-title" class="upload-title">YouTube Studio ZIP 또는 CSV 파일을 올려주세요</div>
-        <div id="upload-sub" class="upload-sub">ZIP 파일을 올리면 채널명·분석 기간이 자동으로 채워집니다. CSV 파일을 개별로 올릴 경우 채널명은 리포트 저장 시 직접 입력합니다.<br />⚠️ 폴더 드래그는 지원되지 않습니다. ZIP 파일을 그대로 올려주세요.</div>
+        <div id="upload-title" class="upload-title">YouTube Studio ZIP 파일을 여기에 올리세요</div>
+        <div id="upload-sub" class="upload-sub">ZIP 파일을 올리면 채널명과 분석 기간이 자동으로 채워집니다. CSV 파일을 따로 올릴 수도 있지만 ZIP 업로드를 권장합니다.<br />폴더 드래그는 지원되지 않습니다. ZIP 파일을 그대로 올려주세요.</div>
         <div class="tag-row">
           <span class="tag no" id="tag-table"><span class="tag-dot"></span>표 데이터.csv 필수</span>
           <span class="tag no" id="tag-total"><span class="tag-dot"></span>총계.csv 선택</span>
@@ -1339,8 +1361,47 @@
           <p>3. 고급 모드로 들어간 뒤 오른쪽 위 내보내기에서 두 옵션 중 CSV를 선택합니다.</p>
           <p>4. 표 데이터.csv는 필수이고, 총계.csv와 차트 데이터.csv를 함께 올리면 추가 차트가 열립니다. 업로드 순서는 상관없습니다.</p>
         </div>
+        <div class="privacy-note">업로드한 파일은 브라우저 안에서만 읽습니다. 이 공개 페이지는 원본 ZIP이나 CSV를 HAM MEDIA 서버로 저장하지 않습니다.</div>
       </div>
       <input type="file" id="file-input" accept=".csv,.zip" multiple style="display:none" />
+    </section>
+
+    <section class="api-card card">
+      <details id="api-panel" class="api-disclosure">
+        <summary>
+          <div class="api-summary">
+            <div>
+              <div class="api-step">선택 · AI 심층 분석</div>
+              <div class="api-title">Gemini API 키가 있으면 실행형 분석을 추가할 수 있습니다</div>
+              <div class="api-copy">기본 리포트는 API 키 없이도 만들 수 있습니다. 더 깊은 전략 메모가 필요할 때만 이 영역을 열어 사용하세요.</div>
+            </div>
+            <div id="api-status-badge" class="api-status-badge">미입력</div>
+          </div>
+        </summary>
+        <div class="api-body">
+          <div class="api-input-row">
+            <input id="gemini-api-key" class="text-input" type="password" autocomplete="off" spellcheck="false" placeholder="Gemini API 키를 입력하세요" />
+            <button id="save-api-key-btn" class="inline-btn" type="button" onclick="saveGeminiKey()">키 저장</button>
+          </div>
+          <div class="api-guide">
+            <div class="api-guide-title">Gemini API 키가 없으신가요?</div>
+            <ol class="api-guide-steps">
+              <li><a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a> 접속
+                  (유튜브에 사용하는 구글 계정으로 로그인)</li>
+              <li>왼쪽 메뉴에서 <strong>API 키</strong> 클릭</li>
+              <li>오른쪽 상단 <strong>API 키 만들기</strong> 클릭</li>
+              <li>생성된 키 목록에서 <strong>Generative Language API Key</strong> 항목 복사</li>
+              <li>위 입력창에 붙여넣기 후 저장</li>
+            </ol>
+            <div class="api-guide-note">무료 계정으로도 사용 가능합니다.</div>
+            <div class="api-guide-note2">구글 계정에 카드를 등록하면 요청 한도가 대폭 늘어납니다. 선택사항입니다.</div>
+          </div>
+          <div class="api-help">
+            <span>입력한 키는 브라우저 메모리에만 유지되며 새로고침하면 사라집니다.</span>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Gemini API 키 발급</a>
+          </div>
+        </div>
+      </details>
     </section>
 
     <div id="empty-state" class="card empty">
@@ -1549,6 +1610,50 @@
       "출연자 캐릭터 강화",
       "시리즈물 기획"
     ];
+
+    // 공개 도구 사용량 카운팅 훅.
+    // GA4에는 도구 사용 이벤트를 보내고, 별도 로그 저장소가 생기면 endpoint도 추가 연결할 수 있다.
+    var HAM_GA_MEASUREMENT_ID = "G-4R371K60ED";
+    var HAM_ANALYTICS_ENDPOINT = "";
+
+    function trackToolUsage(eventName, detail) {
+      if (window.__HAM_DISABLE_ANALYTICS__) return;
+      var safeDetail = detail || {};
+      if (typeof window.gtag === "function") {
+        window.gtag("event", eventName, Object.assign({
+          tool_name: "youtube_channel_report",
+          page_path: location.pathname || "/",
+          transport_type: "beacon"
+        }, safeDetail));
+      }
+
+      if (!HAM_ANALYTICS_ENDPOINT) return;
+      var payload = JSON.stringify({
+        tool: "youtube-channel-report",
+        event: eventName,
+        page: location.pathname || "/",
+        ts: new Date().toISOString(),
+        detail: safeDetail
+      });
+
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(
+            HAM_ANALYTICS_ENDPOINT,
+            new Blob([payload], { type: "application/json" })
+          );
+          return;
+        }
+        fetch(HAM_ANALYTICS_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: payload,
+          keepalive: true
+        });
+      } catch (err) {
+        // 사용량 집계 실패가 도구 사용을 막으면 안 된다.
+      }
+    }
 
     function hasLibs() {
       return typeof window.Chart !== "undefined" && typeof window.Papa !== "undefined";
@@ -1814,6 +1919,7 @@
       updateAIControls();
       setToastMessage(value ? "API 키를 저장했습니다" : "API 키를 비웠습니다");
       showToast();
+      trackToolUsage(value ? "gemini_key_saved" : "gemini_key_cleared");
     }
 
     function resetState() {
@@ -2015,6 +2121,11 @@
       document.getElementById("upload-icon").textContent = "✅";
       document.getElementById("upload-title").textContent = "데이터 로드 완료 - 아래에서 결론부터 확인하세요";
       render();
+      trackToolUsage("zip_loaded", {
+        has_total_csv: !!totalName,
+        has_chart_csv: !!chartName,
+        video_count: S.videos.length
+      });
     }
 
     async function handleFiles(files) {
@@ -2050,6 +2161,11 @@
         if (S.summary) {
           document.getElementById("upload-icon").textContent = "✅";
           document.getElementById("upload-title").textContent = "데이터 로드 완료 - 아래에서 결론부터 확인하세요";
+          trackToolUsage("csv_loaded", {
+            has_total_csv: !!S.total,
+            has_chart_csv: !!S.chart,
+            video_count: S.videos.length
+          });
         } else {
           document.getElementById("upload-title").textContent = "표 데이터.csv를 찾지 못했습니다";
         }
@@ -2060,6 +2176,9 @@
         document.getElementById("upload-title").textContent = "CSV를 읽는 중 오류가 발생했습니다";
         document.getElementById("empty-state").style.display = "block";
         document.getElementById("empty-state").textContent = err && err.message ? err.message : "파일 형식을 다시 확인해 주세요.";
+        trackToolUsage("upload_error", {
+          message: err && err.message ? String(err.message).slice(0, 80) : "unknown"
+        });
       }
     }
 
@@ -3396,6 +3515,7 @@
       document.getElementById("m-sender").value = "";
       document.getElementById("m-count").value = "10";
       document.getElementById("save-modal").classList.add("show");
+      trackToolUsage("export_modal_opened", { mode: S.exportMode });
     }
 
     function closeSaveModal() {
@@ -3414,6 +3534,10 @@
       generateReport(channelName, recipientName, senderName, requestedCount, {
         autoPrint: exportMode === "pdf",
         download: exportMode !== "pdf"
+      });
+      trackToolUsage("report_exported", {
+        mode: exportMode,
+        video_count: requestedCount
       });
     }
 
@@ -4215,6 +4339,15 @@
       renderAIAnalysis();
       updateGeminiKeyUI();
       updateAIControls();
+      trackToolUsage("tool_page_view");
+
+      document.querySelectorAll('a[href*="hammedia.co.kr"]').forEach(function(link) {
+        link.addEventListener("click", function() {
+          var area = link.closest(".brand-bar") ? "header" :
+            link.closest(".hero-credit") ? "hero" : "content";
+          trackToolUsage("homepage_click", { area: area });
+        });
+      });
 
       var zone = document.getElementById("upload-zone");
       var input = document.getElementById("file-input");
@@ -4254,7 +4387,10 @@
         if (e.key === "Escape") closeSaveModal();
       });
 
-      zone.addEventListener("click", function() { input.click(); });
+      zone.addEventListener("click", function() {
+        trackToolUsage("upload_zone_clicked");
+        input.click();
+      });
       zone.addEventListener("dragover", function(e) {
         e.preventDefault();
         zone.classList.add("drag");
@@ -4263,6 +4399,7 @@
       zone.addEventListener("drop", function(e) {
         e.preventDefault();
         zone.classList.remove("drag");
+        trackToolUsage("file_drop");
         var hasDirectory = Array.from(e.dataTransfer.items || []).some(function(item) {
           if (!item || typeof item.webkitGetAsEntry !== "function") return false;
           var entry = item.webkitGetAsEntry();
@@ -4285,6 +4422,7 @@
         handleFiles(e.dataTransfer.files);
       });
       input.addEventListener("change", function(e) {
+        trackToolUsage("file_picker_selected");
         handleFiles(e.target.files);
       });
     }

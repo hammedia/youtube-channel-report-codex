@@ -58,15 +58,40 @@ ZIP 없이 CSV 파일을 직접 업로드할 수도 있습니다.
 ## 사용 방법
 
 1. 위 링크 접속
-2. Gemini API 키 입력 (선택, 없어도 기본 분석 가능)
+2. ZIP 파일 또는 CSV 파일 업로드
+3. 기본 분석 결과 자동 표시
+4. 필요하면 Gemini API 키 입력 (선택, 없어도 기본 분석 가능)
    - aistudio.google.com에서 무료 발급
    - Generative Language API Key 항목 복사해서 입력
-3. ZIP 파일 또는 CSV 파일 업로드
-4. 이번 달 전략 체크박스 선택 + 기획 메모 입력 (선택)
-5. 기본 분석 결과 자동 표시
+5. 이번 달 전략 체크박스 선택 + 기획 메모 입력 (선택)
 6. API 키 입력 시 AI 심층 분석 버튼 활성화
    - 데이터 + 전략 메모 합쳐서 Gemini가 분석
    - 전략 유효성, 다음 달 제안까지 제공
+
+---
+
+## 사용량 카운팅
+
+공개 도구에는 GA4 측정 ID `G-4R371K60ED`가 연결되어 있습니다.
+
+GA 기본 측정으로 방문자 수, 유입 경로, 국가, 페이지 조회를 확인할 수 있습니다.
+`index.html`의 `trackToolUsage()`는 아래 도구 사용 이벤트를 GA4 커스텀 이벤트로 보냅니다.
+
+- `tool_page_view`
+- `upload_zone_clicked`
+- `file_picker_selected`
+- `file_drop`
+- `zip_loaded`
+- `csv_loaded`
+- `upload_error`
+- `export_modal_opened`
+- `report_exported`
+- `gemini_key_saved`
+- `gemini_key_cleared`
+- `homepage_click`
+
+민감한 채널명이나 ZIP 파일명은 보내지 않고, 파일 구성 여부와 영상 수 같은 최소 정보만 전송하도록 설계했습니다.
+추후 Supabase나 Apps Script 같은 별도 로그 저장소가 필요하면 `HAM_ANALYTICS_ENDPOINT`에 수신 URL을 추가할 수 있습니다.
 
 ---
 
@@ -123,7 +148,7 @@ AI 활용 프롬프트를 제외한 모든 분석 항목.
 ## 피드백 및 오류 신고
 
 사용 중 오류가 발생하거나 불편한 점이 있으면
-Threads [@dellacasa_2](https://www.threads.net/@dellacasa_2) 댓글로 알려주세요.
+HAM MEDIA 홈페이지 [hammedia.co.kr](https://hammedia.co.kr/)를 통해 알려주세요.
 확인 후 바로 수정하겠습니다.
 
 ---
@@ -140,4 +165,4 @@ Threads [@dellacasa_2](https://www.threads.net/@dellacasa_2) 댓글로 알려주
 ## 만든 사람
 
 햄 (함동민) · 1인 미디어 프로듀서
-Threads [@dellacasa_2](https://www.threads.net/@dellacasa_2)
+HAM MEDIA AI Studio · [hammedia.co.kr](https://hammedia.co.kr/)
