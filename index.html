@@ -619,6 +619,45 @@
       border-radius:50%;
       background:currentColor;
     }
+    .sample-strip{
+      margin-top:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:#E7F2EC;
+      border:1px solid rgba(0,112,74,.18);
+      text-align:left;
+    }
+    .sample-strip strong{
+      display:block;
+      font-size:13px;
+      line-height:1.35;
+    }
+    .sample-strip span{
+      display:block;
+      margin-top:2px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .sample-btn{
+      border:0;
+      border-radius:14px;
+      padding:10px 14px;
+      background:var(--brand-2);
+      color:#F9F7F3;
+      font-size:13px;
+      font-weight:900;
+      cursor:pointer;
+      white-space:nowrap;
+      box-shadow:0 10px 24px rgba(0,112,74,.18);
+    }
+    .sample-btn:hover{
+      transform:translateY(-1px);
+    }
 
     .empty{
       text-align:center;
@@ -1290,6 +1329,13 @@
         width:100%;
       }
       .api-input-row{ grid-template-columns:1fr; }
+      .sample-strip{
+        align-items:stretch;
+        flex-direction:column;
+      }
+      .sample-btn{
+        width:100%;
+      }
       .strategy-grid{ grid-template-columns:1fr; }
       .kpi-grid, .action-grid, .explain-grid, .fmt-grid, .chart-grid, .prompt-grid, .highlights, .ai-analysis-grid { grid-template-columns:1fr; }
       .chart-card { padding:14px; }
@@ -1390,6 +1436,13 @@
         </div>
         <div class="privacy-note">업로드한 파일은 브라우저 안에서만 읽습니다. 이 공개 페이지는 원본 ZIP이나 CSV를 HAM MEDIA 서버로 저장하지 않습니다.</div>
       </div>
+      <div class="sample-strip">
+        <div>
+          <strong>ZIP 파일이 없어도 먼저 결과를 볼 수 있습니다</strong>
+          <span>ZIP 없이, 내 리포트가 어떻게 나오는지 1분 만에 미리 봅니다.</span>
+        </div>
+        <button id="sample-report-btn" class="sample-btn" type="button" onclick="loadSampleReport(event)">샘플 채널 진단 보기</button>
+      </div>
       <input type="file" id="file-input" accept=".csv,.zip" multiple style="display:none" />
     </section>
 
@@ -1432,7 +1485,7 @@
     </section>
 
     <div id="empty-state" class="card empty">
-      표 데이터 CSV를 올리면, 위에서 바로 요약 보고서를 만들고 아래에 차트와 영상별 해설을 보여줍니다.
+      표 데이터 CSV를 올리거나 샘플 진단을 열면, 위에서 바로 요약 보고서를 만들고 아래에 차트와 영상별 해설을 보여줍니다.
     </div>
 
     <main id="dashboard" class="dashboard">
@@ -1999,6 +2052,10 @@
       });
       document.getElementById("upload-icon").textContent = "📂";
       document.getElementById("upload-title").textContent = "YouTube Studio ZIP 또는 CSV 파일을 올려주세요";
+      var uploadSub = document.getElementById("upload-sub");
+      if (uploadSub) {
+        uploadSub.innerHTML = "ZIP 파일을 올리면 채널명과 분석 기간이 자동으로 채워집니다. CSV 파일을 따로 올릴 수도 있지만 ZIP 업로드를 권장합니다.<br />폴더 드래그는 지원되지 않습니다. ZIP 파일을 그대로 올려주세요.";
+      }
       destroyCharts();
       updateAIControls();
       renderAIAnalysis();
@@ -2121,6 +2178,139 @@
         .slice(0, 5);
 
       return { dates: dates, byVideo: byVideo, top5: top5 };
+    }
+
+    function makeSampleVideo(item) {
+      var retention = Number(item.retention || 0);
+      var watchH = item.views > 0 && item.lenSec > 0
+        ? +(item.views * item.lenSec * (retention / 100) / 3600).toFixed(1)
+        : 0;
+      var avgWatchSec = item.views > 0 ? (watchH * 3600 / item.views) : 0;
+      return {
+        id: item.id,
+        title: item.title,
+        uploadDate: item.uploadDate,
+        lenSec: item.lenSec,
+        views: item.views,
+        watchH: watchH,
+        subs: item.subs,
+        impr: item.impr,
+        ctr: item.ctr,
+        retention: retention,
+        avgWatchSec: avgWatchSec,
+        subConvRate: item.views > 0 ? item.subs / item.views * 100 : 0,
+        category: getCategory(item.title, item.lenSec),
+        isShorts: item.lenSec > 0 && item.lenSec <= 60
+      };
+    }
+
+    function getSampleReportData() {
+      var videos = [
+        { id:"sample-001", title:"처음 온 손님이 다시 오는 가게의 공통점", uploadDate:"2026-04-03", lenSec:742, views:38200, impr:610000, ctr:6.3, retention:43.8, subs:96 },
+        { id:"sample-002", title:"쇼츠로 보는 30초 매장 점검 루틴", uploadDate:"2026-04-08", lenSec:42, views:26400, impr:420000, ctr:6.8, retention:71.5, subs:28 },
+        { id:"sample-003", title:"작은 브랜드가 메뉴판부터 고쳐야 하는 이유", uploadDate:"2026-04-14", lenSec:905, views:18800, impr:340000, ctr:5.7, retention:39.2, subs:54 },
+        { id:"sample-004", title:"사장님이 매일 확인해야 할 채널 숫자 3개", uploadDate:"2026-04-21", lenSec:681, views:22600, impr:510000, ctr:4.5, retention:37.1, subs:61 },
+        { id:"sample-005", title:"조회수는 낮은데 문의가 들어온 영상 분석", uploadDate:"2026-04-28", lenSec:1010, views:9300, impr:198000, ctr:4.9, retention:46.4, subs:37 },
+        { id:"sample-006", title:"고객 후기 영상, 이렇게 찍으면 광고처럼 안 보입니다", uploadDate:"2026-05-05", lenSec:812, views:15600, impr:290000, ctr:5.4, retention:41.8, subs:48 },
+        { id:"sample-007", title:"매장 소개 영상 첫 10초에서 빼야 할 말", uploadDate:"2026-05-12", lenSec:538, views:12100, impr:310000, ctr:3.9, retention:32.5, subs:24 },
+        { id:"sample-008", title:"쇼츠 제목 바꾸고 클릭률이 오른 사례", uploadDate:"2026-05-17", lenSec:38, views:21100, impr:330000, ctr:7.1, retention:68.2, subs:22 },
+        { id:"sample-009", title:"비싼 장비보다 먼저 맞춰야 할 촬영 순서", uploadDate:"2026-05-24", lenSec:1180, views:7400, impr:212000, ctr:3.6, retention:35.7, subs:31 },
+        { id:"sample-010", title:"지역 손님을 부르는 유튜브 설명란 작성법", uploadDate:"2026-05-31", lenSec:658, views:13400, impr:275000, ctr:5.0, retention:36.8, subs:44 },
+        { id:"sample-011", title:"대표가 직접 나오면 좋은 영상과 아닌 영상", uploadDate:"2026-06-07", lenSec:920, views:16800, impr:360000, ctr:4.8, retention:38.9, subs:57 },
+        { id:"sample-012", title:"30일 운영 후 남겨야 할 콘텐츠 기록표", uploadDate:"2026-06-14", lenSec:784, views:11200, impr:245000, ctr:4.7, retention:42.6, subs:39 },
+        { id:"sample-013", title:"쇼츠가 잘 떠도 구독이 안 느는 이유", uploadDate:"2026-06-21", lenSec:51, views:24400, impr:430000, ctr:6.1, retention:63.4, subs:18 },
+        { id:"sample-014", title:"다음 달 콘텐츠 회의 전에 봐야 할 리포트", uploadDate:"2026-06-28", lenSec:876, views:9800, impr:220000, ctr:4.6, retention:40.5, subs:42 }
+      ].map(makeSampleVideo);
+
+      var totalViews = videos.reduce(function(sum, item) { return sum + item.views; }, 0);
+      var totalImpr = videos.reduce(function(sum, item) { return sum + item.impr; }, 0);
+      var watchHours = videos.reduce(function(sum, item) { return sum + item.watchH; }, 0);
+      var totalSubs = videos.reduce(function(sum, item) { return sum + item.subs; }, 0);
+      var weightedCtr = totalImpr
+        ? videos.reduce(function(sum, item) { return sum + item.impr * item.ctr; }, 0) / totalImpr
+        : 0;
+
+      var daily = [
+        ["2026-04-01", 7200], ["2026-04-08", 9600], ["2026-04-15", 11800],
+        ["2026-04-22", 13000], ["2026-04-29", 14500], ["2026-05-06", 16200],
+        ["2026-05-13", 15300], ["2026-05-20", 20200], ["2026-05-27", 18900],
+        ["2026-06-03", 22400], ["2026-06-10", 19600], ["2026-06-17", 25100],
+        ["2026-06-24", 26600], ["2026-06-30", 27100]
+      ];
+      var totalRows = [["날짜", "조회수"]].concat(daily);
+
+      var chartRows = [["날짜", "콘텐츠", "동영상 제목", "동영상 게시 시간", "길이", "조회수"]];
+      var chartWeights = [0.03, 0.04, 0.05, 0.07, 0.10, 0.13, 0.16, 0.14, 0.11, 0.08, 0.05, 0.04];
+      var chartDates = daily.slice(-12).map(function(row) { return row[0]; });
+      videos.slice().sort(function(a, b) { return b.views - a.views; }).slice(0, 5).forEach(function(video) {
+        chartDates.forEach(function(date, index) {
+          chartRows.push([
+            date,
+            video.id,
+            video.title,
+            video.uploadDate,
+            String(video.lenSec),
+            String(Math.max(0, Math.round(video.views * chartWeights[index])))
+          ]);
+        });
+      });
+
+      return {
+        summary: {
+          totalViews: totalViews,
+          watchHours: +watchHours.toFixed(1),
+          totalSubs: totalSubs,
+          totalImpr: totalImpr,
+          aggCTR: +weightedCtr.toFixed(2)
+        },
+        videos: videos,
+        total: totalRows,
+        chart: chartRows,
+        channelName: "샘플 채널",
+        period: "2026.04.01 ~ 2026.06.30"
+      };
+    }
+
+    function loadSampleReport(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      if (!hasLibs()) return;
+
+      resetState();
+      var sample = getSampleReportData();
+      S.summary = sample.summary;
+      S.videos = sample.videos;
+      S.total = sample.total;
+      S.chart = sample.chart;
+      S.detectedChannelName = sample.channelName;
+      S.detectedPeriod = sample.period;
+      markTag("table");
+      markTag("total");
+      markTag("chart");
+
+      var input = document.getElementById("file-input");
+      var uploadSub = document.getElementById("upload-sub");
+      if (input) input.value = "";
+      document.getElementById("upload-icon").textContent = "✅";
+      document.getElementById("upload-title").textContent = "샘플 리포트 로드 완료 - 아래에서 진단 흐름을 확인하세요";
+      if (uploadSub) {
+        uploadSub.innerHTML = "이 데이터는 실제 고객이나 채널 자료가 아닌 공개 체험용 가상 샘플입니다.<br />내 채널을 보려면 YouTube Studio ZIP 파일을 올리면 됩니다.";
+      }
+      render();
+      setToastMessage("샘플 리포트를 불러왔습니다");
+      showToast();
+      trackToolUsage("sample_report_loaded", {
+        video_count: S.videos.length
+      });
+
+      var dashboard = document.getElementById("dashboard");
+      if (dashboard && typeof dashboard.scrollIntoView === "function") {
+        setTimeout(function() {
+          dashboard.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 80);
+      }
     }
 
     function readFiles(files) {
